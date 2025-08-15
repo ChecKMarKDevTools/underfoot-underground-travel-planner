@@ -1,50 +1,62 @@
 {
-  "name": "npm-nodejs-template",
+  "name": "underfoot-underground-travel-planner",
   "version": "0.0.0",
   "license": "Apache-2.0",
-  "description": "A boilerplate starter for any NodeJS project that contains all the default config rules and scaffold for a project.",
+  "description": "A submission for the Dev.to n8n + BrightData hackathon. Underground travel planner to find those hidden gems that are a must see.",
   "keywords": [
-    "nodejs",
-    "javascript",
-    "scaffold",
-    "starter",
-    "template"
+    "devto",
+    "n8n",
+    "brightdata",
+    "hackathon",
+    "travel"
   ],
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anchildress1/npm-nodejs-template.git"
+    "url": "git+https://github.com/anchildress1/underfoot-underground-travel-planner.git"
   },
   "bugs": {
-    "url": "https://github.com/anchildress1/npm-nodejs-template/issues"
+    "url": "https://github.com/anchildress1/underfoot-underground-travel-planner/issues"
   },
-  "homepage": "https://github.com/anchildress1/npm-nodejs-template#readme",
+  "homepage": "https://github.com/anchildress1/underfoot-underground-travel-planner#readme",
   "author": {
     "name": "Ashley Childress",
     "url": "https://dev.to/anchildress11"
-  },
-  "directories": {
-    "test": "tests"
   },
   "main": "index.js",
   "node": "24.4.0",
   "npm": "11.4.2",
   "volta": {
-    "node": "24.4.0",
-    "npm": "11.4.2"
+    "node": "24.6.0",
+    "npm": "11.5.2"
   },
   "engines": {
-    "node": ">=24.4.0",
-    "npm": ">=11.4.2"
+    "node": ">=24.6.0",
+    "npm": ">=11.5.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "commitlint": "npx commitlint",
-    "commitlint:file": "npx commitlint --help-url --verbose --edit",
-    "commitlint:last": "npx commitlint --from=HEAD~1 --to=HEAD  --help-url --verbose"
+    "test": "echo \"Error: no tests specified\" && exit 1",
+    "commitlint": "commitlint --edit",
+    "commitlint:file": "commitlint --help-url --verbose --edit",
+    "commitlint:last": "commitlint --from=HEAD~1 --to=HEAD  --help-url --verbose",
+    "format": "npm run format:prettier && npm run format:remark && npm run format:fix-admonitions",
+    "format:prettier": "prettier --write . --log-level silent",
+    "format:remark": "remark . -o --quiet",
+    "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.1",
-    "@commitlint/config-conventional": "19.8.1"
+    "@commitlint/config-conventional": "19.8.1",
+    "@cspell/eslint-plugin": "9.2.0",
+    "@eslint/js": "9.33.0",
+    "cspell": "9.2.0",
+    "eslint": "9.33.0",
+    "eslint-plugin-naming": "0.1.10",
+    "lefthook": "1.12.3",
+    "prettier": "3.6.2",
+    "remark": "15.0.1",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1"
   }
 }
