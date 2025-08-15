@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "commitlint:validate",
+			"command": "npm run commitlint",
+			"args": [
+				"--",
+				"${input:fullCommitMessage}"
+			],
+			"type": "shell",
+			"group": "none"
+		},
+		{
+			"label": "commitlint:file",
+			"command": "npm run commitlint:file -- commit-message.tmp",
+			"type": "shell",
+			"group": "none"
+		},
+		{
+			"label": "gitDiff:toFile",
+			"command": "git diff --staged > gitdiff.tmp",
+			"type": "shell",
+			"group": "none"
+		}
+	],
+	"inputs": [
+		{
+			"id": "fullCommitMessage",
+			"type": "promptString",
+			"description": "Enter the full commit message as a single string"
+		}
+	]
+}

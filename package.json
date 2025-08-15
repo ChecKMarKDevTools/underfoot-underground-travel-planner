@@ -1,0 +1,50 @@
+{
+  "name": "npm-nodejs-template",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "description": "A boilerplate starter for any NodeJS project that contains all the default config rules and scaffold for a project.",
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "scaffold",
+    "starter",
+    "template"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anchildress1/npm-nodejs-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/anchildress1/npm-nodejs-template/issues"
+  },
+  "homepage": "https://github.com/anchildress1/npm-nodejs-template#readme",
+  "author": {
+    "name": "Ashley Childress",
+    "url": "https://dev.to/anchildress11"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "main": "index.js",
+  "node": "24.4.0",
+  "npm": "11.4.2",
+  "volta": {
+    "node": "24.4.0",
+    "npm": "11.4.2"
+  },
+  "engines": {
+    "node": ">=24.4.0",
+    "npm": ">=11.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commitlint": "npx commitlint",
+    "commitlint:file": "npx commitlint --help-url --verbose --edit",
+    "commitlint:last": "npx commitlint --from=HEAD~1 --to=HEAD  --help-url --verbose"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1"
+  }
+}
