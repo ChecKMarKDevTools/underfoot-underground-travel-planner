@@ -2,7 +2,7 @@
 
 > 🦄 Yes — I know... _another_ project. It can't be helped! I really do plan on finishing them all (at some point). So, since I'm already over-worked and short on time as-is. Here's my 2nd attempt at **vibe coding** with ChatGPT at the wheel and GitHub Copilot playing backup. We'll see how it goes without me going to crazy with the overbearing-OCD. 🤞
 >
-> P.S. I'll keep notes of how it goes in the [JOURNEY](./JOURNEY.md) file, because... why not?
+> P.S. I'll keep notes of how it goes in the [JOURNEY](./docs/JOURNEY.md) file, because... why not?
 
 🧭 Quirky, snarky, *absolutely-not-your-typical* travel planner for finding the coolest, least obvious spots — the ones the big travel sites forgot.
 
@@ -44,8 +44,12 @@ This is the first **Labs** repo — our hackathon playground for weird, experime
 Copy `.env.example` → `.env` and update values:
 
 ```env
-# OpenRouter API key
-OPENROUTER_API_KEY=your_api_key_here
+# Vite configs
+VITE_API_BASE=https://api.example.com
+VITE_LIMIT=100
+
+# OpenAI API key
+OPENAI_API_KEY=your_api_key_here
 
 # Default search radius in miles
 DEFAULT_RADIUS=10
@@ -69,17 +73,13 @@ npm run dev
 
 # Build for production
 npm run build
-```
 
----
+# Frontend container
+docker build -t underfoot-frontend -f frontend/Dockerfile .
 
-**4. `.env.example`**
+# Backend container
+docker build -t underfoot-backend -f backend/Dockerfile .
 
-```env
-OPENROUTER_API_KEY=your_api_key_here
-DEFAULT_RADIUS=10
-DEFAULT_DATE_EXTEND=3
-PORT=3000
 ```
 
 ---

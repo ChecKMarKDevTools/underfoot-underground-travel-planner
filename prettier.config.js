@@ -1,4 +1,6 @@
-module.exports = {
+import { defineConfig } from 'prettier';
+
+export default defineConfig({
   printWidth: 100,
   singleQuote: true,
   trailingComma: 'all',
@@ -26,5 +28,5 @@ module.exports = {
         singleQuote: true,
       },
     },
-  ],
-};
+  ]
+});

@@ -1,22 +1,42 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import cspellPlugin from '@cspell/eslint-plugin';
+import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
 import namingPlugin from 'eslint-plugin-naming';
+import cspellPlugin from '@cspell/eslint-plugin';
 
-export default [
-  {
-    // Ignore markdown and environment files; remark handles markdown and .env are non-code
-    ignores: ['**/*.md', '**/*.mmd', '**/.env*', '.gitignore', 'package.json', 'package-lock.json'],
-  },
+export default defineConfig([
+  globalIgnores(['dist', '**/*.md', '**/*.mmd', '**/.env*', '.gitignore', 'package.json', 'package-lock.json']),
+  js.configs.recommended,
   {
     languageOptions: {
-      globals: globals.node,
       ecmaVersion: 2024,
       sourceType: 'module',
     },
   },
-  pluginJs.configs.recommended,
   {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2024,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+  {
+    ignores: ['**/*.config.js'],
     plugins: {
       '@cspell': cspellPlugin,
       naming: namingPlugin,
@@ -41,4 +61,4 @@ export default [
       ],
     },
   },
-];
+]);

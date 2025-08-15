@@ -1,4 +1,6 @@
-module.exports = {
+import { defineConfig } from 'cspell';
+
+export default defineConfig({
   version: '0.2',
   language: 'en',
   dictionaryDefinitions: [
@@ -8,5 +10,5 @@ module.exports = {
     },
   ],
   dictionaries: ['project-words'],
-  ignorePaths: ['.vscode/**'],
-};
+  ignorePaths: ['.vscode/**', '**/*.config.js'],
+});

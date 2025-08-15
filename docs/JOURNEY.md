@@ -17,6 +17,13 @@ Four hours of bouncing ideas back and forth with ChatGPT.
 - Added debug view + Labs context.
 - Named it: **Underfoot Underground Travel Planner** (first Labs repo!).
 
+**Approx. 11:00 PM — 3:00 AM**
+- Built out initial folder structure.
+- Quizzed ChatGPT on implementation plan + basic research of best practices
+- Scaffolding for frontend and backend.
+- Ended the night with a clear roadmap for the next steps.
+  - Bonus: a nifty logo Leonardo generated.
+
 ---
 
 ## Day 0 — Key Decisions
