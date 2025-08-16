@@ -1,3 +1,7 @@
+# Playwright HTML report
+frontend/playwright-report/
+# Playwright test results
+frontend/test-results/
 # Created by https://www.toptal.com/developers/gitignore/api/node,dotenv,visualstudiocode,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,dotenv,visualstudiocode,macos
 

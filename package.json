@@ -51,6 +51,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@cspell/eslint-plugin": "^9.2.0",
+    "@esbuild/darwin-arm64": "^0.21.5",
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
