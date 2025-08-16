@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* color tokens (mirror of tailwind cm theme) */
+  --cm-primary: #6B33A2;
+  --cm-accent: #f054b2;
+  --cm-info: #00bbf9;
+  --cm-bg: #0e0e12;
+  --cm-panel: #16161d;
+  --cm-card: #1e1e28;
+  --cm-border: #2a2a37;
+  --cm-text: #f6f7fb;
+  --cm-sub: #b8bbd0;
+  --radius: 14px;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--cm-bg);
+  color: var(--cm-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* sensible defaults for plain elements */
+a { color: var(--cm-info); }
+button { font-family: inherit; }
+
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.00));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
+  border: 1px solid var(--cm-border);
+  border-radius: var(--radius);
+}
+
+/* From src/index.css: base typography and layout defaults */
+/* These are largely covered by Tailwind's preflight, but we'll keep them for now */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  color: var(--cm-text);
+  margin: 0 0 0.5rem 0;
+}
+
+/* Buttons */
+button {
+  background: var(--cm-card);
+  color: var(--cm-text);
+  border: 1px solid var(--cm-border);
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+button:hover {
+  background-color: #232334;
+  filter: brightness(1.1);
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form inputs fallback */
+input,
+textarea {
+  background: var(--cm-card);
+  color: var(--cm-text);
+  border: 1px solid var(--cm-border);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+/* Keep inputs dark on focus/autofill and style placeholder */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(107, 51, 162, 0.12);
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgba(246, 247, 251, 0.6);
+}
+
+/* Chrome/Safari autofill */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--cm-text) !important;
+  box-shadow: 0 0 0px 1000px var(--cm-card) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--cm-card) inset !important;
+}
+
+/* Firefox autofill */
+input:-moz-autofill,
+textarea:-moz-autofill {
+  box-shadow: 0 0 0px 1000px var(--cm-card) inset !important;
+}
+
+/* Chat bubbles fallback */
+.chat-bubble {
+  display: inline-block;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: var(--cm-card);
+  color: var(--cm-text);
+  border: 1px solid var(--cm-border);
+}
+.chat-bubble.user {
+  background: #232334;
+  margin-left: auto;
+}
+
+/* Small util */
+.muted {
+  color: var(--cm-sub);
+}
+
+/* Selection styles */
+::selection {
+  background: rgba(107, 51, 162, 0.25);
+  color: var(--cm-text);
+}
+input::selection,
+textarea::selection {
+  background: rgba(107, 51, 162, 0.25);
+  color: var(--cm-text);
+}
+
+/* Prevent input background from flashing white on selection in some browsers */
+input,
+textarea {
+  background-clip: padding-box;
+}
