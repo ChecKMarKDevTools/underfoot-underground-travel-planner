@@ -15,13 +15,13 @@ export default function Header({ onOpenDebug, onRestart }) {
           <button
             type='button'
             onClick={onRestart}
-            className='px-3 py-2 rounded-lg bg-cm-card border border-cm-border hover:bg-[#232334]'>
+            className='px-3 py-2 rounded-lg bg-cm-card border border-cm-border hover:bg-cm-card/80 transition-colors'>
             Restart
           </button>
           <button
             type='button'
             onClick={onOpenDebug}
-            className='px-3 py-2 rounded-lg bg-cm-card border border-cm-border hover:bg-[#232334]'>
+            className='px-3 py-2 rounded-lg bg-cm-card border border-cm-border hover:bg-cm-card/80 transition-colors'>
             Debug View
           </button>
         </div>
