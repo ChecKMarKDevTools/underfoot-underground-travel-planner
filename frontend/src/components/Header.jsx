@@ -1,4 +1,3 @@
-import React from 'react'
 import logo from '../assets/underfoot-logo.png'
 
 export default function Header({ onOpenDebug, onRestart }) {

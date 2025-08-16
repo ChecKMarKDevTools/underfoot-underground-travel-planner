@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function DebugSheet({ open, onClose, data }) {
   if (!open) return null
   return (

@@ -3,11 +3,22 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import namingPlugin from 'eslint-plugin-naming';
-import cspellPlugin from '@cspell/eslint-plugin';
+import react from 'eslint-plugin-react'
+import cspellPlugin from '@cspell/eslint-plugin'
 
 export default defineConfig([
-  globalIgnores(['dist', '**/*.md', '**/*.mmd', '**/.env*', '.gitignore', 'package.json', 'package-lock.json']),
+  globalIgnores([
+    '**/dist/**',
+    '**/*.md',
+    '**/*.mmd',
+    '**/.env*',
+    '.gitignore',
+    'package.json',
+    'package-lock.json',
+    'frontend/coverage/**',
+    'frontend/playwright-report/**',
+    'frontend/test-results/**',
+  ]),
   js.configs.recommended,
   {
     languageOptions: {
@@ -16,15 +27,20 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    files: ['frontend/src/**/*.{js,jsx}'],
+    extends: [reactHooks.configs['recommended-latest'], reactRefresh.configs.vite],
+    plugins: {
+      react,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     languageOptions: {
-      ecmaVersion: 2024,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -32,24 +48,21 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+      }],
+      'react/jsx-uses-react': 'off', // Not needed in React 17+
+      'react/jsx-uses-vars': 'error', // Detects JSX usage of variables
     },
   },
   {
-    ignores: ['**/*.config.js'],
-    plugins: {
-      '@cspell': cspellPlugin,
-      naming: namingPlugin,
+    files: ['frontend/src/__tests__/**/*', 'frontend/tests-e2e/**/*'],
+    languageOptions: {
+      globals: {
+        ...globals.vitest,
+        global: 'writable',
+      },
     },
-    rules: {
-      '@cspell/spellchecker': ['warn', { autoFix: true }],
-      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
-      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
-      'naming/case': ['error', 'kebab'],
-    },
-  },
-  {
-    files: ['test/**/*', '*test*'],
     rules: {
       'no-restricted-syntax': [
         'error',
@@ -61,4 +74,28 @@ export default defineConfig([
       ],
     },
   },
-]);
+  {
+    files: ['scripts/**/*'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*'],
+    rules: {
+      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+    },
+  },
+  {
+    plugins: {
+      '@cspell': cspellPlugin,
+    },
+    rules: {
+      '@cspell/spellchecker': ['warn', { autoFix: true }],
+      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
+      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+    },
+  },
+])

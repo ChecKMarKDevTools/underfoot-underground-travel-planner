@@ -45,7 +45,8 @@
     "format:prettier": "prettier --write . --log-level silent",
     "format:remark": "remark . -o --quiet",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
-    "lint": "eslint . --fix --max-warnings=0"
+    "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
+    "spellcheck": "cspell . --show-suggestions"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -59,6 +60,7 @@
     "cspell": "^9.2.0",
     "eslint": "^9.33.0",
     "eslint-plugin-naming": "^0.1.10",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",

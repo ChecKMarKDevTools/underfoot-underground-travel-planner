@@ -13,7 +13,7 @@ tools:
 
 <!-- This prompt was adapted from https://github.com/theorib/git-commit-message-ai-prompt/blob/main/prompts/conventional-commit-with-gitmoji-ai-prompt.md -->
 
-<!-- **THIS IS STILL NOT 100% WORKING AS IT SHOULD (especially with GPT 4.1) - It will probably do better with the other models (since it usually does!) and you can get workable results with GPT as-is. It's just nowehre near automated as I wanted to it to be. Also, it will work in any mode, but you'll only get 100% automation with Agent mode. Ask will simply output a commit message in the chat interface and Edit is somewhere in between. -->
+<!-- **THIS IS STILL NOT 100% WORKING AS IT SHOULD (although, it's better with GPT-5-mini) and you can get workable results with GPT as-is. It's just nowehre near automated as I wanted to it to be. Also, it will work in any mode, but you'll only get 100% automation with Agent mode. Ask will simply output a commit message in the chat interface and Edit is somewhere in between. -->
 <instructions id="generate-commit-message">
 
 # Generate Commit Message

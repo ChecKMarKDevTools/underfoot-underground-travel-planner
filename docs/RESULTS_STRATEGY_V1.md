@@ -35,7 +35,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🧪 Filtering & ranking (single cheap AI pass)
-1. **Filter:** drop blocklisted domains + low-signal snippets.
+1. **Filter:** drop blocklist domains + low-signal snippets.
 2. **Rank:** one **batch** call to OpenAI for all candidates:
    - Score by: recency (≤12mo), local enthusiasm cues, uniqueness.
    - Return **top N** for Primary, next **M** for Near(ish) By.

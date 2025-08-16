@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 const LIMIT = Number(import.meta.env.VITE_LIMIT || 5)
@@ -16,7 +16,7 @@ export default function Chat({ onDebug }) {
     threadRef.current.scrollTop = threadRef.current.scrollHeight
   }, [messages])
 
-  async function send(e) {
+  const send = async (e) => {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
@@ -32,7 +32,7 @@ export default function Chat({ onDebug }) {
       const data = await res.json()
       if (data?.reply) setMessages(m => [...m, { from: 'bot', text: data.reply }])
       if (onDebug) onDebug(data?.debug || {})
-    } catch (err) {
+    } catch {
       setMessages(m => [...m, { from: 'bot', text: 'My local informants ghosted me. Try again or broaden the area?' }])
     } finally {
       setBusy(false)

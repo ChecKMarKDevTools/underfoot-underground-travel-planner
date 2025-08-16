@@ -125,7 +125,7 @@
      - Community/venue calendar (arts center, arena, campus)
      - Indie blog/Substack (non-aggregator)
    - Normalize to `{ name, url, snippet, host, (optional) distanceMi }`
-   - Drop blocklisted hosts
+   - Drop blocklist hosts
 3) **rank_and_format**
    - (Optional if you prefer doing rank in backend) Subagent that scores + structures JSON
 4) **error_handler**

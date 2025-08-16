@@ -10,5 +10,12 @@ export default defineConfig({
     },
   ],
   dictionaries: ['project-words'],
-  ignorePaths: ['.vscode/**', '**/*.config.js'],
+  ignorePaths: [
+    '.vscode/**',
+    '**/*.config.js',
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/coverage/**',
+    '**/playwright-report/**',
+  ],
 });
