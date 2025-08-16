@@ -13,8 +13,8 @@ test('renders initial bot message and allows typing', async () => {
   expect(screen.getByText(/I’m Underfoot/i)).toBeInTheDocument();
 
   const user = userEvent.setup();
-  await user.type(screen.getByLabelText(/Message Underfoot/i), 'Pikeville, KY next week');
-  expect(screen.getByDisplayValue(/Pikeville, KY next week/i)).toBeInTheDocument();
+  await user.type(screen.getByLabelText(/Message Underfoot/i), 'Pikeville KY, outdoors');
+  expect(screen.getByDisplayValue(/Pikeville KY, outdoors/i)).toBeInTheDocument();
 });
 
 test('submits message, calls API, renders reply, and calls onDebug', async () => {

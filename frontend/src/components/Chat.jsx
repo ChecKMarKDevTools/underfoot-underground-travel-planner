@@ -61,7 +61,7 @@ export default function Chat({ onDebug }) {
         <label htmlFor='msg' className='sr-only'>Message Underfoot</label>
         <input
           id='msg'
-          placeholder='Pikeville, KY next week for 3 days, outdoors'
+          placeholder='Pikeville KY, outdoors, 15 miles'
           value={input}
           onChange={e => setInput(e.target.value)}
           disabled={busy}

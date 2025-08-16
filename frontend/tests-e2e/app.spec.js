@@ -16,7 +16,7 @@ test('chat input sends and shows user message', async ({ page }) => {
   await page.goto('/');
 
   const input = page.getByLabel('Message Underfoot');
-  await input.fill('Pikeville, KY next week for 3 days, outdoors');
+  await input.fill('Pikeville KY, outdoors, 15 miles');
   await page.getByRole('button', { name: 'Send' }).click();
 
   await expect(page.getByRole('article', { name: 'Your message' }).last()).toContainText('Pikeville, KY');

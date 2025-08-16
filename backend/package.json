@@ -3,14 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --env-file=.env --watch ./dist/index.js",
-    "build": "tsc",
-    "start": "node ./dist/index.js"
+    "dev": "node --env-file=.env --watch src/index.js",
+    "start": "node src/index.js"
   },
   "dependencies": {
-    "express": "^5.1.0",
     "cors": "^2.8.5",
-    "openai": "^5.12.2",
-    "dotenv": "^17.2.1"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "openai": "^4.58.0"
   }
 }

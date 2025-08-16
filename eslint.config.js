@@ -83,6 +83,14 @@ export default defineConfig([
     },
   },
   {
+    files: ['backend/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
     ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*'],
     rules: {
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
