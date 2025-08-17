@@ -1,4 +1,10 @@
-name: ci
+name: Build and Test — ${{ github.head_ref || github.ref_name }}
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  actions: read
 
 on:
   push:
@@ -22,17 +28,22 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Upgrade npm to match engines
         # The project requests npm >= 11.5.2; the runner's bundled npm may be older.
         run: npm i -g npm@11.5.2
 
-      - name: Install root deps
+      - name: Install frontend deps
+        working-directory: frontend
         run: npm ci --ignore-scripts --omit=optional
 
-      # Frontend is a workspace; root `npm ci` installs workspace deps from the lockfile.
-      # Avoid running a separate install inside `frontend` to keep installs deterministic
-      # and avoid duplicate work.
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci --ignore-scripts --omit=optional
+
+      - name: Install root deps
+        run: npm ci --ignore-scripts --omit=optional
 
       - name: Format
         run: npm run format
@@ -44,10 +55,21 @@ jobs:
         run: npm run spell
 
       - name: Unit tests
+        working-directory: backend
+        run: npm run test
+
+      - name: Upload backend test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-backend
+          path: backend/coverage
+
+      - name: Unit tests
         working-directory: frontend
         run: npm run test
 
-      - name: Upload unit test coverage
+      - name: Upload frontend test coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
