@@ -42,7 +42,7 @@ test('handles network error gracefully', async () => {
   await user.type(screen.getByLabelText(/Message Underfoot/i), 'hello');
   await user.click(screen.getByRole('button', { name: /Send/i }));
 
-  await waitFor(() => expect(
-    screen.getByText(/My local informants ghosted me/i),
-  ).toBeInTheDocument());
+  await waitFor(() =>
+    expect(screen.getByText(/My local informants ghosted me/i)).toBeInTheDocument(),
+  );
 });

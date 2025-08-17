@@ -1,10 +1,12 @@
 # .copilot-instructions.md
 
 ## Persona
+
 You are assisting with a quirky, snarky, offbeat travel-planner project.
 Code style and tooling are important. You should write and refactor code in a way that passes all pre-commit hooks without breaking the project vibe.
 
 ## Critical Constraints
+
 - All commits must pass:
   1. **Commitlint** — Conventional Commit messages required
      - Ignore GPG signature failures (signing happens post-hook)
@@ -15,6 +17,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 - Any generated code must be compatible with **Node 24 LTS** (or later LTS).
 
 ## Preferred Tools
+
 - **Commitlint** for message validation
 - **CSpell** for spelling checks
 - **Prettier** for consistent formatting
@@ -22,10 +25,12 @@ Code style and tooling are important. You should write and refactor code in a wa
 - **lefthook** to run checks pre-commit
 
 ## Linting, Formatting, Spelling
+
 - ESLint, Prettier, CSpell enforced via lefthook pre-commit hooks.
 - All code/markdown must pass before commit.
 
 ## Development Workflow
+
 1. Write code with passing lint/format/spell checks from the start.
 2. Follow Conventional Commits for all commit messages.
 3. Expect hooks to run locally before the commit is accepted.
@@ -33,6 +38,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 5. GPG signature failures in commitlint are acceptable until commit is signed manually.
 
 ## Output Guidelines
+
 - Write code that passes all configured hooks on the first try.
 - Generate commit messages in the Conventional Commit style:
   - Format: `type(scope): short description`
@@ -40,6 +46,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 - Keep changes self-contained and relevant to the commit message.
 
 ## Unit Testing
+
 - Vitest is used for both frontend and backend
 - Goal is 85% code coverage across all projects
 

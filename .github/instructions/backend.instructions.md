@@ -23,12 +23,15 @@ applyTo: backend/**
 ## Endpoints
 
 ### `POST /chat`
+
 **Input**
+
 ```json
 { "message": "Pikeville KY next week for 3 days, outdoors", "limit": 5, "force": false }
 ```
 
 **Process**
+
 1. 📝 **Parse** free text → `{ location, startDate, endDate, vibe }`
    - Defaults: 3 days; handle “next week” nudge; vibe keywords (outdoors|history|food|art|music|quirky|nature|hike|coffee).
 2. 📍 **Radius tiers**
@@ -49,6 +52,7 @@ applyTo: backend/**
 6. 💬 **Reply text** in Underfoot voice + **debug payload**.
 
 **Output**
+
 ```json
 {
   "reply": "string...",
@@ -69,6 +73,7 @@ applyTo: backend/**
 ```
 
 ### `GET /health`
+
 Returns `{ "ok": true }`.
 
 ---

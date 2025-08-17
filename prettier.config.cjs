@@ -1,12 +1,12 @@
-import { defineConfig } from 'prettier';
-
-export default defineConfig({
+module.exports = {
   printWidth: 100,
   singleQuote: true,
+  jsxSingleQuote: true,
   trailingComma: 'all',
   tabWidth: 2,
   proseWrap: 'preserve',
   useTabs: false,
+  semi: true,
   overrides: [
     {
       files: '**/*.json',
@@ -16,6 +16,7 @@ export default defineConfig({
         proseWrap: 'preserve',
         bracketSpacing: true,
         trailingComma: 'none',
+        singleQuote: false,
       },
     },
     {
@@ -28,5 +29,5 @@ export default defineConfig({
         singleQuote: true,
       },
     },
-  ]
-});
+  ],
+};
