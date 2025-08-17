@@ -10,15 +10,28 @@ export default {
   //   - Applicable: 'always' or 'never'
   //   - Value: can be an array of values or a number, depending on the rule
   //     - An array defining a single value may instead be input as a string for clarity
-	// See: https://commitlint.js.org/#/reference-rules for the full list
+  // See: https://commitlint.js.org/#/reference-rules for the full list
   rules: {
-
-	  // These are the default rules for the @commitlint/config-conventional plugin installed above
+    // These are the default rules for the @commitlint/config-conventional plugin installed above
     // I added them here for visibility and commented out ones I overrode below.
     // You can delete everything in this upper section and nothing will change as long as you keep the `extends` line above.
-    'type-enum': [2, 'always', [
-      'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'
-    ]],
+    'type-enum': [
+      2,
+      'always',
+      [
+        'build',
+        'chore',
+        'ci',
+        'docs',
+        'feat',
+        'fix',
+        'perf',
+        'refactor',
+        'revert',
+        'style',
+        'test',
+      ],
+    ],
     // 'type-case': [0, 'always', 'lower-case'],
     'type-empty': [2, 'never'],
     'scope-enum': [0, 'always', []],
@@ -46,15 +59,15 @@ export default {
     'header-trim': [1, 'always'], // Encourage trimming of the start and endheader line
     'type-case': [2, 'always', 'lower-case'], // Keep lower-case for type and turn rule on error
     'scope-empty': [2, 'never'], // Force scope to exist, but does not restrict values (that's a different rule)
-    'scope-case': [2, 'always', 'lower-case'],  // Enforce strict conventional commit guidelines
+    'scope-case': [2, 'always', 'lower-case'], // Enforce strict conventional commit guidelines
     'subject-case': [2, 'always', 'lower-case'], // May also be sentence-case in conventional style, but I had already started with this one
     'body-leading-blank': [2, 'always'], // Keep the blank line, but make it an error
     'body-empty': [2, 'never'], // Enforce a body section in the commit message
-    'body-max-line-length': [2, 'always', 100],  // Enforce strict conventional commit guidelines
+    'body-max-line-length': [2, 'always', 100], // Enforce strict conventional commit guidelines
     'footer-max-line-length': [2, 'always', 100], // Enforce strict conventional commit guidelines
     'signed-off-by': [2, 'always'], // Enforce a "Signed-off-by" line in the footer (optional, but use with below rule)
     'trailer-exists': [2, 'always', 'Signed-off-by'], // Enforce a value following "Signed-off-by:" line in the footer
 
     // END of custom rules
-  }
+  },
 };

@@ -17,7 +17,9 @@ test('chat shows bot reply when API returns data (mocked)', async ({ page }) => 
   await page.getByRole('button', { name: 'Send' }).click();
 
   // Bot reply appears from mocked backend (last reply)
-  await expect(page.getByRole('article', { name: 'Underfoot reply' }).last()).toContainText('Mocked secret spots');
+  await expect(page.getByRole('article', { name: 'Underfoot reply' }).last()).toContainText(
+    'Mocked secret spots',
+  );
 
   // Open debug sheet and verify debug content surfaced
   await page.getByRole('button', { name: 'Debug View' }).click();

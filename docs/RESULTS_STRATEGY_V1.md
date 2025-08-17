@@ -5,6 +5,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🎯 Output policy (what the UI shows)
+
 - **Primary picks:** 3–5 items within the **core area** (city + auto-broaden to 10–20mi).
 - **Near(ish) By:** 1–2 items outside the core (up to **40mi** max), clearly labeled.
 - **Hard floor:** If core yields <3, we **promote** 1–2 Near(ish) By items to Primary with a tiny “(≈X mi)” note.
@@ -14,6 +15,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🧭 Radius tiers (server-side, cheap & predictable)
+
 - **Tier A (Core):** start at `DEFAULT_RADIUS_MILES` (10 by default).
 - **Tier B (Stretch):** if core `<3`, bump to 20 miles and retry **sources only** (no extra AI calls yet).
 - **Tier C (Near(ish) By):** if still `<3`, run a separate fetch pass at up to **40mi** and label those as “Near(ish) By”.
@@ -23,6 +25,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🧰 Source & cap strategy (so we don’t under/over-fetch)
+
 - **Per source cap**: **up to 6 candidates per source** _before_ filtering (small, cheap).
 - **Source mix** (parallelized by type, not by variants):
   - 1× local social/forum (e.g., subreddit)
@@ -35,6 +38,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🧪 Filtering & ranking (single cheap AI pass)
+
 1. **Filter:** drop blocklist domains + low-signal snippets.
 2. **Rank:** one **batch** call to OpenAI for all candidates:
    - Score by: recency (≤12mo), local enthusiasm cues, uniqueness.
@@ -43,7 +47,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
    ```json
    {
      "primary": [{ "name": "", "blurb": "", "distanceMi": 0, "sources": [] }],
-     "nearby":  [{ "name": "", "blurb": "", "distanceMi": 0, "sources": [] }],
+     "nearby": [{ "name": "", "blurb": "", "distanceMi": 0, "sources": [] }],
      "meta": { "location": "", "radiusCore": 10, "radiusMax": 40, "executionTimeMs": 0 }
    }
    ```
@@ -51,6 +55,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🖥️ UI copy (makes “nearby” feel deliberate)
+
 - Section titles:
   - **Top Picks (in town)**
   - **Near(ish) By (worth the detour)**
@@ -59,6 +64,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## ⚠️ Error handling & backoff (kept, but lean)
+
 - **Retries:** 3 attempts with **exponential backoff** (2s/4s/8s) on 5xx/429 for source pulls.
 - **Degrade gracefully:** If still <3 after Tier C, return whatever we have with a friendly “want me to widen the area?” button.
 - **No multi-agent bloat:** still one ranker, one orchestrator.
@@ -66,6 +72,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 💸 Cost control
+
 - **One AI rank call per user request** (no per-item calls).
 - **Short model**: use a compact model (e.g., `gpt-4o-mini`) at `temperature=0.3`.
 - **Cache window:** dev 60s; prod **12–24h** per `{location, dateRange, radiusBucket, vibe}`.
@@ -75,6 +82,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🧩 Debug view additions
+
 - Show: `radiusCore`, `radiusUsed`, counts per tier (`coreCount`, `stretchCount`, `nearbyCount`).
 - Show: which tier contributed each final item.
 - Show: retry counts + any backoff timings.
@@ -82,6 +90,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## ✅ Quick acceptance tests
+
 - **Typical small city:** ≥4 items with at least 1 in Near(ish) By.
 - **Sparse case:** core <3, stretch finds ≥1, nearby fills to **≥4** total.
 - **Blocklist hit:** a mainstream suggestion never appears.
@@ -91,6 +100,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ## 🔧 Minimal env flags (flat repo)
+
 - `DEFAULT_RADIUS_MILES=10`
 - `MAX_RADIUS_MILES=40`
 - `CACHE_TTL_SECONDS=86400` (prod)
@@ -99,7 +109,9 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 ---
 
 ### Bottom line
+
 We’ll reliably land **4–6** without chasing infinity:
+
 - Start modest, **broaden area**, not dates.
 - Keep one rank call, batch it.
 - Use a **Near(ish) By** section to make the “more than three” promise true, readable, and cheap.

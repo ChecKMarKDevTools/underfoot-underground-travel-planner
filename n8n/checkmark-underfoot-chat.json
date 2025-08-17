@@ -1,0 +1,41 @@
+{
+  "name": "Underfoot Chat Orchestrator (Local Stub)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "underfoot",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "Webhook1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = items[0]?.json || {};\nconst radius = Number(body.radiusMiles || 10);\n\n// Demo pool — replace later with real fetchers\nconst pool = [\n  { name: 'Hidden Trail Overlook', blurb: 'Sunrise ridge locals love.', url: 'https://localblog.example/overlook', host: 'localblog.example', distanceMi: 6 },\n  { name: 'Basement Bluegrass Night', blurb: 'Thursday pickers\\u2019 circle.', url: 'https://indiecalendar.example/bluegrass', host: 'indiecalendar.example', distanceMi: 2 },\n  { name: 'Pop-up Hand Pie Window', blurb: 'Rotating flavors by the river.', url: 'https://substack.example/pies', host: 'substack.example', distanceMi: 12 },\n  { name: 'Art Alley Micro-Gallery', blurb: 'Unmarked door, student shows.', url: 'https://campus.example/art', host: 'campus.example', distanceMi: 17 },\n  { name: 'Coal Camp History Walk', blurb: 'Occasional docent strolls.', url: 'https://historyclub.example/walk', host: 'historyclub.example', distanceMi: 28 },\n  { name: 'Creekside Night Market', blurb: 'DIY crafts and late bites.', url: 'https://indiecommunity.example/market', host: 'indiecommunity.example', distanceMi: 33 },\n  { name: 'Old Rail Tunnel Echoes', blurb: 'Acoustic geek spot.', url: 'https://railnerds.example/echo', host: 'railnerds.example', distanceMi: 41 }\n];\n\n// Basic blocklist (server will also enforce)\nconst blocked = ['tripadvisor', 'yelp', 'foursquare', 'facebook.com', 'instagram.com'];\nconst filtered = pool.filter(x => x.distanceMi <= radius && !blocked.some(b => x.url.includes(b)));\n\nreturn [{ json: {\n  ok: true,\n  items: filtered,\n  meta: {\n    received: {\n      location: body.location || 'Pikeville, KY',\n      startDate: body.startDate || null,\n      endDate: body.endDate || null,\n      vibe: body.vibe || '',\n      radiusMiles: radius\n    },\n    source: 'n8n-local-stub',\n    count: filtered.length\n  }\n}}];"
+      },
+      "id": "Func1",
+      "name": "Prepare Candidates (Stub)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Candidates (Stub)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -13,9 +13,11 @@ This folder contains the single-page React frontend built with Vite and Tailwind
 ## How to run (dev)
 
 From the repository root, run:
+
 ```bash
 npm run dev
 ```
+
 This will start the frontend development server.
 
 ## Notes for contributors

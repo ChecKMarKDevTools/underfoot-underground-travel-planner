@@ -4,7 +4,7 @@
 
 :root {
   /* color tokens (mirror of tailwind cm theme) */
-  --cm-primary: #6B33A2;
+  --cm-primary: #6b33a2;
   --cm-accent: #f054b2;
   --cm-info: #00bbf9;
   --cm-bg: #0e0e12;
@@ -16,7 +16,9 @@
   --radius: 14px;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
@@ -24,18 +26,29 @@ body {
   margin: 0;
   background: var(--cm-bg);
   color: var(--cm-text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* sensible defaults for plain elements */
-a { color: var(--cm-info); }
-button { font-family: inherit; }
+a {
+  color: var(--cm-info);
+}
+button {
+  font-family: inherit;
+}
 
 .glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.00));
-  box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
   border: 1px solid var(--cm-border);
   border-radius: var(--radius);
 }
@@ -53,7 +66,9 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--cm-text);
   margin: 0 0 0.5rem 0;
 }
@@ -66,7 +81,9 @@ button {
   padding: 0.5rem 0.75rem;
   border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    filter 0.2s ease-in-out;
 }
 button:hover {
   background-color: #232334;

@@ -1,6 +1,5 @@
 ---
-description: |
-  Generate a conventional commit message based on staged changes and conventional commit requirements.
+description: 'Generate a conventional commit message based on staged changes and conventional commit requirements.'
 tools:
   - gitDiff:toFile
   - editFiles
@@ -8,12 +7,12 @@ tools:
   - commitlint:file
   - commitlint:validate
   - runCommands
-
 ---
 
 <!-- This prompt was adapted from https://github.com/theorib/git-commit-message-ai-prompt/blob/main/prompts/conventional-commit-with-gitmoji-ai-prompt.md -->
 
 <!-- **THIS IS STILL NOT 100% WORKING AS IT SHOULD (although, it's better with GPT-5-mini) and you can get workable results with GPT as-is. It's just nowehre near automated as I wanted to it to be. Also, it will work in any mode, but you'll only get 100% automation with Agent mode. Ask will simply output a commit message in the chat interface and Edit is somewhere in between. -->
+
 <instructions id="generate-commit-message">
 
 # Generate Commit Message
@@ -29,7 +28,8 @@ You are a specialized git commit message generator given a task to generate a pe
 3. Use imperative mood, no capitalization, no period at end
 4. Properly identify the user from either a given prompt or the user-defined instructions file (NEVER guess)
 5. You must be able to determine if and how AI contributed to the staged changes and commit message - DO NOT GUESS, but you may prompt the user for missing information
-  - As the expert generating this message, you should assume at least a footer of `Commit-generated-by: AI Tool Name <ai.tool@email.com>`
+
+- As the expert generating this message, you should assume at least a footer of `Commit-generated-by: AI Tool Name <ai.tool@email.com>`
 
 </role>
 <constraints class="critical" id="primary">
@@ -51,24 +51,24 @@ You are a specialized git commit message generator given a task to generate a pe
 - **VALIDATION**:
   - The commit message MUST pass validation using any available `commitlint` tool and results output to the chat interface.commands
   - YOU MUST NOT output a commit message that does not pass validation.
-  - YOU MUST continue to iterate through the errors returned by `commitlint` and adjust the commit message accordingly.
-</constraints>
-<tools>
-<summary>
+  - YOU MUST continue to iterate through the errors returned by `commitlint` and adjust the commit message accordingly until the only error that remains is a missing signed-off-by footer. The user will commit and fix that one. </constraints> <tools>
+  <summary>
 
 ## Access to Tools
 
 You have access to the following tools to assist you in generating the commit message:
-| Tool Name | Description |
-|-----------|-------------|
-| `gitDiff:toFile` | Generate a diff report of the staged changes located at `./gitdiff.tmp` |
-| `editFiles` | **Replace** the contents of an existing `./commit-message.tmp` file OR **create** the `./commit-message.tmp` file if it does not exist |
-| `search` | Locate any missing or misconfigured files in the workspace |
-| `commitlint:file` | Validate the commit message in the `./commit-message.tmp` file |
-| `commitlint:validate` | Validate the commit message using the full commit message string |
-| `runCommands` | Execute shell commands to run git commands or other scripts |
+
+| Tool Name             | Description                                                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `gitDiff:toFile`      | Generate a diff report of the staged changes located at `./gitdiff.tmp`                                                                |
+| `editFiles`           | **Replace** the contents of an existing `./commit-message.tmp` file OR **create** the `./commit-message.tmp` file if it does not exist |
+| `search`              | Locate any missing or misconfigured files in the workspace                                                                             |
+| `commitlint:file`     | Validate the commit message in the `./commit-message.tmp` file                                                                         |
+| `commitlint:validate` | Validate the commit message using the full commit message string                                                                       |
+| `runCommands`         | Execute shell commands to run git commands or other scripts                                                                            |
 
 > The `runCommands` tool is a backup method used in this prompt. It may be used instead of any tool that is not available. However, you should always prefer using the specific tools designed for the task at hand, such as `gitDiff:toFile` for generating diffs or `commitlint:file` for validating commit messages.
+
 </summary>
 <backup>
 
@@ -76,15 +76,15 @@ You have access to the following tools to assist you in generating the commit me
 
 If any tools are unavailable, you MUST use the `runCommands` tool to execute the necessary shell commands to generate the diff report and validate the commit message. This is a backup method to ensure you can still complete the task even if some tools are not available.
 
-| Tool Name | Equivalent Command |
-|-----------|---------------------|
-| `gitDiff:toFile` | `git diff --cached > ./gitdiff.tmp` |
-| `gitDiff:toFile` (wiki) | `cd wiki && git diff --cached > ../gitdiff.tmp && cd ..` |
-| `editFiles` | `cat ./commit-message.tmp`, `cat ./gitdiff.tmp`, `echo <commit message string> > ./commit-message.tmp` |
-| `search` | `grep <search terms> <files>` |
-| `commitlint:file` | `npm run commitlint:file -- ./commit-message.tmp` |
-| `commitlint:validate` | `npm run commitlint -- <commit message string>` |
-| `runCommands` | Execute shell commands to run git commands or other scripts |
+| Tool Name               | Equivalent Command                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| `gitDiff:toFile`        | `git diff --cached > ./gitdiff.tmp`                                                                    |
+| `gitDiff:toFile` (wiki) | `cd wiki && git diff --cached > ../gitdiff.tmp && cd ..`                                               |
+| `editFiles`             | `cat ./commit-message.tmp`, `cat ./gitdiff.tmp`, `echo <commit message string> > ./commit-message.tmp` |
+| `search`                | `grep <search terms> <files>`                                                                          |
+| `commitlint:file`       | `npm run commitlint:file -- ./commit-message.tmp`                                                      |
+| `commitlint:validate`   | `npm run commitlint -- <commit message string>`                                                        |
+| `runCommands`           | Execute shell commands to run git commands or other scripts                                            |
 
 </backup>
 </tools>
@@ -98,11 +98,12 @@ If any tools are unavailable, you MUST use the `runCommands` tool to execute the
 2. **Analyze Staged Changes**: Review the `gitdiff.tmp` file (and any other relevant context available to you) to identify key changes and contributions.
 3. **Generate Commit Message**: Based on the analysis, generate a commit message that adheres to the Conventional Commits specification in the `commit-message.tmp` file.
 4. **Format Commit Message**: Ensure the commit message follows the required format
-5. **Validate Commit Message**: Before finalizing, validate the commit message using the `commitlint:file` or `commitlint:validate` tools
-</high-level-steps>
-<analysis-rules>
+5. **Validate Commit Message**: Before finalizing, validate the commit message using the `commitlint:file` or `commitlint:validate` tools to make sure the signed-off-by footer still fails
+
+</high-level-steps> <analysis-rules>
 
 ## Analysis Rules
+
 <methodology>
 
 ### Analysis Methodology Overview
@@ -110,9 +111,7 @@ If any tools are unavailable, you MUST use the `runCommands` tool to execute the
 - Use the `gitDiff:toFile` tool to generate a diff report of the staged changes located in the `gitdiff.tmp` file at the root of this project.
 - Use all available context from the chat history, user instructions, or any other relevant sources
 - When in doubt, you MUST ask the user for clarification
-- DO NOT make assumptions about the changes or the user's intent
-</methodology>
-<diff-report>
+- DO NOT make assumptions about the changes or the user's intent </methodology> <diff-report>
 
 ### Get Staged Changes
 
@@ -122,17 +121,14 @@ If any tools are unavailable, you MUST use the `runCommands` tool to execute the
 4. Determine the files that have been modified, added, or deleted and use this information to inform the commit message
 5. Analyze the changes to determine the type of commit (e.g., feat, fix, chore, docs, style, refactor, perf, test)
 6. Identify the scope of the changes if applicable (e.g., api, ui, config)
-7. Determine if the commit contains a breaking change
-</diff-report>
-<new-file-detection>
+7. Determine if the commit contains a breaking change </diff-report> <new-file-detection>
 
 ### New File Detection
 
 - When a new file is added, the commit message should reflect the addition overall and not only recent changes.
 - It is important to consider the context of the new file and its purpose in the project.
 - In the diff report, new files will be indicated with a `new file mode` line.
-- The commit message should indicate a new addition using active language like: `add`, `create`, `introduce`, `enable`, `document`, `provide`, `configure` etc.
-<example id="new-file-detection-1">
+- The commit message should indicate a new addition using active language like: `add`, `create`, `introduce`, `enable`, `document`, `provide`, `configure` etc. <example id="new-file-detection-1">
 
 #### New File Diff Example
 
@@ -143,6 +139,7 @@ index 0000000..4efd2f5
 --- /dev/null
 +++ b/commitlint.config.mjs
 ```
+
 </example>
 </new-file-detection>
 <modified-file-detection>
@@ -151,8 +148,7 @@ index 0000000..4efd2f5
 
 - When a file is modified, it is important to consider only the modified lines and the context of the changes.
 - In the diff report, modified files will not include a specific changed line, but will show a list using `-` and `+` to indicate removed and added lines respectively.
-- The commit message should indicate a modification using active language like: `update`, `fix`, `refactor`, `improve`, `enhance`, `optimize`, `clarify`, etc.
-<example id="modified-file-detection-1">
+- The commit message should indicate a modification using active language like: `update`, `fix`, `refactor`, `improve`, `enhance`, `optimize`, `clarify`, etc. <example id="modified-file-detection-1">
 
 #### Modified File Diff Example
 
@@ -167,6 +163,7 @@ index 4efd2f5..a1b2c3d 100644
 + A brief description of the project.
 + Updated to include new features and improvements.
 ```
+
 </example>
 </modified-file-detection>
 <deleted-file-detection>
@@ -175,8 +172,7 @@ index 4efd2f5..a1b2c3d 100644
 
 - When a file is deleted, it is important to consider the context of the deletion and its impact on the project.
 - In the diff report, deleted files will be indicated with a `deleted` line.
-- The commit message should indicate a deletion using active language like: `remove`, `delete`, `deprecate`, `eliminate`, `discard`, etc.
-<example id="deleted-file-detection-1">
+- The commit message should indicate a deletion using active language like: `remove`, `delete`, `deprecate`, `eliminate`, `discard`, etc. <example id="deleted-file-detection-1">
 
 #### Deleted File Diff Example
 
@@ -189,6 +185,7 @@ index 4efd2f5..0000000
 @@ -1,3 +0,0 @@
 - This file is used to store old data.
 ```
+
 </example>
 </deleted-file-detection>
 <breaking-change-detection>
@@ -200,8 +197,7 @@ index 4efd2f5..0000000
   - The footer must include `BREAKING CHANGE: <description>` as the FIRST line.
 - A breaking change is a change that introduces incompatibility with previous versions of the code.
 - In the diff report, breaking changes may not be explicitly indicated, so you must analyze the changes to determine if they introduce a breaking change.
-- If it is unclear, you must ask the user for clarification.
-<example id="breaking-change-detection-1">
+- If it is unclear, you must ask the user for clarification. <example id="breaking-change-detection-1">
 
 #### Breaking Change Example Indicators
 
@@ -213,13 +209,10 @@ Common indicators of breaking changes include:
 - Add permissions that require users to complete reauthorization
 - Update of a default value that changes the behavior of the code
 - Require new steps after an upgrade or migration
-- Modify end-user workflows or processes
-</example>
-</breaking-change-detection>
-</analysis-rules>
-<commit-message-rules>
+- Modify end-user workflows or processes </example> </breaking-change-detection> </analysis-rules> <commit-message-rules>
 
 ## Commit Message Rules
+
 <subject-line-rules>
 
 ### Subject Line Rules
@@ -229,9 +222,7 @@ Common indicators of breaking changes include:
 3. No period at end
 4. Maximum 72 characters total
 5. Format: `<type>(<scope>): <description>`
-6. If the commit contains a breaking change, use `!` after the type, e.g., `feat!(api): change contract to v2`
-</subject-line-rules>
-<body-rules>
+6. If the commit contains a breaking change, use `!` after the type, e.g., `feat!(api): change contract to v2` </subject-line-rules> <body-rules>
 
 ### Body Rules
 
@@ -241,9 +232,7 @@ Common indicators of breaking changes include:
 4. Explain what is changed - only include why if it's crystal clear from the code/context
 5. NEVER make up or assume reasons that aren't explicitly evident
 6. Be objective and concise
-7. Use line breaks for long bullet points
-</body-rules>
-<footer-rules>
+7. Use line breaks for long bullet points </body-rules> <footer-rules>
 
 ### Footer Rules
 
@@ -254,39 +243,36 @@ Common indicators of breaking changes include:
 5. Always include a signed-off-by footer: `Signed-off-by: UserFirst UserLast <user@email.com>`
 6. If AI contributed, the following footers may be included: `Reviewed-by`, `Commit-generated-by`, `Generated-by`, `Co-authored-by`
 7. The appropriate footers for AI are as follows:
-  - GitHub Copilot: `GitHub Copilot <github.copilot@github.com>`
-  - Codex: `Codex <codex@openai.com>`
-  - Gemini: `Gemini <gemini@google.com>`
-  - Claude Code: `Claude Code <claude.code@anthropic.com>`
-</footer-rules>
-</commit-message-rules>
-<output-rules>
-<requirements>
+
+- GitHub Copilot: `GitHub Copilot <github.copilot@github.com>`
+- Codex: `Codex <codex@openai.com>`
+- Gemini: `Gemini <gemini@google.com>`
+- Claude Code: `Claude Code <claude.code@anthropic.com>` </footer-rules> </commit-message-rules> <output-rules> <requirements>
 
 ## Output Requirements
 
 There are two completely separate output variables expected from this prompt:
 
 1. **commitMessage**: The commit message string that adheres to the Conventional Commits specification.
-  This has 2 individual components:
- - The commit message itself, formatted as a string and output in the `commit-message.tmp` file in the current working directory.
- - The commit message itself, output in a copy-paste block in the chat interface.
+   This has 2 individual components:
+
+- The commit message itself, formatted as a string and output in the `commit-message.tmp` file in the current working directory.
+- The commit message itself, output in a copy-paste block in the chat interface.
+
 2. **commitlintReport**: The results of the commitlint validation, including any errors or warnings.
-  - This MAY ONLY be output in the chat interface and MUST NOT be included in the `commitMessage` output.
-</requirements>
-<commit-message>
-<overview>
+
+- This MAY ONLY be output in the chat interface and MUST NOT be included in the `commitMessage` output. </requirements> <commit-message> <overview>
 
 ### Commit Message
 
 There are 2 primary output formats for the commit message:
 
 1. **File**: The commit message will be output as a file named `commit-message.tmp` in the current working directory.
-  - Use the `editFiles` tool to replace the contents of an existing `./commit-message.tmp` file OR create the `./commit-message.tmp` file if it does not exist.
-  - **NEVER** combine content from a previous `commit-message.tmp` file with a new commit message. Always start fresh.
-2. **Copy-Paste Block**: The commit message will be output as a copy-paste block in the chat interface for easy insertion into terminal commands.
-</overview>
-<example id="commit-message-output-1">
+
+- Use the `editFiles` tool to replace the contents of an existing `./commit-message.tmp` file OR create the `./commit-message.tmp` file if it does not exist.
+- **NEVER** combine content from a previous `commit-message.tmp` file with a new commit message. Always start fresh.
+
+2. **Copy-Paste Block**: The commit message will be output as a copy-paste block in the chat interface for easy insertion into terminal commands. </overview> <example id="commit-message-output-1">
 
 #### Example Commit Message Format
 
@@ -300,24 +286,21 @@ feat(config): add support for environment variables
 Signed-off-by: Ashley Childress <6563688+anchildress1@users.noreply.github.com>
 Co-authored-by: GitHub Copilot <github.copilot@github.com>
 ```
+
 </example>
 <validation-rules class="critical">
 
 #### Required **CRITICAL** Commit Message Validation Rules
 
 1. Ensure the commit message follows the Conventional Commits specification exactly before outputting any message to the user.
-2. The commit message MUST be output successfully in the `commit-message.tmp` file in the current working directory. See [alternative validation methods](#alternative-validation-methods).
+2. The commit message MUST be output successfully in the `commit-message.tmp` file in the current working directory with only a single error in the signed-off-by footer remaining.
 3. Validate the commit message using the `commitlint:file` tool to ensure it adheres to the rules and constraints specified in this prompt. This will lint the `commit-message.tmp` file and output any validation errors.
    - If the `commitlint:file` tool is not available, you MUST use the alternative `commitlint:validate` tool to validate the commit message string directly.
 4. If the commit message does not pass validation, you MUST iterate through the errors returned by `commitlint:file` and adjust the commit message accordingly.
 5. You MUST NOT output a commit message that does not pass validation.
 6. You WILL repeat the validation process until the commit message passes all checks.
 7. If needed, you may return to a previous step to adjust the commit message based on the validation errors.
-8. Only after the commit message successfully passes validation, you will output the final commit message in a copy-paste block format.
-</validation-rules>
-</commit-message>
-<commit-validation>
-<pre-validation-checklist>
+8. Only after the commit message only fails the single check for signed-off-by, you will output the final commit message in a copy-paste block format. </validation-rules> </commit-message> <commit-validation> <pre-validation-checklist>
 
 #### Pre-Validation Checklist for Commit Message
 
@@ -332,11 +315,9 @@ Before validating with `commitlint`, self-check to verify:
 - [ ] Appropriate scope if multiple files changed
 - [ ] Always includes "why" if explicitly clear from diff or chat context
 - [ ] Never ASSUME or GUESS "why" if not explicitly clear, simply include "what" changed in the body
-- [ ] Included message in appropriate backticks for easy copy-pasting, e.g., `\`\`\`markdown\n<full-commit-message>\n\`\`\``
+- [ ] Included message in appropriate backticks for easy copy-pasting, e.g.,
 - [ ] If breaking change, a `!` follows the type and `BREAKING CHANGE:` is first line in footer
-- [ ] Signed-off-by footer included
-</pre-validation-checklist>
-<validation-report>
+- [ ] Signed-off-by footer included </pre-validation-checklist> <validation-report>
 
 ### Commitlint Report
 
@@ -354,6 +335,7 @@ You **MUST** use either `commiitlint:file` or `commitlint:validate` to validate 
 - **Status**: Valid ✅
 - **Validation Errors**: None
 ```
+
 </example>
 <example id="commitlint-report-2">
 **FAILING EXAMPLE:**
@@ -367,6 +349,7 @@ You **MUST** use either `commiitlint:file` or `commitlint:validate` to validate 
   - `header` must not be longer than 72 characters, current length is 89 [header-max-length]
   - `body` must be present
 ```
+
 </example>
 <validation-rule class="critical">
 
@@ -374,10 +357,4 @@ You **MUST** use either `commiitlint:file` or `commitlint:validate` to validate 
 
 If the commit message does not pass validation, you are **REQUIRED** to iterate through the errors returned by `commitlint` and adjust the commit message accordingly. You will repeat the validation process until the commit message passes all checks.
 
-Always use the output from the `commitlint` tool to inform your adjustments. If the commit message does not pass validation, you **MUST NOT** output a commit message that does not pass validation.
-</validation-rule>
-</validation-report>
-</commit-validation>
-</commit-message-output>
-</output-rules>
-</instructions>
+Always use the output from the `commitlint` tool to inform your adjustments. If the commit message does not pass validation, you **MUST NOT** output a commit message that does not pass validation. </validation-rule> </validation-report> </commit-validation> </commit-message-output> </output-rules> </instructions>

@@ -15,6 +15,7 @@
 ```
 
 **Scripts (root):**
+
 - `dev` → run backend + frontend
 - `build` → build backend + frontend
 - `start` → start backend
@@ -26,11 +27,12 @@
 
 ---
 
-## 1) Frontend (Vite + React + TS) — Chatbot UI
+## 1. Frontend (Vite + React + TS) — Chatbot UI
 
 **Path:** `/labs/underfoot` (no homepage changes)
 
 **Key screens/components**
+
 - **Header:** “🥾 Underfoot” + buttons: **Restart** / **Debug View**
 - **Chat thread:**
   - Bubbles for user/bot (screen-reader roles + live region)
@@ -44,32 +46,36 @@
   - truncated raw n8n JSON
 
 **APIs called**
+
 - `POST /chat` — main entry; send free-text message; receive bot reply + debug payload
 - (Optional later) `GET /health` — backend liveness for UI banner
 
 **Accessibility defaults**
+
 - `aria-live="polite"` on chat log
 - Focus moves to newest bot message
 - High contrast palette; all actionable elements keyboard-navigable
 
 **Branding**
+
 - Rounded-square app icon; tech-geometric footprint motif (eventual SVG)
 - Colors: your CheckMarK purples/pinks/blues (already in style)
 
 ---
 
-## 2) Backend (Express) — Orchestrator & AI Stylist
+## 2. Backend (Express) — Orchestrator & AI Stylist
 
 **Endpoints**
+
 - `POST /chat`
   - Input: `{ message: string }`
   - Flow:
-    1) **Parse** free text → `location`, `startDate`, `endDate`, optional `vibe`
-    2) **Radius tiers:** A=10mi (core) → if `<3`, B=20mi (stretch) → if still `<3`, C=40mi (nearby)
-    3) **Fetch** via **n8n** (per tier) → raw candidates
-    4) **Filter & dedupe** (blocklist mainstream domains)
-    5) **Rank + format** via **OpenAI** (single batch call) → allocate to `primary` (in-town) vs `nearby`
-    6) **Build reply** in Underfoot voice + **debug** object for UI
+    1. **Parse** free text → `location`, `startDate`, `endDate`, optional `vibe`
+    2. **Radius tiers:** A=10mi (core) → if `<3`, B=20mi (stretch) → if still `<3`, C=40mi (nearby)
+    3. **Fetch** via **n8n** (per tier) → raw candidates
+    4. **Filter & dedupe** (blocklist mainstream domains)
+    5. **Rank + format** via **OpenAI** (single batch call) → allocate to `primary` (in-town) vs `nearby`
+    6. **Build reply** in Underfoot voice + **debug** object for UI
   - Output:
     ```json
     {
@@ -91,16 +97,19 @@
 - `GET /health` → `{ ok: true }`
 
 **Ranking model**
+
 - **OpenAI** `gpt-4o-mini` (fast, cheap)
 - `temperature: 0.3`, JSON-like disciplined output (but final reply is natural text)
 - One **batch** call per request (no per-item calls)
 
 **Caching**
+
 - **Backend-local cache** keyed by `{location, startDate, endDate, vibe, radiusBucket}`
   - Dev: 60s; Prod: 12–24h (`CACHE_TTL_SECONDS`)
   - `force=true` query flag (UI debug toggle) bypasses cache
 
 **Error handling & backoff**
+
 - Retries: max 3; **exponential backoff** on 5xx/429 (2s → 4s → 8s) for n8n/source pulls
 - Graceful degradation:
   - If still `<3` after Tier C → return whatever we have + suggest “Broaden area?” button
@@ -108,60 +117,61 @@
 - Logging: `runId`, timings per step, retry counts
 
 **Security**
+
 - No secrets in the client; **OPENAI_API_KEY** only on server
 - Input sanitation; strict domain blocklist enforced server-side
 - (Optional, later) simple rate-limit to avoid abuse
 
 ---
 
-## 3) n8n Workflows — Data Layer
+## 3. n8n Workflows — Data Layer
 
 **Workflows (JSON exported to `/n8n`)**
-1) **underfoot_orchestrator** *(called via backend; or keep backend calling source flows directly)*
+
+1. **underfoot_orchestrator** _(called via backend; or keep backend calling source flows directly)_
    - Validates inputs; delegates to `fetch_sources_*`; merges results; returns raw candidates
-2) **fetch_sources_local**
+2. **fetch_sources_local**
    - **Parallel by type** (cap 6 per source):
      - Local social/forum (e.g., subreddit / regional)
      - Community/venue calendar (arts center, arena, campus)
      - Indie blog/Substack (non-aggregator)
    - Normalize to `{ name, url, snippet, host, (optional) distanceMi }`
    - Drop blocklist hosts
-3) **rank_and_format**
+3. **rank_and_format**
    - (Optional if you prefer doing rank in backend) Subagent that scores + structures JSON
-4) **error_handler**
+4. **error_handler**
    - **Error Trigger** → Slack/Email notify (workflow, node, message)
    - Include link to failed execution
 
 **Reliability aids**
+
 - Node “Retry on Fail”: 3; plus custom backoff for 429/5xx
 - **Stop & Error** when candidates `<1` after filters → error workflow + clear return
 - **Static data** cache (optional): last successful raw fetch for same query (short TTL)
 
 ---
 
-## 4) Results Strategy — “More Than Three, Not a Buffet”
+## 4. Results Strategy — “More Than Three, Not a Buffet”
 
 **UI sections**
+
 - **Top Picks (in town):** 3–5 within core radius
 - **Near(ish) By (worth the detour):** 1–2 from up to 40mi
 - Promotion rule: If core `<3`, promote top Nearby into Top Picks with a `(≈X mi)` suffix
 
 **Schema (backend → UI)**
+
 ```json
 {
-  "primary": [
-    { "name": "", "blurb": "", "distanceMi": 0, "sources": [] }
-  ],
-  "nearby": [
-    { "name": "", "blurb": "", "distanceMi": 0, "sources": [] }
-  ],
+  "primary": [{ "name": "", "blurb": "", "distanceMi": 0, "sources": [] }],
+  "nearby": [{ "name": "", "blurb": "", "distanceMi": 0, "sources": [] }],
   "meta": { "location": "", "radiusCore": 10, "radiusMax": 40, "executionTimeMs": 0 }
 }
 ```
 
 ---
 
-## 5) Environment Variables (backend-only)
+## 5. Environment Variables (backend-only)
 
 ```
 # Backend
@@ -178,22 +188,25 @@ PORT=3000
 
 ---
 
-## 6) Deployment (simple and safe)
+## 6. Deployment (simple and safe)
 
 **Frontend**
+
 - `npm run build` → upload `/frontend/dist` to your site under `/labs/underfoot/`
   (Cloudflare Pages or your existing host; no homepage overwrite)
 
 **Backend**
+
 - Containerize (Node 24 alpine) or run on your VM; expose `:3000`
 - If needed, put behind Cloudflare Tunnel or reverse proxy under `api.checkmarkdevtools.dev`
 
 **n8n**
+
 - Your host (VM or Docker); secure with basic auth; expose a stable webhook (`N8N_WEBHOOK_URL`)
 
 ---
 
-## 7) Acceptance Criteria (Definition of Done)
+## 7. Acceptance Criteria (Definition of Done)
 
 - **UX**
   - Chatbot replies with **4–6 items** total for Pikeville test case
@@ -218,7 +231,7 @@ PORT=3000
 
 ---
 
-## 8) Cost & Performance Guards
+## 8. Cost & Performance Guards
 
 - **One** OpenAI batch call per request
 - Cap **6 candidates per source** pre-filter
@@ -227,7 +240,7 @@ PORT=3000
 
 ---
 
-## 9) Milestones (fast path)
+## 9. Milestones (fast path)
 
 - [ ] **Scaffold** frontend chat + backend `/chat` with demo data → UI “feels alive”
 - [ ] **n8n fetch_sources** wired + blocklist filter → real raw candidates
