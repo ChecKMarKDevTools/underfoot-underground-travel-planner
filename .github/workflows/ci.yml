@@ -28,7 +28,7 @@ jobs:
         run: npm i -g npm@11.5.2
 
       - name: Install root deps
-        run: npm ci --ignore-scripts --no-optional
+        run: npm ci --ignore-scripts --omit=optional
 
       # Frontend is a workspace; root `npm ci` installs workspace deps from the lockfile.
       # Avoid running a separate install inside `frontend` to keep installs deterministic

@@ -36,7 +36,7 @@
     "format:remark": "node -e \"console.log('remark disabled: skipping markdown formatting')\"",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
     "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
-    "spellcheck": "cspell . --show-suggestions"
+    "spellcheck": "cspell . --show-suggestions --verbose"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
