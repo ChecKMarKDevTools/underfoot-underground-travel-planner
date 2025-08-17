@@ -9,6 +9,9 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    env:
+      # Prevent installation of platform-specific optional deps (e.g. rollup-darwin-*)
+      NPM_CONFIG_OPTIONAL: 'false'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,23 +23,27 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+      - name: Upgrade npm to match engines
+        # The project requests npm >= 11.5.2; the runner's bundled npm may be older.
+        run: npm i -g npm@11.5.2
+
       - name: Install root deps
-        run: npm ci --ignore-scripts
+        run: npm ci --ignore-scripts --no-optional
 
-      - name: Install frontend deps
-        working-directory: frontend
-        run: npm ci --ignore-scripts
+      # Frontend is a workspace; root `npm ci` installs workspace deps from the lockfile.
+      # Avoid running a separate install inside `frontend` to keep installs deterministic
+      # and avoid duplicate work.
 
-      - name: Format (Prettier)
+      - name: Format
         run: npm run format
 
       - name: Lint
         run: npm run lint
 
-      - name: Spell Check (CSpell)
+      - name: Spell Check
         run: npm run spell
 
-      - name: Unit tests (Vitest)
+      - name: Unit tests
         working-directory: frontend
         run: npm run test
 
