@@ -21,20 +21,10 @@ jobs:
           cache: 'npm'
 
       - name: Install root deps
-        run: npm ci --ignore-scripts
-
-      - name: Install frontend deps
-        working-directory: frontend
-        run: npm ci --ignore-scripts
+        run: npm i --ignore-scripts
 
       - name: Format (Prettier)
-        run: npm run format
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Spell Check (CSpell)
-        run: npm run spell
+        run: npm run format && npm run lint && npm run spellcheck
 
       - name: Unit tests (Vitest)
         working-directory: frontend
