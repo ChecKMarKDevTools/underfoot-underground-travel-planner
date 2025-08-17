@@ -3,25 +3,54 @@
 	"tasks": [
 		{
 			"label": "commitlint:validate",
-			"command": "npm run commitlint",
+			"type": "process",
+			"command": "/bin/zsh",
 			"args": [
-				"--",
-				"${input:fullCommitMessage}"
+				"-l",
+				"-i",
+				"-c",
+				"npm run commitlint -- \"--\" \"${input:fullCommitMessage}\""
 			],
-			"type": "shell",
 			"group": "none"
 		},
 		{
 			"label": "commitlint:file",
-			"command": "npm run commitlint:file -- commit-message.tmp",
-			"type": "shell",
+			"type": "process",
+			"command": "/bin/zsh",
+			"args": [
+				"-l",
+				"-i",
+				"-c",
+				"npm run commitlint:file -- commit-message.tmp"
+			],
 			"group": "none"
 		},
 		{
 			"label": "gitDiff:toFile",
-			"command": "git diff --staged > gitdiff.tmp",
-			"type": "shell",
+			"type": "process",
+			"command": "/bin/zsh",
+			"args": [
+				"-l",
+				"-i",
+				"-c",
+				"git diff --staged > gitdiff.tmp"
+			],
 			"group": "none"
+		}
+		,
+		{
+			"label": "backend: dev (non-login zsh)",
+			"type": "process",
+			"command": "zsh",
+			"args": [
+				"-c",
+				"cd backend && node --env-file=.env --watch src/index.js"
+			],
+			"group": "none",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
 		}
 	],
 	"inputs": [
