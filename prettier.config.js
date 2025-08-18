@@ -1,6 +1,4 @@
-import { defineConfig } from 'prettier';
-
-export default defineConfig({
+export default {
   printWidth: 100,
   singleQuote: true,
   trailingComma: 'all',
@@ -28,5 +26,5 @@ export default defineConfig({
         singleQuote: true,
       },
     },
-  ]
-});
+  ],
+};

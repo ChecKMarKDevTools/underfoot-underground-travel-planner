@@ -10,7 +10,11 @@ pre-commit:
           echo "$STAGED_FILES" | xargs -r git add
         fi
     spellcheck:
-      run: npm run spellcheck -- --files $(git diff --cached --name-only --diff-filter=ACM | xargs)
+      run: |
+        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+        if [ -n "$STAGED_FILES" ]; then
+          npx cspell --show-suggestions --verbose $STAGED_FILES
+        fi
 
 commit-msg:
   parallel: true
