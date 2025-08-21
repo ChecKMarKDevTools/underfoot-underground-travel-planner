@@ -3,7 +3,13 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "description": "A submission for the Dev.to n8n + BrightData hackathon. Underground travel planner to find those hidden gems that are a must see.",
-  "keywords": ["devto", "n8n", "brightdata", "hackathon", "travel"],
+  "keywords": [
+    "devto",
+    "n8n",
+    "brightdata",
+    "hackathon",
+    "travel"
+  ],
   "type": "module",
   "repository": {
     "type": "git",
@@ -17,7 +23,11 @@
     "name": "Ashley Childress",
     "url": "https://dev.to/anchildress11"
   },
-  "workspaces": ["frontend", "backend", "n8n"],
+  "workspaces": [
+    "frontend",
+    "backend",
+    "n8n"
+  ],
   "volta": {
     "node": "24.6.0",
     "npm": "11.5.1"
@@ -30,13 +40,12 @@
     "dev": "npm run -w backend dev & npm run -w frontend dev",
     "build": "npm run -w backend build && npm run -w frontend build",
     "start": "npm run -w backend start",
-    "commitlint": "commitlint --edit",
-    "format": "npm run format:prettier && npm run format:remark && npm run format:fix-admonitions",
-    "format:prettier": "prettier --write . --log-level silent",
-    "format:remark": "remark . -o --quiet",
+    "commitlint": "npx commitlint --edit",
+    "format": "npx prettier --write . && npm run format:remark && npm run format:fix-admonitions",
+    "format:remark": "npx remark . -o --quiet",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
-    "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
-    "spellcheck": "cspell . --show-suggestions",
+    "lint": "npx eslint --fix --max-warnings=0 --no-warn-ignored",
+    "spellcheck": "npx cspell . --show-suggestions",
     "test": "cd backend && npm test && cd ../frontend && npm test && cd .. && echo 'done'"
   },
   "devDependencies": {
