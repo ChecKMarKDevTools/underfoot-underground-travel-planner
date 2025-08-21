@@ -1,20 +1,27 @@
 # .copilot-instructions.md
 
 ## Persona
+
 You are assisting with a quirky, snarky, offbeat travel-planner project.
 Code style and tooling are important. You should write and refactor code in a way that passes all pre-commit hooks without breaking the project vibe.
 
 ## Critical Constraints
+
 - All commits must pass:
   1. **Commitlint** — Conventional Commit messages required
      - Ignore GPG signature failures (signing happens post-hook)
+     - Never add a `Signed-off-by:` trailer to generated commit messages. This repo's `commitlint` configuration treats `Signed-off-by` as an enforcement that will cause commits to fail; do not attempt to satisfy or edit commitlint configuration to add it.
+     - Preserve existing trailers such as `Co-authored-by:` (for example: `Co-authored-by: Name <email>`). Do not remove or replace `Co-authored-by` footers when present.
   2. **CSpell** — No spelling errors in code or markdown
   3. **Prettier** — Enforce formatting rules for JS/TS/MD/etc.
   4. **ESLint** — Lint code according to project config
 - Pre-commit hooks are run via **lefthook**.
 - Any generated code must be compatible with **Node 22 LTS** (or later LTS).
 
-## Preferred Tools
+## Preferred Tools and Documentation
+
+You should use the MCP server #context7 whenever it is available to reference the latest versions of all documentation.
+
 - **Commitlint** for message validation
 - **CSpell** for spelling checks
 - **Prettier** for consistent formatting
@@ -22,6 +29,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 - **lefthook** to run checks pre-commit
 
 ## Development Workflow
+
 1. Write code with passing lint/format/spell checks from the start.
 2. Follow Conventional Commits for all commit messages.
 3. Expect hooks to run locally before the commit is accepted.
@@ -29,11 +37,14 @@ Code style and tooling are important. You should write and refactor code in a wa
 5. GPG signature failures in commitlint are acceptable until commit is signed manually.
 
 ## Output Guidelines
+
 - Write code that passes all configured hooks on the first try.
 - Generate commit messages in the Conventional Commit style:
   - Format: `type(scope): short description`
   - Example: `feat(ui): add chatbot interface for travel planning`
 - Keep changes self-contained and relevant to the commit message.
+
+When generating commit messages, do NOT append any `Signed-off-by:` lines or attempt to add signing trailers; they will always fail the project's commit hooks and must be left out. If a contributor or tool already provides a `Co-authored-by:` footer, keep it as-is.
 
 # Underfoot UI — Frontend Guide
 
@@ -41,14 +52,17 @@ Code style and tooling are important. You should write and refactor code in a wa
 - Chat interface, Debug View, and transparent troubleshooting.
 
 ## Tech Stack
+
 - React 18, Vite, Tailwind CSS, Node 24+.
-- Source: `frontend/src/` (App.jsx, main.jsx, components/*)
+- Source: `frontend/src/` (App.jsx, main.jsx, components/\*)
 
 ## Linting, Formatting, Spelling
+
 - ESLint, Prettier, CSpell enforced via lefthook pre-commit hooks.
 - All code/markdown must pass before commit.
 
 ## Unit Testing
+
 - Vitest + React Testing Library + jsdom.
 - Tests: `frontend/src/__tests__/`
 - Coverage: lines/statements/functions ≥85%, branches ≥80% (enforced in CI).
@@ -56,6 +70,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 - UI: `npm run test:ui`.
 
 ## End-to-End Testing
+
 - Playwright (Chromium).
 - Tests: `frontend/tests-e2e/`
 - Config: `frontend/playwright.config.js` (baseURL matches Vite base).
@@ -65,14 +80,17 @@ Code style and tooling are important. You should write and refactor code in a wa
 - Open last HTML report: `npm run test:e2e:report`
 
 ## CI/CD
+
 - Workflow: `.github/workflows/ci.yml`
 - Node 22, npm cache, lint, unit tests (coverage upload), Playwright e2e, Playwright report artifact.
 
 ## Mocking Backend for E2E
+
 - Playwright e2e tests intercept `/chat` requests and return mocked data, so tests pass without a backend.
 - When backend is ready, remove/disable route mocks for full integration.
 
 ## Local Dev Quick Reference
+
 ```bash
 # Install all deps (repo root)
 npm install --ignore-scripts
@@ -97,6 +115,7 @@ npx playwright test --ui # Playwright UI
 ```
 
 ## Conventions
+
 - All new code must pass lint, format, spell, and test coverage gates.
 - Use Conventional Commits for all commit messages.
 - If you change Vite base, update Playwright config baseURL.

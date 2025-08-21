@@ -1,10 +1,10 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import react from 'eslint-plugin-react'
-import cspellPlugin from '@cspell/eslint-plugin'
+import { defineConfig, globalIgnores } from 'eslint/config';
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import react from 'eslint-plugin-react';
+import cspellPlugin from '@cspell/eslint-plugin';
 
 export default defineConfig([
   globalIgnores([
@@ -48,9 +48,12 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-      }],
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+        },
+      ],
       'react/jsx-uses-react': 'off', // Not needed in React 17+
       'react/jsx-uses-vars': 'error', // Detects JSX usage of variables
     },
@@ -106,4 +109,4 @@ export default defineConfig([
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     },
   },
-])
+]);
