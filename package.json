@@ -40,12 +40,12 @@
     "dev": "npm run -w backend dev & npm run -w frontend dev",
     "build": "npm run -w backend build && npm run -w frontend build",
     "start": "npm run -w backend start",
-    "commitlint": "npx commitlint --edit",
-    "format": "npx prettier --write . && npm run format:remark && npm run format:fix-admonitions",
-    "format:remark": "npx remark . -o --quiet",
+    "commitlint": "commitlint --edit",
+    "format": "prettier --write . && npm run format:remark && npm run format:fix-admonitions",
+    "format:remark": "remark . -o --quiet",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
-    "lint": "npx eslint --fix --max-warnings=0 --no-warn-ignored",
-    "spellcheck": "npx cspell . --show-suggestions",
+    "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
+    "spellcheck": "cspell . --show-suggestions",
     "test": "cd backend && npm test && cd ../frontend && npm test && cd .. && echo 'done'"
   },
   "devDependencies": {
