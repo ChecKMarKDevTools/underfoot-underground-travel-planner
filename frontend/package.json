@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "npm i --no-audit --no-fund @rollup/rollup-darwin-arm64 || true",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --host --port 5173 --strictPort",
@@ -16,7 +15,6 @@
     "test:coverage:report": "open coverage/index.html || xdg-open coverage/index.html"
   },
   "dependencies": {
-    "@rollup/rollup-darwin-arm64": "^4.46.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
