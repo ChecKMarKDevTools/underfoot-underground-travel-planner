@@ -3,13 +3,36 @@ import { defineConfig } from 'cspell';
 export default defineConfig({
   version: '0.2',
   language: 'en',
-  dictionaryDefinitions: [
-    {
-      name: 'project-words',
-      path: './.vscode/cspell-project-words.txt',
-    },
+  words: [
+    // tech words
+    'blockquotes',
+    'checkmarkdevtools',
+    'Pikeville',
+    'Childress',
+    'hackathon',
+    'devto',
+    'brightdata',
+    // tools
+    'vite',
+    'vitest',
+    'blocklist',
+    'Avenir',
+    'commitlint',
+    'frontmatter',
+    'substack',
+    'endheader',
+    'rollup',
+    'pipefail',
+    'wakatime',
+    // demo site hostnames
+    'localblog',
+    'indiecalendar',
+    'historyclub',
+    'indiecommunity',
+    'railnerds',
+    // demo content words
+    'Creekside',
   ],
-  dictionaries: ['project-words'],
   ignorePaths: [
     '.vscode/**',
     '**/*.config.js',
