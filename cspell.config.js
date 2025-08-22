@@ -17,5 +17,6 @@ export default defineConfig({
     '**/dist/**',
     '**/coverage/**',
     '**/playwright-report/**',
+    '*.tmp',
   ],
 });

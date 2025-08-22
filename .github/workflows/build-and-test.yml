@@ -11,20 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
 
       - name: Use Node
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Install root deps
-        run: npm ci --ignore-scripts
-
-      - name: Install frontend deps
-        working-directory: frontend
+      - name: Install dependencies (workspaces)
         run: npm ci --ignore-scripts
 
       - name: Format (Prettier)
@@ -34,7 +29,7 @@ jobs:
         run: npm run lint
 
       - name: Spell Check (CSpell)
-        run: npm run spell
+        run: npm run spellcheck
 
       - name: Unit tests (Vitest)
         working-directory: frontend

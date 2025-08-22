@@ -100,6 +100,7 @@ export default defineConfig([
     },
   },
   {
+    files: ['frontend/src/**/*.{js,jsx}', 'backend/src/**/*.js', 'scripts/**/*.js'],
     plugins: {
       '@cspell': cspellPlugin,
     },
