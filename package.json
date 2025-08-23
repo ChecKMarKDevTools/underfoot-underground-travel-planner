@@ -46,7 +46,9 @@
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
     "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
     "spellcheck": "cspell . --show-suggestions",
-    "test": "cd backend && npm test && cd ../frontend && npm test && cd .. && echo 'done'"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "cd backend && npm test && cd ../frontend && npm test && cd ..",
+    "test:e2e": "cd frontend && npm run test:e2e && cd .."
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

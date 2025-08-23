@@ -22,6 +22,6 @@ test('chat input sends and shows user message', async ({ page }) => {
   await page.getByRole('button', { name: 'Send' }).click();
 
   await expect(page.getByRole('article', { name: 'Your message' }).last()).toContainText(
-    'Pikeville, KY',
+    'Pikeville KY',
   );
 });

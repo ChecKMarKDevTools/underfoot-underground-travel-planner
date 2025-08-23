@@ -16,6 +16,12 @@ pre-commit:
           npx cspell --show-suggestions $STAGED_FILES
         fi
 
+pre-push:
+  parallel: true
+  commands:
+    tests:
+      run: npm test
+
 commit-msg:
   parallel: true
   commands:
