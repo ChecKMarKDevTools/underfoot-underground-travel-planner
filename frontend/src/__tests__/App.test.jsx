@@ -1,12 +1,14 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 
-test('renders header and initial chat message', () => {
+test('renders header and initial chat message (no results yet)', () => {
   render(<App />);
-  const banner = screen.getByRole('banner');
+  const [banner] = screen.getAllByRole('banner');
   expect(within(banner).getByText('Underfoot')).toBeInTheDocument();
   expect(screen.getByRole('article', { name: 'Underfoot reply' })).toBeInTheDocument();
+  // No result articles besides chat at this point
+  expect(screen.queryByLabelText('Search results')).not.toBeInTheDocument();
 });
 
 test('opens and closes Debug View', async () => {
@@ -36,10 +38,15 @@ test('restart button triggers window.location.reload', async () => {
   if (original) Object.defineProperty(window, 'location', original);
 });
 
-test('Chat calls onDebug when API returns debug info', async () => {
+test('Chat calls onDebug and populates results when API returns debug info and results', async () => {
   const reply = 'ok';
   const debug = { requestId: 'req-123' };
-  const fetchMock = vi.fn().mockResolvedValue({ json: () => Promise.resolve({ reply, debug }) });
+  const results = [
+    { id: 'r1', title: 'Mine Entrance', description: 'Old shaft', url: 'https://example.com/mine' },
+  ];
+  const fetchMock = vi
+    .fn()
+    .mockResolvedValue({ json: () => Promise.resolve({ reply, debug, results }) });
   const originalFetch = global.fetch;
   // @ts-ignore
   global.fetch = fetchMock;
@@ -52,6 +59,11 @@ test('Chat calls onDebug when API returns debug info', async () => {
   // Open debug sheet to verify data was stored
   await user.click(screen.getByRole('button', { name: /Debug View/i }));
   expect(await screen.findByText(/requestId/)).toBeInTheDocument();
+
+  // Results should now be rendered
+  await waitFor(() =>
+    expect(screen.getByRole('article', { name: /Mine Entrance/i })).toBeInTheDocument(),
+  );
 
   global.fetch = originalFetch;
 });

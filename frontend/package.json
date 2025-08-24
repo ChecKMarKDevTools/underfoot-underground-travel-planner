@@ -6,13 +6,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --host --port 5173 --strictPort",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "pretest:e2e": "vite build",
-    "test:e2e": "playwright test",
-    "test:e2e:report": "playwright show-report",
-    "test:coverage:report": "open coverage/index.html || xdg-open coverage/index.html"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run --coverage",
+    "test:e2e": "vite build && playwright test"
   },
   "dependencies": {
     "react": "^18.3.1",

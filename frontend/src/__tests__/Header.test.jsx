@@ -4,18 +4,19 @@ import Header from '../components/Header';
 
 vi.mock('../assets/underfoot-logo.png', () => ({ default: 'logo.png' }));
 
-test('renders logo alt text and subtitle', () => {
+test('renders logo and core buttons', () => {
   render(<Header />);
-  expect(screen.getByAltText(/Underfoot by CheckMarK logo/i)).toBeInTheDocument();
-  expect(screen.getByText(/Underground travel planner/i)).toBeInTheDocument();
+  expect(screen.getByAltText(/Underfoot logo/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Restart/i })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Debug View/i })).toBeInTheDocument();
 });
 
 test('buttons trigger callbacks', async () => {
   const onOpenDebug = vi.fn();
   const onRestart = vi.fn();
+  const user = userEvent.setup();
   render(<Header onOpenDebug={onOpenDebug} onRestart={onRestart} />);
 
-  const user = userEvent.setup();
   await user.click(screen.getByRole('button', { name: /Restart/i }));
   await user.click(screen.getByRole('button', { name: /Debug View/i }));
 

@@ -4,9 +4,6 @@ test('home page renders and debug panel toggles', async ({ page }) => {
   await page.goto('/');
   const banner = page.getByRole('banner');
   await expect(banner.getByText('Underfoot')).toBeVisible();
-  await expect(
-    banner.getByText('Underground travel planner — find the secret stuff.'),
-  ).toBeVisible();
 
   await page.getByRole('button', { name: 'Debug View' }).click();
   await expect(page.getByRole('heading', { name: 'Debug View' })).toBeVisible();

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "node --env-file=.env --watch src/index.js",
     "start": "node src/index.js",
-    "test": "echo 'placeholder backend test'"
+    "test": "echo 'placeholder backend test'",
+    "test:unit": "echo 'placeholder backend unit test'",
+    "test:e2e": "echo 'placeholder backend e2e test'"
   },
   "dependencies": {
     "cors": "^2.8.5",

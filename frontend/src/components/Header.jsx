@@ -2,20 +2,15 @@ import logo from '../assets/underfoot-logo.png';
 
 export default function Header({ onOpenDebug, onRestart }) {
   return (
-    <header className="sticky top-0 z-10 bg-cm-panel/80 backdrop-blur border-b border-cm-border rounded-b-lg">
+    <header className="sticky top-0 z-10 bg-cm-panel backdrop-blur border-b border-cm-border">
       <div className="flex items-center justify-between px-4 py-2">
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           <img
             src={logo}
-            alt="Underfoot by CheckMarK logo"
-            className="h-12 w-12 rounded-xl shadow-soft"
+            alt="Underfoot logo"
+            className="h-10 w-10 rounded-md border border-cm-border"
           />
-          <div>
-            <div className="font-extrabold text-lg tracking-wide">Underfoot</div>
-            <div className="text-xs text-cm-sub">
-              Underground travel planner — find the secret stuff.
-            </div>
-          </div>
+          <h1 className="text-lg font-extrabold tracking-wide">Underfoot</h1>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -27,6 +22,7 @@ export default function Header({ onOpenDebug, onRestart }) {
           </button>
           <button
             type="button"
+            aria-label="Open Debug View"
             onClick={onOpenDebug}
             className="px-3 py-2 rounded-lg bg-cm-card border border-cm-border hover:bg-cm-card/80 transition-colors"
           >
