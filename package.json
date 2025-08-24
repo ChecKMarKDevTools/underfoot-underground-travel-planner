@@ -47,8 +47,8 @@
     "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
     "spellcheck": "cspell . --show-suggestions",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:unit": "cd backend && npm test && cd ../frontend && npm test:unit && cd ..",
-    "test:e2e": "cd frontend && npm run test:e2e && cd .."
+    "test:unit": "cd backend && npm run test:unit && cd ../frontend && npm run test:unit && cd ..",
+    "test:e2e": "cd backend && npm run test:e2e && cd ../frontend && npm run test:e2e && cd .."
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

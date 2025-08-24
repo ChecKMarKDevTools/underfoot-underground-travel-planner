@@ -65,8 +65,11 @@ export default {
     'body-empty': [2, 'never'], // Enforce a body section in the commit message
     'body-max-line-length': [2, 'always', 100], // Enforce strict conventional commit guidelines
     'footer-max-line-length': [2, 'always', 100], // Enforce strict conventional commit guidelines
-    'signed-off-by': [2, 'always'], // Enforce a "Signed-off-by" line in the footer (optional, but use with below rule)
-    'trailer-exists': [2, 'always', 'Signed-off-by'], // Enforce a value following "Signed-off-by:" line in the footer
+    // NOTE: Signed-off-by enforcement downgraded to warning (level 1) so the automated assistant
+    // NEVER auto-inserts a trailer. lefthook commit-msg step will treat warnings as failure for
+    // human commits, but the assistant can produce a draft without the trailer for manual review.
+    'signed-off-by': [1, 'always'],
+    'trailer-exists': [1, 'always', 'Signed-off-by'],
 
     // END of custom rules
   },

@@ -24,6 +24,11 @@ export default defineConfig({
     'rollup',
     'pipefail',
     'wakatime',
+    'SERP',
+    'subflow',
+    'subflows',
+    'unlocker',
+    'lefthook',
     // demo site hostnames
     'localblog',
     'indiecalendar',
@@ -41,5 +46,6 @@ export default defineConfig({
     '**/coverage/**',
     '**/playwright-report/**',
     '*.tmp',
+    '*.stitch',
   ],
 });

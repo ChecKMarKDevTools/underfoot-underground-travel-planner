@@ -1,0 +1,187 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Stitch Design</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-[#f9f8fc] group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eae7f4] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#110d1c]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
+                  fill="currentColor"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M10.4485 13.8519C10.4749 13.9271 10.6203 14.246 11.379 14.7361C12.298 15.3298 13.7492 15.9145 15.6717 16.3735C18.0007 16.9296 20.8712 17.2655 24 17.2655C27.1288 17.2655 29.9993 16.9296 32.3283 16.3735C34.2508 15.9145 35.702 15.3298 36.621 14.7361C37.3796 14.246 37.5251 13.9271 37.5515 13.8519C37.5287 13.7876 37.4333 13.5973 37.0635 13.2931C36.5266 12.8516 35.6288 12.3647 34.343 11.9175C31.79 11.0295 28.1333 10.4437 24 10.4437C19.8667 10.4437 16.2099 11.0295 13.657 11.9175C12.3712 12.3647 11.4734 12.8516 10.9365 13.2931C10.5667 13.5973 10.4713 13.7876 10.4485 13.8519ZM37.5563 18.7877C36.3176 19.3925 34.8502 19.8839 33.2571 20.2642C30.5836 20.9025 27.3973 21.2655 24 21.2655C20.6027 21.2655 17.4164 20.9025 14.7429 20.2642C13.1498 19.8839 11.6824 19.3925 10.4436 18.7877V34.1275C10.4515 34.1545 10.5427 34.4867 11.379 35.027C12.298 35.6207 13.7492 36.2054 15.6717 36.6644C18.0007 37.2205 20.8712 37.5564 24 37.5564C27.1288 37.5564 29.9993 37.2205 32.3283 36.6644C34.2508 36.2054 35.702 35.6207 36.621 35.027C37.4573 34.4867 37.5485 34.1546 37.5563 34.1275V18.7877ZM41.5563 13.8546V34.1455C41.5563 36.1078 40.158 37.5042 38.7915 38.3869C37.3498 39.3182 35.4192 40.0389 33.2571 40.5551C30.5836 41.1934 27.3973 41.5564 24 41.5564C20.6027 41.5564 17.4164 41.1934 14.7429 40.5551C12.5808 40.0389 10.6502 39.3182 9.20848 38.3869C7.84205 37.5042 6.44365 36.1078 6.44365 34.1455L6.44365 13.8546C6.44365 12.2684 7.37223 11.0454 8.39581 10.2036C9.43325 9.3505 10.8137 8.67141 12.343 8.13948C15.4203 7.06909 19.5418 6.44366 24 6.44366C28.4582 6.44366 32.5797 7.06909 35.657 8.13948C37.1863 8.67141 38.5667 9.3505 39.6042 10.2036C40.6278 11.0454 41.5563 12.2684 41.5563 13.8546Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-[#110d1c] text-lg font-bold leading-tight tracking-[-0.015em]">UnderFoot</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex gap-2">
+              <button
+                class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#eae7f4] text-[#110d1c] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+              >
+                <div class="text-[#110d1c]" data-icon="Gear" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <button
+                class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#eae7f4] text-[#110d1c] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+              >
+                <div class="text-[#110d1c]" data-icon="Sun" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuANSf7hzp5iumq1Dp-Wj2PDt03EHsFFBFW219JMAHogVp74SGFbSKyDpAQlkVVN4qKRAbzpWhbMWW5TT-z-at4s6U4k10WvFceeT4hAUGM5kruH9M7XoF1GmnBCdriHI5SBmrDMa1S1WOCDaJ3a0jqnaW34yDeesOOS4b2aFqsmHpS83Ird6W0wRL0dge_0Ckmx-MKpfu_Qz9A31YowOlkA_6oSvkEI0VvvBB4JKM1S860ITv5d79BupYHsjBdpbN_xrbpY_QAGh759");'
+            ></div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <h2 class="text-[#110d1c] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">How can I help you?</h2>
+            <h2 class="text-[#110d1c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Search Results</h2>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#f9f8fc] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#110d1c] text-base font-bold leading-tight">Understanding the Basics of Quantum Computing</p>
+                    <p class="text-[#61499c] text-sm font-normal leading-normal">
+                      Explore the fundamental principles of quantum computing, including qubits, superposition, and entanglement. Learn how these concepts differ from classical
+                      computing and enable new types of algorithms.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#eae7f4] text-[#110d1c] text-sm font-medium leading-normal w-fit"
+                  >
+                    <span class="truncate">Learn More</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwDNO9_1-wxJ6R7sdIh_rFDpuza5pfV0hhpfFIyvs3CYmFmT39w9lEW7ZHjVJ5RssYrsFbobmRru4MOT5ei_y2zO9Vgl7XwFwuaXbcaRV3XDmLjgnE2wVegDyDNf4YWwKHsRpdTMROwZ20zcZzh1890JN7d65TBcdjluoRJ97szSeNl28t2smzkVqIW58KoSh54wi1cYm6SZIcPR3K4WsgJYLFm4bQceKYS_xei_7tj199KoPbbulO66X6Wao7RzEUjMOvBCEz_X1g");'
+                ></div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#f9f8fc] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#110d1c] text-base font-bold leading-tight">Applications of Quantum Computing in Drug Discovery</p>
+                    <p class="text-[#61499c] text-sm font-normal leading-normal">
+                      Discover how quantum computing is revolutionizing drug discovery by simulating molecular interactions and accelerating the development of new pharmaceuticals.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#eae7f4] text-[#110d1c] text-sm font-medium leading-normal w-fit"
+                  >
+                    <span class="truncate">Learn More</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDH20gdmr20jCEKvlcY9nXAEiuCCfSTba74i7rLyP5n0-yJExabwjrC_If7DHoJqOSPGb465PJXmLojH-p513AlMYJNQLUQARigd64Fum4flY68X3pd-FDVtBMZiixbR_7yK-jfuLjA9k-VXDFnyORankjsOd1V2uB0I1NMrN9fkuRpcHiQtQ6okHGTCRZAcmGafil4Dh82GvochKYXohivtwYUBzNPEE-Cwxq4UUwxHNMWvqQi6cxoau6Jpt0yvvI-kxs1a2PDa-YR");'
+                ></div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#f9f8fc] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#110d1c] text-base font-bold leading-tight">Quantum Computing Algorithms: Shor's and Grover's</p>
+                    <p class="text-[#61499c] text-sm font-normal leading-normal">
+                      Dive into two of the most significant quantum algorithms: Shor's algorithm for factoring large numbers and Grover's algorithm for database searching.
+                      Understand their implications and potential applications.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#eae7f4] text-[#110d1c] text-sm font-medium leading-normal w-fit"
+                  >
+                    <span class="truncate">Learn More</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDOeZh7IQzuuYTOHfgYdaZousYoEGl4st5AEYcAZOwqNkgwQq30JwWWLjIiVrGlgEuj4AEIrQWBocw2twsMhZTbPGoIQDRuZDK3FponWbl36Hz9BoO5mymUAWnozN_pgKcgp_o_JOPno_3enwV--nHYXRPhdFauBA0zSzMFXvB1WBv5z2K0Ay0L-AiMTlTojgRBwNWJjz7I9mlCHFN4m0ssRfK-OTMAMGZvSeir4iq3e_FqWTZlzPs0i0v8PEdNxSBX3tzablaAtsu0");'
+                ></div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#f9f8fc] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#110d1c] text-base font-bold leading-tight">The Future of Quantum Computing: Challenges and Opportunities</p>
+                    <p class="text-[#61499c] text-sm font-normal leading-normal">
+                      Examine the current challenges in quantum computing, such as error correction and scalability, and explore the future opportunities and potential impacts
+                      across various industries.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#eae7f4] text-[#110d1c] text-sm font-medium leading-normal w-fit"
+                  >
+                    <span class="truncate">Learn More</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8dN9N0Md-EByizIk8IXnPG9GZsfkrPT2wLwVI4a1WViO6OFB19bg_gRiW9lX-YO0FKiQ6kknC9YEQStQLVn40jyxXNzpMt0MaCOQ-0IUfFzQFtABq84E8H5DybKYr61A8jynigvFfjFikdc00nFZ5ZZIy1DP3XrbpmfvUpILVdqFKiV36QhXCVusAatLz2qiQX3T3TMf_JFc3S_iSnwOSg0jGPwj4umMrkUOc5F2E0dIL_9-9eJvWS8taQ5ckmeZ4Jt4jtZjg1Krm");'
+                ></div>
+              </div>
+            </div>
+            <div class="px-4 py-3">
+              <label class="flex flex-col min-w-40 h-12 w-full">
+                <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                  <div
+                    class="text-[#61499c] flex border-none bg-[#eae7f4] items-center justify-center pl-4 rounded-l-lg border-r-0"
+                    data-icon="MagnifyingGlass"
+                    data-size="24px"
+                    data-weight="regular"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                      <path
+                        d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    placeholder="Type your message here"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#110d1c] focus:outline-0 focus:ring-0 border-none bg-[#eae7f4] focus:border-none h-full placeholder:text-[#61499c] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                    value=""
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
