@@ -6,6 +6,32 @@
 
 ---
 
+## Hackathon Week Reality (August 27, 2025) — Goldilocks'ing the ADRs
+
+It took, what, maybe 36 hours this week for me to very vividly remember **why I never volunteer for hackathons**. My default operating mode is binary: either I go full Tilt-a-Whirl perfectionist or I ghost the idea entirely. There is **no comfortable middle** in my wiring, and trying to manufacture one feels like sanding my own neurons.
+
+The tug‑of‑war has been:
+
+> **Me:** "Ooh, I could turn this into Disneyland!"
+
+> **Also me:** "You do not have time for Disneyland — You barely have time for Dollywood!"
+
+The only thing standing between me and a catastrophic scope eruption has been the new **Future Enhancements log** (`FUTURE_ENHANCEMENTS.md`), which is a trick I learned a couple years ago. Parking the shiny ideas there lowers the cringe of _not_ building them immediately and keeps me from hijacking in‑flight messages with a "Wait, what if we also—" spiral. More than once I have literally stopped myself mid keypress from nuking a pending chat request to bolt on Yet Another Clever Thing. Groundhog Day, but with premature feature grafting.
+
+The good news: we finally have a **solid architectural trajectory**. Call it the Goldilocks arc of the ADRs:
+
+- **ADR 1 (Unwritten / Rejected mental model)**: The first mental pass was implicitly monolithic and unruly; it dissolved the second I tried to map real data flows.
+- **ADR 2 – Frontend Design** (`FRONTEND_DESIGN_ADR.md`): Helpful, but ultimately only half the puzzle—UI posture without a resilient data backbone just exposed how brittle things still were.
+- **ADR 3 – Data Retrieval Evolution** (`DATA_RETRIEVAL_ADR.md` + the v2 draft inside it): _Just right (for now)._ The shift to a two‑agent orchestration model plus adapter feature signals is the first version that feels both ambitious and constraint‑aware.
+
+Layered on top is the **Results Strategy v1** (`RESULTS_STRATEGY_V1.md`), which quietly enforces discipline: 4–6 items, deliberate Near(ish) By logic, one rank pass. It acts like architectural bumpers preventing me from turning a single query into a runaway speculative crawl.
+
+So this week was about _accepting that "enough for this iteration" is a feature, not a personal failing_. The Future Enhancements list absorbs the overbuild impulse; the ADR set now has a trajectory (discarded → partial → cohesive); and I'm practicing letting messages finish their trip to the model without parachuting in with scope creep mid‑flight.
+
+Onward—still vibes, but vibes with guardrails. 🏁🏎️
+
+---
+
 ## Day... I've Lost Count (August 23, 2025) — The Vibe Check
 
 Well, it's official. I'm a **terrible vibe coder**. It turns out I like control just a _little_ too much. The grand experiment of "just go with the flow" has met its match: my own brain.

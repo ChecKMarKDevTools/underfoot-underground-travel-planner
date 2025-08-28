@@ -1,0 +1,51 @@
+# tech words
+blockquotes
+checkmarkdevtools
+Pikeville
+Childress
+hackathon
+devto
+brightdata
+pgvector
+TIMESTAMPTZ
+SERP
+unlocker
+lefthook
+wakatime
+Dollywood
+hackathons
+
+# tools
+vite
+vitest
+blocklist
+Avenir
+commitlint
+frontmatter
+substack
+endheader
+rollup
+pipefail
+wakatime
+SERP
+subflow
+subflows
+unlocker
+lefthook
+
+# demo site hostnames
+localblog
+indiecalendar
+historyclub
+indiecommunity
+railnerds
+
+# demo content words
+Creekside
+Stonewalker
+Pikeville
+localblog
+substack
+
+# domain specific
+anonymization

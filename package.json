@@ -41,11 +41,11 @@
     "build": "npm run -w backend build && npm run -w frontend build",
     "start": "npm run -w backend start",
     "commitlint": "commitlint --edit",
-  "format": "npm exec -- prettier --write . && npm run format:remark && npm run format:fix-admonitions",
+    "format": "npm exec -- prettier --write . && npm run format:remark && npm run format:fix-admonitions",
     "format:remark": "npm exec -- remark . -o --quiet",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
     "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
-    "spellcheck": "cspell . --show-suggestions",
+    "spellcheck": "npx cspell . --show-suggestions --gitignore",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "cd backend && npm run test:unit && cd ../frontend && npm run test:unit && cd ..",
     "test:e2e": "cd backend && npm run test:e2e && cd ../frontend && npm run test:e2e && cd .."
