@@ -1,0 +1,17 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./project-words.txt",
+      "addWords": true
+    }
+  ],
+  "dictionaries": ["project-words", "en_us", "en_slang", "softwareTerms", "git"],
+  "useGitignore": true,
+  "ignorePaths": [
+    "/{node_modules,coverage,dist,playwright-report}/",
+    "{.env*,*.config.js,*.yml,package*.json,*.txt,*.tmp,**/*.stitch}"
+  ]
+}
