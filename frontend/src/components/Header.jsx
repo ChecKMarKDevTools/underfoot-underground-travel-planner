@@ -4,13 +4,18 @@ export default function Header({ onOpenDebug, onRestart }) {
   return (
     <header className="sticky top-0 z-10 bg-cm-panel backdrop-blur border-b border-cm-border">
       <div className="flex items-center justify-between px-4 py-2">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <img
             src={logo}
             alt="Underfoot logo"
-            className="h-10 w-10 rounded-md border border-cm-border"
+            className="h-10 w-10 rounded-md border border-cm-border shrink-0"
           />
-          <h1 className="text-lg font-extrabold tracking-wide">Underfoot</h1>
+          <div className="flex flex-col leading-tight">
+            <h1 className="text-lg font-extrabold tracking-wide font-pangolin">Underfoot</h1>
+            <p className="text-[11px] md:text-xs text-cm-sub font-pangolin pr-2 truncate">
+              Uncover hidden gems with the legendary Stonewalker
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button

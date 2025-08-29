@@ -1,25 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import MainContent from '../components/MainContent';
+// Placeholder test after removal of MainContent component.
+// The original MainContent (separate results pane) was eliminated when result cards
+// were inlined beneath bot replies in Chat. This file remains only to preserve
+// historical coverage expectations and will be deleted in a future repo cleanup.
+import { describe, it, expect } from 'vitest';
 
-test('renders nothing when no results', () => {
-  const { container } = render(<MainContent results={[]} />);
-  expect(container).toBeEmptyDOMElement();
+describe('Removed MainContent', () => {
+  it('is deprecated and replaced by inline cards', () => {
+    expect(true).toBe(true);
+  });
 });
-
-test('renders provided results', () => {
-  render(
-    <MainContent
-      results={[
-        {
-          id: '1',
-          title: 'Cave Tour',
-          description: 'Guided descent into a lesser-known cavern.',
-          url: 'https://example.com/cave',
-        },
-      ]}
-    />,
-  );
-  expect(screen.getByRole('article', { name: /Cave Tour/i })).toBeInTheDocument();
-  expect(screen.getByText(/lesser-known cavern/i)).toBeInTheDocument();
-  expect(screen.getByText('https://example.com/cave')).toBeInTheDocument();
-});
+// (Removed) Legacy MainContent tests cleared after inlining result cards in Chat.

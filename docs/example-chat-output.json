@@ -1,0 +1,24 @@
+{
+  "response": "The stones whisper no toboggan tournaments in Indio, North Dakota, but nearby Clarksville, Wyoming offers hiking gems worth your steps. Shall I continue the hunt there?",
+  "items": [
+    {
+      "title": "Red Fleet State Park",
+      "url": "https://stateparks.utah.gov/parks/red-fleet/",
+      "summary": "Scenic hiking trails around a reservoir with striking red rock formations and frequent wildlife sightings.",
+      "image": "https://stateparks.utah.gov/wp-content/uploads/2019/06/redfleet_hero.jpg",
+      "rating": 4.5,
+      "source": "cache"
+    },
+    {
+      "title": "Flaming Gorge National Recreation Area",
+      "url": "https://www.fs.usda.gov/recarea/ashley/recarea/?recid=80757",
+      "summary": "A vast recreation area with dramatic canyons and trails, beloved by hikers and explorers alike.",
+      "image": "https://www.fs.usda.gov/Internet/FSE_MEDIA/stelprdb5369619.jpg",
+      "rating": 4.7
+    }
+  ],
+  "sessionId": "abc123-session",
+  "intent": "hiking",
+  "location": "Clarksville, Wyoming",
+  "source": "gmaps_full_reviews"
+}

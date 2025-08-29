@@ -1,8 +1,8 @@
-# Frontend Design ADR: Chat UI vs Embedded n8n Widget
+# Frontend Design ADR: Native Chat UI (Reaffirmed) vs Embedded n8n Widget
 
 ## Status
 
-Draft (research in progress)
+Accepted (revised on 2025-08-29 — embed approach deprioritized)
 
 ## Context
 
@@ -10,70 +10,72 @@ The initial chat interface in the Underfoot frontend was built rapidly as a **be
 
 We have since identified the availability of an **embedded n8n experience** (via their published npm package / embed SDK) that could provide a production‑grade, fully managed conversation/workflow surface with reduced maintenance overhead. Leveraging the n8n embedded component may allow us to externalize workflow state handling, retry logic, and potentially real‑time execution visualization, letting us focus on domain logic, data quality, and result curation.
 
-## Decision (Provisional)
+## Decision
 
-Keep the current custom chat UI in the repository but treat it as **fallback / minimal shell**. The primary near‑term design direction is to integrate the **n8n embedded widget** (pending capability confirmation) for core conversational interactions.
+We are **reaffirming the bespoke native React chat UI as the primary and shipped interface**. The previously explored n8n embed (iframe / widget) path is **paused** and treated as an optional future experiment rather than the main line. All development effort will focus on iterating the native components (`Chat`, `ResultCard`, `DebugSheet`) and ensuring they directly consume backend `/chat` responses shaped like the example in `docs/example-chat-output.json` (fields: `response`, `items[ ]`, metadata fields like `intent`, `location`, `source`).
 
-## Rationale
+## Rationale (Updated)
 
-- **Speed vs Maintainability**: The custom UI gave us speed; an embedded provider gives us sustained velocity and lowers surface area (less to test, style, and harden).
-- **Resilience & Features**: n8n may ship enhancements (execution logs, retries, branching) that we would otherwise need to implement manually.
-- **Consistency**: Offloading session orchestration reduces the risk of UI drift between experimental branches.
-- **Fallback Safety Net**: Retaining the current chat UI ensures we can decouple front end development from embed integration risk; if the embed is delayed or lacks a required feature, we still have a working interface.
+- **Tighter UX Control**: We need rapid, opinionated iteration on card layout, debug surfacing, and playful voice; an embed constrained that.
+- **Schema Evolution**: Direct ownership lets us evolve the response schema (`items` enrichment, metadata tags) without adapter glue.
+- **Debug Depth**: Our Debug Sheet shows structured + raw payload slices; embedding limited transparent access to intermediate data.
+- **Cognitive Simplicity**: One code path (native) reduces branching in tests, CI, and onboarding.
+- **Performance**: Avoids extra iframe / script load overhead and gives finer control over incremental rendering / future streaming.
 
-## Non‑Goals (for now)
+## Non‑Goals (Current Scope)
 
-- Re‑implementing advanced tooling (streaming tokens, avatars, conversation persistence) in the custom UI before embed evaluation completes.
-- Polishing the chat UI beyond baseline accessibility and stability.
+- Embedding third‑party chat surfaces.
+- Complex multi‑session persistence (will revisit after core discovery loop is solid).
+- Token‑level streaming (may be added later; current approach awaits full response then renders cards).
 
-## Open Questions / Research Needed
+## Open Questions / Near-Term Research
 
 | Topic | Question | Owner | Notes |
 | - | - | - | - |
-| Auth / Sessions | Does the n8n embed support auth scoping per end user? | TBD | May affect multi‑tenant roadmap. |
-| Theming | Depth of theme overrides (fonts, dark palette alignment) | TBD | Need parity with existing dark tokens. |
-| Events API | Webhook or callback hooks for message lifecycle | TBD | Required to sync debug sheet. |
-| Rate Limits | How are burst interactions throttled? | TBD | Might need local queueing. |
-| Offline Mode | Graceful degradation without embed? | TBD | Fallback to current custom UI. |
+| Auth / Sessions | Lightweight per-session ID tracking + future persistence | TBD | sessionId already returned. |
+| Item Ranking | Introduce scoring visualization (stars, ordering justification) | TBD | UI slot reserved in cards (rating). |
+| Streaming | Evaluate incremental partials vs whole payload for perception of speed | TBD | Requires backend support. |
+| Caching Hints | Show when result came from cache vs live scrape | TBD | `source` field present (e.g., `cache`). |
+| Accessibility | Refine announcements for new batch of cards + bot reply | TBD | aria-live region exists; may need granular chunks. |
 
-## Alternatives Considered
+## Alternatives Rejected (Now)
 
-1. **Continue Custom Chat Only**: Higher long‑term maintenance; slower feature parity with automation workflows.
-2. **Hybrid (Embed inside custom wrapper)**: Possible; adds complexity unless wrapper adds clear value (e.g., instrumentation, multi‑panel debug).
-3. **Third‑Party Chat Vendor**: Would fragment architecture; n8n alignment keeps workflow + UI cohesive.
+1. **Embedded n8n Widget / Iframe**: Rejected for current iteration (reasons above). Could return if workflow visualization becomes a must-have.
+2. **Third‑Party Generic AI Chat SaaS**: Would dilute domain-specific narrative voice.
+3. **Server-Side Rendered Responses Only**: Loses interactive composition and future streaming potential.
 
 ## Impact on Codebase
 
-- Current components kept: `Chat.jsx`, `ResultCard.jsx`, `MainContent.jsx`, debug panel.
-- Future integration: New `EmbeddedChatContainer` (placeholder) could lazy‑load n8n package and fall back to existing `Chat` if unsupported / offline.
-- Color system remains centralized (`docs/color_palette.json`, Tailwind extended theme) enabling consistent theming whether using custom or embedded UI.
-- **Interim Result Display**: During the earliest embed adoption phase we may render **raw JSON payloads** (pretty‑printed) instead of stylized `ResultCard` components to accelerate validation of data shape and workflow correctness. The existing card layer remains available and can be re‑enabled once the schema stabilizes.
+- Removed dependency path motivation for embed flag logic (may prune routes later).
+- `Chat.jsx` updated to accept both legacy `{ reply, results }` and new `{ response, items }` schema and normalize to `ResultCard` props.
+- Debug payload now nests `chatResponse` for full fidelity snapshot.
+- Tests updated to cover new normalization.
+- Future cleanup: consider removing `N8nChatPage.jsx` if unused after a deprecation window.
 
-## Migration Plan (High Level)
+## Incremental Enhancements Roadmap (Native Path)
 
-1. Spike: Prototype n8n embed in an isolated playground route with hardcoded workflow ID.
-2. Capability Matrix: Compare feature checklist vs existing chat (scroll behavior, Enter submit, result injection, debug events).
-3. Theming Hookup: Map Underfoot dark tokens to embed theming API.
-4. Abstraction Layer: Create a facade (interface) for sending a message + receiving structured responses (results, debug meta) used by both custom and embedded versions.
-5. Progressive Switch: Feature flag (ENV or query param) toggles between implementations.
-6. Deprecation Review: Decide whether to entirely remove custom UI or freeze it as a fallback after embed proves stable in production.
+1. Card Meta Badges: Display `source`, `rating` badges.
+2. Skeleton / Shimmer: While waiting on response, show placeholder cards.
+3. Error Recovery: Offer retry inline on failure message.
+4. Streaming (optional): Append partial response text while items gather.
+5. Accessibility Polish: Announce new results in an aria-live region distinct from chat transcript.
 
 ## Risks
 
-- **Feature Gaps**: Embed may not expose all granular hooks (e.g., intermediate tokens) we could custom‑build later.
-- **Lock‑In**: Relying on embed might limit deep UX experimentation.
-- **Latency**: Additional indirection vs in‑app rendering path.
+- **Scope Creep**: Owning all UX could slow feature delivery.
+- **Performance Tuning**: Need to measure render cost with large `items` arrays.
+- **Backend Contract Drift**: Schema evolution must stay synchronized (add a lightweight schema doc).
 
 ## Mitigations
 
-- Maintain thin fallback chat UI until confidence threshold met.
-- Instrument latency metrics early (time to first response, full result set render).
-- Wrap embed calls with defensive error handling & timeout fallback to custom UI.
+- Add integration test for example payload (`example-chat-output.json`).
+- Introduce TypeScript or JSDoc typing for response shape (future task) to flag drift.
+- Performance budget: track first paint after send.
 
-## Future Enhancements (Post Integration)
+## Future Enhancements
 
-- Shared analytics layer capturing conversation turn metrics regardless of underlying implementation.
-- Unified result enrichment pipeline (scoring, clustering) decoupled from presentation.
+- Analytics layer capturing conversation turn metrics.
+- Result enrichment (clustering, dedupe) before display.
 - Pluggable message transforms (e.g., redact PII) pre‑send and pre‑display.
 
 ## References
@@ -85,4 +87,4 @@ Keep the current custom chat UI in the repository but treat it as **fallback / m
 
 ## Decision Review Window
 
-Revisit after: first embed spike + capability matrix (target: 2–3 iterations). This ADR remains DRAFT until that evaluation is complete.
+Revisit only if a compelling workflow visualization or orchestration requirement emerges that native UI cannot satisfy with reasonable effort.

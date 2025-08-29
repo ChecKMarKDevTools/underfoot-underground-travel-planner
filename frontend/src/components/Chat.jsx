@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import ResultCard from './ResultCard';
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 const LIMIT = Number(import.meta.env.VITE_LIMIT || 5);
@@ -7,11 +8,11 @@ const LIMIT = Number(import.meta.env.VITE_LIMIT || 5);
 // - Full height scrollable message column centered with max width.
 // - Input composer docked at bottom with subtle divider shadow.
 // - Auto-scroll to last message.
-export default function Chat({ onDebug, onResults }) {
+export default function Chat({ onDebug }) {
   const [messages, setMessages] = useState([
     {
       from: 'bot',
-      text: 'I’m Underfoot. Tell me where & when (e.g., ‘Pikeville KY next week for 3 days, outdoors’). I’ll find what the big sites missed.',
+      text: 'Welcome to Underfoot 🪨 Where are you headed and what do you hope to uncover there? The stones will tell us exactly where to go.',
     },
   ]);
   const [input, setInput] = useState('');
@@ -48,11 +49,38 @@ export default function Chat({ onDebug, onResults }) {
         body: JSON.stringify({ message: text, limit: LIMIT }),
       });
       const data = await res.json();
-      if (data?.reply) setMessages((m) => [...m, { from: 'bot', text: data.reply }]);
-      if (Array.isArray(data?.results) && data.results.length) {
-        onResults?.(data.results);
+      // Strict new shape: { response, items }
+      const replyText = data?.response;
+      // We'll build a bot message with optional attached items
+      let botMessage = null;
+      if (replyText) botMessage = { from: 'bot', text: replyText };
+
+      // Normalize items (only new shape supported)
+      let rawItems = Array.isArray(data?.items) ? data.items : [];
+
+      let attached = [];
+      if (rawItems.length) {
+        attached = rawItems.slice(0, 6).map((r, idx) => ({
+          id: r.id ?? r.url ?? r.title ?? idx,
+          title: r.title ?? 'Untitled',
+          description: r.description ?? '(no summary provided)',
+          imageUrl: r.imageUrl,
+          url: r.url,
+          rating: r.rating,
+          source: r.source,
+        }));
       }
-      onDebug?.(data?.debug || {});
+      if (botMessage) {
+        if (attached.length) botMessage.items = attached;
+        setMessages((m) => [...m, botMessage]);
+      }
+
+      // Pass through richer debug info; include full chat response under chatResponse
+      const debugPayload = {
+        ...(data?.debug || {}),
+        chatResponse: data,
+      };
+      onDebug?.(debugPayload);
     } catch {
       setMessages((m) => [
         ...m,
@@ -71,24 +99,37 @@ export default function Chat({ onDebug, onResults }) {
         aria-label="Conversation thread"
       >
         <div className="flex flex-col gap-4">
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              className={`w-full flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`relative max-w-[85%] rounded-xl border px-4 py-3 leading-relaxed text-sm md:text-base shadow-sm ${
-                  m.from === 'user'
-                    ? 'bg-[#232334] border-cm-border'
-                    : 'bg-cm-card border-cm-border'
-                }`}
-                role="article"
-                aria-label={m.from === 'user' ? 'Your message' : 'Underfoot reply'}
-              >
-                {m.text}
+          {messages.map((m, i) => {
+            const isUser = m.from === 'user';
+            return (
+              <div key={i} className={`w-full flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+                <div
+                  className={`group relative max-w-[85%] rounded-xl border px-4 py-3 leading-relaxed text-sm md:text-base shadow-sm flex flex-col gap-4 ${
+                    isUser ? 'bg-[#232334] border-cm-border' : 'bg-cm-card border-cm-border'
+                  }`}
+                  role="article"
+                  aria-label={isUser ? 'Your message' : 'Underfoot reply'}
+                >
+                  <div>{m.text}</div>
+                  {!isUser && Array.isArray(m.items) && m.items.length > 0 && (
+                    <div className="flex flex-col gap-3 pt-1 border-t border-cm-border/50">
+                      {m.items.map((item) => (
+                        <ResultCard
+                          key={item.id}
+                          title={item.title}
+                          description={item.description}
+                          imageUrl={item.imageUrl}
+                          url={item.url}
+                          actionLabel="Open"
+                          onAction={() => window.open(item.url, '_blank', 'noopener,noreferrer')}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={endRef} />
         </div>
       </div>
@@ -102,7 +143,7 @@ export default function Chat({ onDebug, onResults }) {
           </label>
           <textarea
             id="msg"
-            placeholder="Pikeville KY next week, 3 days, outdoors" // mimic ChatGPT multi-line composer
+            placeholder="I'd love to find the oldest grave that exists in Salem" // default helper prompt
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={busy}

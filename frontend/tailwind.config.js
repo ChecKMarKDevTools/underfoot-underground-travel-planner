@@ -19,6 +19,9 @@ export default {
       boxShadow: {
         soft: '0 8px 30px rgba(0,0,0,.35)',
       },
+      fontFamily: {
+        pangolin: ['Pangolin', 'cursive'],
+      },
     },
   },
   plugins: [],

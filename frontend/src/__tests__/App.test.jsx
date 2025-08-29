@@ -38,15 +38,15 @@ test('restart button triggers window.location.reload', async () => {
   if (original) Object.defineProperty(window, 'location', original);
 });
 
-test('Chat calls onDebug and populates results when API returns debug info and results', async () => {
-  const reply = 'ok';
+test('Chat calls onDebug and renders inline item cards from new shape', async () => {
+  const response = 'ok';
   const debug = { requestId: 'req-123' };
-  const results = [
+  const items = [
     { id: 'r1', title: 'Mine Entrance', description: 'Old shaft', url: 'https://example.com/mine' },
   ];
   const fetchMock = vi
     .fn()
-    .mockResolvedValue({ json: () => Promise.resolve({ reply, debug, results }) });
+    .mockResolvedValue({ json: () => Promise.resolve({ response, debug, items }) });
   const originalFetch = global.fetch;
   // @ts-ignore
   global.fetch = fetchMock;
@@ -60,7 +60,7 @@ test('Chat calls onDebug and populates results when API returns debug info and r
   await user.click(screen.getByRole('button', { name: /Debug View/i }));
   expect(await screen.findByText(/requestId/)).toBeInTheDocument();
 
-  // Results should now be rendered
+  // Inline item card should render
   await waitFor(() =>
     expect(screen.getByRole('article', { name: /Mine Entrance/i })).toBeInTheDocument(),
   );
