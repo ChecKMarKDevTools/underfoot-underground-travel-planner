@@ -1,8 +1,6 @@
 import request from 'supertest';
 import { beforeAll, afterAll, test, expect } from 'vitest';
 
-let server;
-
 beforeAll(async () => {
   // Dynamically import the server file so it starts listening
   const mod = await import('../src/index.js');
@@ -12,8 +10,11 @@ beforeAll(async () => {
   // Instead, rely on known PORT.
 });
 
+// NOTE: Do not close the server here. Other test files depend on the shared
+// server instance (we run tests in a single process for stability). Closing it
+// would cause connection errors in subsequent tests.
 afterAll(async () => {
-  if (server) await new Promise((res) => server.close(res));
+  /* intentionally left blank */
 });
 
 test('GET /health returns ok true', async () => {

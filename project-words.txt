@@ -32,6 +32,7 @@ subflow
 subflows
 unlocker
 lefthook
+GEOAPIFY
 
 # demo site hostnames
 localblog

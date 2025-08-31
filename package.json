@@ -26,7 +26,8 @@
   "workspaces": [
     "frontend",
     "backend",
-    "n8n"
+    "n8n",
+    "brightdata"
   ],
   "volta": {
     "node": "24.6.0",

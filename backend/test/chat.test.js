@@ -18,8 +18,10 @@ global.fetch = vi.fn(async () => {
   };
 });
 
+let app;
 beforeAll(async () => {
-  await import('../src/index.js');
+  const mod = await import('../src/index.js');
+  app = mod.app || mod.default?.app;
 });
 
 afterAll(async () => {
@@ -27,7 +29,7 @@ afterAll(async () => {
 });
 
 test('POST /underfoot/chat returns upstream response and debug object', async () => {
-  const res = await request('http://localhost:3000')
+  const res = await request(app)
     .post('/underfoot/chat')
     .send({ message: 'Hello' })
     .set('Content-Type', 'application/json');
@@ -40,7 +42,7 @@ test('POST /underfoot/chat returns upstream response and debug object', async ()
 
 test('POST /underfoot/chat caches responses', async () => {
   // First request sets cache
-  const first = await request('http://localhost:3000')
+  const first = await request(app)
     .post('/underfoot/chat')
     .send({ message: 'Cache me' })
     .set('Content-Type', 'application/json');
@@ -50,7 +52,7 @@ test('POST /underfoot/chat caches responses', async () => {
   // Change upstream payload
   upstream = makeUpstream({ response: 'changed', items: [] });
 
-  const second = await request('http://localhost:3000')
+  const second = await request(app)
     .post('/underfoot/chat')
     .send({ message: 'Cache me' })
     .set('Content-Type', 'application/json');
@@ -61,7 +63,7 @@ test('POST /underfoot/chat caches responses', async () => {
 });
 
 test('POST /underfoot/chat validates message', async () => {
-  const res = await request('http://localhost:3000')
+  const res = await request(app)
     .post('/underfoot/chat')
     .send({ message: '' })
     .set('Content-Type', 'application/json');

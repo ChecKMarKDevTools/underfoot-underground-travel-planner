@@ -6,7 +6,7 @@
     "dev": "node --env-file=.env --watch src/index.js",
     "start": "node src/index.js",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:unit": "echo 'placeholder backend unit test'",
+    "test:unit": "vitest run",
     "test:e2e": "echo 'placeholder backend e2e test'"
   },
   "dependencies": {
@@ -14,5 +14,9 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "openai": "^5.12.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.4"
   }
 }
