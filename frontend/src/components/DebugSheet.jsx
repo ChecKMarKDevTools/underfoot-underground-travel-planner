@@ -40,15 +40,7 @@ export default function DebugSheet({ open, onClose, data }) {
         <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
           <section className="glass p-3">
             <h3 className="text-sm font-bold">Summary</h3>
-            {/* Expose a stable hook for tests so they don't rely on duplicate JSON occurrences */}
-            {fullDebug.requestId && (
-              <p
-                className="mt-1 font-mono break-all text-[11px] opacity-90"
-                data-testid="request-id"
-              >
-                requestId: {fullDebug.requestId}
-              </p>
-            )}
+            {/* requestId and other summary fields remain only in the JSON blob below while contract is evolving */}
             <pre className="mt-2 overflow-x-auto whitespace-pre-wrap">
               {JSON.stringify(
                 {

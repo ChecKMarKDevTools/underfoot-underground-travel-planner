@@ -45,8 +45,10 @@ test('chat shows bot response and inline items when API returns data (mocked)', 
   // Open debug sheet and verify debug content surfaced
   await page.getByRole('button', { name: 'Debug View' }).click();
   await expect(page.getByRole('heading', { name: 'Debug View' })).toBeVisible();
-  // Use dedicated request id test hook for stability
-  await expect(page.getByTestId('request-id')).toContainText('mock-123');
+  // Assert requestId present inside the summary JSON blob (first pre under Summary heading)
+  const summarySection = page.getByRole('heading', { name: 'Summary' }).locator('..');
+  const summaryPre = summarySection.locator('pre').first();
+  await expect(summaryPre).toContainText('mock-123');
 });
 
 test('restart button reloads app state (mocked chat)', async ({ page }) => {

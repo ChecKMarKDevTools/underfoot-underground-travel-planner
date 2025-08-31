@@ -99,10 +99,30 @@ app.post('/underfoot/chat', async (req, res) => {
       messageEcho: message,
       receivedKeys: Object.keys(base),
     };
+
+    // Basic server-side trace log (omit large payload bodies)
+    console.log(
+      JSON.stringify(
+        {
+          evt: 'chat.upstream.result',
+          requestId,
+          upstreamStatus,
+          upstreamError,
+          receivedKeys: debug.receivedKeys,
+          elapsedMs: debug.executionTimeMs,
+        },
+        null,
+        0,
+      ),
+    );
     const finalPayload = { ...base, debug };
     if (!upstreamError && upstreamStatus === 200) writeCache(key, finalPayload, CACHE_TTL_SECONDS);
 
     if (upstreamError || (upstreamStatus != null && upstreamStatus >= 400)) {
+      const fallbackReason = upstreamError || `upstream-status-${upstreamStatus}`;
+      debug.fallback = true;
+      debug.fallbackReason = fallbackReason;
+      console.warn(JSON.stringify({ evt: 'chat.fallback', requestId, fallbackReason }, null, 0));
       return res.status(200).json({
         response:
           base.response ||

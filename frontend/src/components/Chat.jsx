@@ -1,14 +1,15 @@
 import { useRef, useState, useEffect } from 'react';
 import ResultCard from './ResultCard';
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+// Default API base to current origin if env not provided (improves local DX)
+const API_BASE = import.meta.env.VITE_API_BASE || window.location.origin;
 const LIMIT = Number(import.meta.env.VITE_LIMIT || 5);
 
 // Chat layout modeled after ChatGPT (no sidebar):
 // - Full height scrollable message column centered with max width.
 // - Input composer docked at bottom with subtle divider shadow.
 // - Auto-scroll to last message.
-export default function Chat({ onDebug }) {
+export default function Chat({ onDebug, onAutoDebug }) {
   const [messages, setMessages] = useState([
     {
       from: 'bot',
@@ -43,7 +44,8 @@ export default function Chat({ onDebug }) {
     setInput('');
     setBusy(true);
     try {
-      const res = await fetch(`${API_BASE}/underfoot/chat`, {
+      const endpoint = `${API_BASE.replace(/\/$/, '')}/underfoot/chat`;
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, limit: LIMIT }),
@@ -81,11 +83,21 @@ export default function Chat({ onDebug }) {
         chatResponse: data,
       };
       onDebug?.(debugPayload);
+      if (debugPayload.fallback && typeof onAutoDebug === 'function') {
+        // Auto-open debug sheet for fallback responses if consumer wants it
+        try {
+          onAutoDebug();
+        } catch {
+          /* noop */
+        }
+      }
     } catch {
       setMessages((m) => [
         ...m,
         { from: 'bot', text: 'My local informants ghosted me. Try again or broaden the area?' },
       ]);
+      // Provide synthetic minimal debug for UI even on network error
+      onDebug?.({ synthetic: true, error: 'network-or-cors', at: Date.now() });
     } finally {
       setBusy(false);
     }
@@ -110,7 +122,14 @@ export default function Chat({ onDebug }) {
                   role="article"
                   aria-label={isUser ? 'Your message' : 'Underfoot reply'}
                 >
-                  <div>{m.text}</div>
+                  <div>
+                    {m.text}
+                    {m.from === 'bot' && m.fallback && (
+                      <span className="ml-2 text-[10px] uppercase tracking-wide text-cm-sub">
+                        (fallback)
+                      </span>
+                    )}
+                  </div>
                   {!isUser && Array.isArray(m.items) && m.items.length > 0 && (
                     <div className="flex flex-col gap-3 pt-1 border-t border-cm-border/50">
                       {m.items.map((item) => (
