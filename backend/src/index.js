@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import { randomUUID } from 'crypto';
 
 // Environment validation
 const validateEnv = () => {
@@ -28,9 +29,11 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
 const PORT = Number(process.env.PORT || 3000);
-const DEFAULT_RADIUS = Number(process.env.DEFAULT_RADIUS_MILES || 10);
-const MAX_RADIUS = Number(process.env.MAX_RADIUS_MILES || 40);
+// Simplified configuration: agent (Stonewalker) owns parsing / radius. We just forward the message.
 const CACHE_TTL_SECONDS = Number(process.env.CACHE_TTL_SECONDS || 60);
+const STONEWALKER_WEBHOOK =
+  process.env.STONEWALKER_WEBHOOK ||
+  'https://checkmarkdevtools.app.n8n.cloud/webhook-test/49085708-7117-48b8-ad12-cd6c25088c30';
 
 const cache = new Map();
 
@@ -45,87 +48,83 @@ app.get('/health', (_req, res) => {
   });
 });
 
-app.post('/chat', async (req, res) => {
+// Unified single endpoint: /underfoot/chat
+app.post('/underfoot/chat', async (req, res) => {
   const started = Date.now();
+  const requestId = 'uf_' + randomUUID();
   try {
-    // Input validation
-    const { message = '', limit = 5, force = false } = req.body || {};
-
-    if (typeof message !== 'string') {
-      return res.status(400).json({ error: 'Message must be a string' });
+    const { message = '', force = false } = req.body || {};
+    if (typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ error: 'Message must be a non-empty string' });
     }
 
-    const parsedLimit = Math.max(1, Math.min(20, Number(limit) || 5));
-    const parsed = parseMessage(String(message));
-    const userRadius = parsed.radius; // Use the radius from user input
-    const key = cacheKey(parsed, userRadius);
-
+    const key = cacheKey(message);
     if (!force) {
       const hit = readCache(key);
-      if (hit) return res.json(hit);
+      if (hit) return res.json({ ...hit, debug: { ...(hit.debug || {}), cache: 'hit' } });
     }
 
-    const tiers = [
-      userRadius,
-      Math.min(userRadius * 2, MAX_RADIUS),
-      Math.min(userRadius * 4, MAX_RADIUS),
-    ];
-    let gathered = { core: [], stretch: [], nearby: [] };
-    for (let i = 0; i < tiers.length; i++) {
-      const miles = tiers[i];
-      const raw = demoFetch(parsed, miles); // ← stub instead of n8n
-      const bucket = i === 0 ? 'core' : i === 1 ? 'stretch' : 'nearby';
-      gathered[bucket] = dedupe(filterBlocked(raw.items));
-      const total = gathered.core.length + gathered.stretch.length + gathered.nearby.length;
-      if (total >= Math.max(4, Math.min(6, parsedLimit))) break;
+    const upstreamStarted = Date.now();
+    let upstreamStatus = null;
+    let upstreamJson = null;
+    let upstreamError = null;
+    try {
+      const upstreamRes = await fetch(STONEWALKER_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      upstreamStatus = upstreamRes.status;
+      const text = await upstreamRes.text();
+      try {
+        upstreamJson = text ? JSON.parse(text) : {};
+      } catch {
+        upstreamError = 'Invalid JSON from Stonewalker';
+        upstreamJson = { raw: text };
+      }
+    } catch (err) {
+      upstreamError = err?.message || 'Upstream fetch failed';
     }
 
-    // pick for primary / nearby
-    const primary = [...gathered.core, ...gathered.stretch].slice(0, 5);
-    const leftover = [...gathered.core, ...gathered.stretch].slice(5);
-    const nearby = [...leftover, ...gathered.nearby].slice(0, 2);
-
-    // witty reply (OpenAI optional)
-    const reply = await composeReply(parsed, primary, nearby);
-
-    // Determine the furthest radius actually used based on gathered results
-    let radiusUsed = userRadius;
-    if (gathered.nearby.length > 0) radiusUsed = tiers[2];
-    else if (gathered.stretch.length > 0) radiusUsed = tiers[1];
-    else if (gathered.core.length > 0) radiusUsed = tiers[0];
-
-    const payload = {
-      reply,
-      debug: {
-        parsed,
-        radiusCore: userRadius,
-        radiusUsed,
-        coreCount: gathered.core.length,
-        stretchCount: gathered.stretch.length,
-        nearbyCount: gathered.nearby.length,
-        raw: { core: gathered.core, stretch: gathered.stretch, nearby: gathered.nearby },
-        filtered: { primary, nearby },
-        executionTimeMs: Date.now() - started,
+    const base = typeof upstreamJson === 'object' && upstreamJson ? upstreamJson : {};
+    const debug = {
+      requestId,
+      executionTimeMs: Date.now() - started,
+      upstream: {
+        status: upstreamStatus,
+        elapsedMs: Date.now() - upstreamStarted,
+        url: STONEWALKER_WEBHOOK,
+        error: upstreamError || null,
       },
+      messageEcho: message,
+      receivedKeys: Object.keys(base),
     };
+    const finalPayload = { ...base, debug };
+    if (!upstreamError && upstreamStatus === 200) writeCache(key, finalPayload, CACHE_TTL_SECONDS);
 
-    writeCache(key, payload, CACHE_TTL_SECONDS);
-    res.json(payload);
+    if (upstreamError || (upstreamStatus != null && upstreamStatus >= 400)) {
+      return res.status(200).json({
+        response:
+          base.response ||
+          'Stonewalker is pausing in the tunnel. Try again in a bit or rephrase your request.',
+        ...base,
+        debug,
+      });
+    }
+    res.json(finalPayload);
   } catch (error) {
-    console.error('Error processing chat request:', error);
+    console.error('Error processing /underfoot/chat:', error);
     res.status(500).json({
       error: 'Internal server error',
-      debug: {
-        executionTimeMs: Date.now() - started,
-      },
+      debug: { requestId, executionTimeMs: Date.now() - started },
     });
   }
 });
 
 const server = app.listen(PORT, () => {
   console.log(`🚇 Underfoot backend running on :${PORT}`);
-  console.log(`📍 Default search radius: ${DEFAULT_RADIUS} miles`);
-  console.log(`💾 Cache TTL: ${CACHE_TTL_SECONDS} seconds`);
+  console.log(`🪨 Stonewalker webhook target: ${STONEWALKER_WEBHOOK}`);
+  console.log(`💾 Cache TTL (seconds): ${CACHE_TTL_SECONDS}`);
 });
 
 // Graceful shutdown
@@ -140,109 +139,8 @@ const gracefulShutdown = (signal) => {
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-const parseMessage = (text) => {
-  try {
-    const locMatch = text.match(/([A-Za-z][A-Za-z\s]+,\s?[A-Z]{2})/);
-    const vibeMatch = text.match(
-      /\b(outdoors|history|food|art|music|quirky|nature|hike|coffee)\b/i,
-    );
-    const radiusMatch = text.match(/(\d+)\s*mile[s]?(?:\s+radius)?/i);
-
-    const radius = radiusMatch
-      ? Math.max(1, Math.min(100, Number(radiusMatch[1])))
-      : DEFAULT_RADIUS; // limit to 100 miles
-
-    return {
-      location: locMatch?.[1] || 'Pikeville, KY',
-      vibe: vibeMatch?.[0]?.toLowerCase() || '',
-      radius: radius,
-    };
-  } catch (error) {
-    console.error('Error parsing message:', error);
-    // Return fallback values
-    return {
-      location: 'Pikeville, KY',
-      vibe: '',
-      radius: DEFAULT_RADIUS,
-    };
-  }
-};
-
-const demoFetch = (parsed, radiusMiles) => {
-  // stubbed candidates with fake distances; pretend this came from n8n
-  const pool = [
-    {
-      name: 'Hidden Trail Overlook',
-      blurb: 'Sunrise ridge locals love.',
-      url: 'https://localblog.example/overlook',
-      host: 'localblog.example',
-      distanceMi: 6,
-    },
-    {
-      name: 'Basement Bluegrass Night',
-      blurb: 'Thursday pickers’ circle.',
-      url: 'https://indiecalendar.example/bluegrass',
-      host: 'indiecalendar.example',
-      distanceMi: 2,
-    },
-    {
-      name: 'Pop-up Hand Pie Window',
-      blurb: 'Rotating flavors by the river.',
-      url: 'https://substack.example/pies',
-      host: 'substack.example',
-      distanceMi: 12,
-    },
-    {
-      name: 'Art Alley Micro-Gallery',
-      blurb: 'Unmarked door, student shows.',
-      url: 'https://campus.example/art',
-      host: 'campus.example',
-      distanceMi: 17,
-    },
-    {
-      name: 'Coal Camp History Walk',
-      blurb: 'Occasional docent strolls.',
-      url: 'https://historyclub.example/walk',
-      host: 'historyclub.example',
-      distanceMi: 28,
-    },
-    {
-      name: 'Creekside Night Market',
-      blurb: 'DIY crafts and late bites.',
-      url: 'https://indiecommunity.example/market',
-      host: 'indiecommunity.example',
-      distanceMi: 33,
-    },
-    {
-      name: 'Old Rail Tunnel Echoes',
-      blurb: 'Acoustic geek spot.',
-      url: 'https://railnerds.example/echo',
-      host: 'railnerds.example',
-      distanceMi: 41,
-    }, // beyond 40
-  ];
-  return { items: pool.filter((x) => x.distanceMi <= radiusMiles) };
-};
-
-const filterBlocked = (items) => {
-  const blocked = ['tripadvisor', 'yelp', 'foursquare', 'facebook', 'instagram'];
-  return items.filter((x) => !blocked.some((b) => x.url.includes(b)));
-};
-
-const dedupe = (items) => {
-  const seen = new Set();
-  return items.filter((x) => {
-    const k = x.url.toLowerCase();
-    if (seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
-};
-
-const cacheKey = (parsed, radius) => {
-  const { location, vibe } = parsed;
-  return `${location}|${vibe}|${radius}`;
-};
+// Cache key now uses only the raw message text (lowercased)
+const cacheKey = (message) => message.trim().toLowerCase();
 
 const readCache = (key) => {
   const hit = cache.get(key);
@@ -256,32 +154,4 @@ const readCache = (key) => {
 
 const writeCache = (key, value, ttlSeconds) => {
   cache.set(key, { value, expires: Date.now() + ttlSeconds * 1000 });
-};
-
-const composeReply = async (parsed, primary, nearby) => {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) {
-    // cost-free local reply
-    const p = primary
-      .map((it, i) => `${i + 1}. ${it.name} — ${it.blurb} (${approx(it.distanceMi)})`)
-      .join('\n');
-    const n = nearby.length
-      ? `\n\nNear(ish) by:\n${nearby.map((it) => `• ${it.name} — ${approx(it.distanceMi)}`).join('\n')}`
-      : '';
-    const radiusNote =
-      parsed.radius !== DEFAULT_RADIUS
-        ? ` within ${parsed.radius} miles`
-        : ` (searched ${parsed.radius} mile radius)`;
-    return `Alright, ${parsed.location}${radiusNote}. I found some underground gems.\n\nTop picks:\n${p}${n}`;
-  }
-  // If you want real style: uncomment and use OpenAI call here.
-  // Keeping stubbed to avoid spend during local bring-up.
-  // const p = primary.map((it, i) => `${i + 1}. ${it.name} — ${it.blurb} (${approx(it.distanceMi)})`).join('\n')
-  // const n = nearby.length ? `\n\nNear(ish) by:\n${nearby.map(it => `• ${it.name} — ${approx(it.distanceMi)}`).join('\n')}` : ''
-  // const radiusNote = parsed.radius !== DEFAULT_RADIUS ? ` within ${parsed.radius} miles` : ` (searched ${parsed.radius} mile radius)`
-  // return `Alright, ${parsed.location}${radiusNote}. I found some underground gems.\n\nTop picks:\n${p}${n}`
-};
-
-const approx = (mi) => {
-  return mi != null ? `≈${mi} mi` : '';
 };

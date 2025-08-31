@@ -43,7 +43,7 @@ export default function Chat({ onDebug }) {
     setInput('');
     setBusy(true);
     try {
-      const res = await fetch(`${API_BASE}/chat`, {
+      const res = await fetch(`${API_BASE}/underfoot/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, limit: LIMIT }),

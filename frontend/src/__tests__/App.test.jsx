@@ -58,9 +58,13 @@ test('Chat calls onDebug and renders inline item cards from new shape', async ()
 
   // Open debug sheet to verify data was stored
   await user.click(screen.getByRole('button', { name: /Debug View/i }));
-  expect(await screen.findByText(/requestId/)).toBeInTheDocument();
+  // There can be multiple JSON blocks containing requestId; ensure at least one is present.
+  await waitFor(() => {
+    const matches = screen.getAllByText(/requestId/);
+    expect(matches.length).toBeGreaterThan(0);
+  });
 
-  // Inline item card should render
+  // Inline item card should render (role article with accessible name)
   await waitFor(() =>
     expect(screen.getByRole('article', { name: /Mine Entrance/i })).toBeInTheDocument(),
   );

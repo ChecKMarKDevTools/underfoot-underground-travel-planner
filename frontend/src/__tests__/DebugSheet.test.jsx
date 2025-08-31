@@ -18,8 +18,9 @@ test('renders debug sections when open and closes on click', async () => {
   );
 
   expect(screen.getByRole('heading', { name: /Debug View/i })).toBeInTheDocument();
-  expect(screen.getByText(/Parse & Radius/i)).toBeInTheDocument();
-  expect(screen.getByText(/Filtered \(truncated\)/i)).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Summary/i })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Full Debug Object/i })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Raw Chat Response/i })).toBeInTheDocument();
 
   const user = userEvent.setup();
   // click on the overlay to close

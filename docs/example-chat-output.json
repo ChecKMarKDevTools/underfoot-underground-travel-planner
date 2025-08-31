@@ -6,7 +6,7 @@
       "url": "https://stateparks.utah.gov/parks/red-fleet/",
       "summary": "Scenic hiking trails around a reservoir with striking red rock formations and frequent wildlife sightings.",
       "image": "https://stateparks.utah.gov/wp-content/uploads/2019/06/redfleet_hero.jpg",
-      "rating": 4.5,
+      "score": 4.5,
       "source": "cache"
     },
     {
@@ -14,11 +14,27 @@
       "url": "https://www.fs.usda.gov/recarea/ashley/recarea/?recid=80757",
       "summary": "A vast recreation area with dramatic canyons and trails, beloved by hikers and explorers alike.",
       "image": "https://www.fs.usda.gov/Internet/FSE_MEDIA/stelprdb5369619.jpg",
-      "rating": 4.7
+      "source": "serp",
+      "score": 4.7
+    },
+    {
+      "title": "Dinosaur National Monument",
+      "url": "https://www.reddit.com/r/mapporncirclejerk/comments/1me4fci/why_doesnt_california_build_a_fast_train_here_are/",
+      "summary": "Famous for its dinosaur fossils, this monument also offers rugged hiking trails through stunning landscapes.",
+      "image": "https://i.redd.it/1qcn2a2x88gf1.jpeg",
+      "source": "reddit",
+      "score": 4.6
+    },
+    {
+      "title": "Ashley National Forest",
+      "url": "https://www.facebook.com/events/1139520574895477/",
+      "summary": "A vast forest area with diverse trails, from easy walks to challenging hikes, surrounded by beautiful scenery.",
+      "image": "https://www.fs.usda.gov/Internet/FSE_MEDIA/stelprdb5369618.jpg",
+      "source": "facebook",
+      "score": 4.4
     }
   ],
   "sessionId": "abc123-session",
-  "intent": "hiking",
-  "location": "Clarksville, Wyoming",
-  "source": "gmaps_full_reviews"
+  "user_intent": "hiking",
+  "user_location": "Clarksville, Wyoming"
 }

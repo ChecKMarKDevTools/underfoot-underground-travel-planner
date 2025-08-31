@@ -6,7 +6,6 @@ import DebugSheet from './components/DebugSheet';
 export default function App() {
   const [debugOpen, setDebugOpen] = useState(false);
   const [debugData, setDebugData] = useState({});
-  const [results, setResults] = useState([]);
 
   return (
     <div className="min-h-[100dvh] max-w-5xl mx-auto flex flex-col px-3">
