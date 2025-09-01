@@ -1,4 +1,4 @@
-# Underfoot Chat UI (Fallback)
+# Underfoot Chat UI
 
 ## Purpose
 
@@ -14,10 +14,7 @@ This directory (and related components in `frontend/src/components`) contains th
 
 ## Planned Direction
 
-We expect to transition primary interaction to the **n8n embedded widget** (see `FRONTEND_DESIGN_ADR.md`). The custom UI will remain as:
-
-1. Fallback if embed fails to load / lacks a needed capability.
-2. Sandbox for rapid UX spikes without touching embed integration.
+We expect to transition primary interaction to the **n8n embedded widget** (see `FRONTEND_DESIGN_ADR.md`). The custom UI now serves as a sandbox for rapid UX spikes without affecting embed integration.
 
 ## Key Components
 
@@ -66,15 +63,9 @@ Not implemented (intentionally deferred):
 - Multi‑thread or saved sessions.
 - Advanced formatting / markdown rendering.
 
-## Fallback Strategy (Post Embed)
+## Embed Toggle (Future)
 
-A simple runtime feature flag (env var or query param) can choose between:
-
-```
-if (useEmbedded) return <EmbeddedChat />; else return <Chat />;
-```
-
-Both expose a compatible minimal interface: `onResults`, `onDebug`.
+If both native and embed variants coexist, a lightweight runtime flag can select between them while preserving a minimal shared contract (`onResults`, `onDebug`).
 
 ## Maintenance Guidelines
 

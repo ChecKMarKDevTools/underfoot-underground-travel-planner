@@ -1,6 +1,6 @@
 # Manual Sanity Test Checklist
 
-Purpose: quick end-to-end verification that core interfaces function (health, chat JSON, SSE stream, cache, fallback, debug UI). Run before major commits or deployments.
+Purpose: quick end-to-end verification that core interfaces function (health, chat JSON, SSE stream, cache, debug UI). Run before major commits or deployments.
 
 > NOTE: Location normalization intentionally excluded for now.
 
@@ -33,27 +33,18 @@ npm run dev
 
 ## Steps
 
-| #   | Action               | Command / Interaction                                                                                                     | Expected Result                              |
-| --- | -------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| 1   | Health               | `curl -s http://localhost:3000/health`                                                                                    | JSON `{ ok: true, cache: { size: 0 }}`       |
-| 2   | Chat POST            | `curl -s -X POST http://localhost:3000/underfoot/chat -H 'Content-Type: application/json' -d '{"message":"Test coffee"}'` | 200 JSON with `response` & `debug.requestId` |
-| 3   | Cache Hit            | Repeat step 2                                                                                                             | `debug.cache == "hit"` present               |
-| 4   | SSE Chat             | `curl -N "http://localhost:3000/underfoot/chat?message=Hidden+bar&stream=true"`                                           | Events: `start`, `complete`, `end`           |
-| 5   | SSE Cache            | Repeat step 4                                                                                                             | `start` event has `cacheHit: true`           |
-| 6   | Frontend UI          | Use browser, send message                                                                                                 | Chat reply appears, debug history updated    |
-| 7   | Debug While Chatting | Open debug, send another message                                                                                          | History count increments; chat still usable  |
-| 8   | Fallback (simulate)  | Temporarily set bad webhook and repeat POST                                                                               | Response has `debug.fallback == true`        |
-| 9   | History Cap          | Send >50 messages (loop)                                                                                                  | History length capped at 50                  |
+| # | Action | Command / Interaction | Expected Result |
+| - | - | - | - |
+| 1 | Health | `curl -s http://localhost:3000/health` | JSON `{ ok: true, cache: { size: 0 }}` |
+| 2 | Chat POST | `curl -s -X POST http://localhost:3000/underfoot/chat -H 'Content-Type: application/json' -d '{"chatInput":"Test coffee"}'` | 200 JSON with `response` & `debug.requestId` |
+| 3 | Cache Hit | Repeat step 2 | `debug.cache == "hit"` present |
+| 4 | SSE Chat | `curl -N "http://localhost:3000/underfoot/chat?chatInput=Hidden+bar&stream=true"` | Events: `start`, `complete`, `end` |
+| 5 | SSE Cache | Repeat step 4 | `start` event has `cacheHit: true` |
+| 6 | Frontend UI | Use browser, send message | Chat reply appears, debug history updated |
+| 7 | Debug While Chatting | Open debug, send another message | History count increments; chat still usable |
+| 8 | History Cap | Send >50 messages (loop) | History length capped at 50 |
 
-### Fallback Simulation
-
-Temporarily run a separate backend instance with invalid webhook:
-
-```
-STONEWALKER_WEBHOOK=http://localhost:3000/does-not-exist node backend/src/index.js
-```
-
-Then POST a chat request to that instance: expect fallback fields.
+<!-- Fallback simulation removed: backend no longer synthesizes fallback payloads -->
 
 ### Optional SSE Connection Limit Test
 
@@ -62,7 +53,7 @@ Set `SSE_MAX_CONNECTIONS=1` then open two SSE streams; second should yield 503 J
 ## Quick Loop Script (Optional)
 
 ```bash
-for i in {1..55}; do curl -s -X POST http://localhost:3000/underfoot/chat -H 'Content-Type: application/json' -d '{"message":"hist-'"$i"'"}' >/dev/null; done
+for i in {1..55}; do curl -s -X POST http://localhost:3000/underfoot/chat -H 'Content-Type: application/json' -d '{"chatInput":"hist-'"$i"'"}' >/dev/null; done
 ```
 
 ## Pass/Fail Recording Template
@@ -75,7 +66,7 @@ SSE: PASS
 SSE Cache: PASS
 Frontend Basic: PASS
 Debug While Chatting: PASS
-Fallback: PASS
+History Cap: PASS
 History Cap: PASS
 ```
 

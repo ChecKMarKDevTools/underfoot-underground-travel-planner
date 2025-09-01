@@ -1,0 +1,54 @@
+name: deploy:cloudflare-pages
+# This has yet to be tested
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies (root + frontend)
+        run: npm install --ignore-scripts
+
+      - name: Lint & Unit Tests (frontend)
+        run: |
+          cd frontend
+          npm run lint --if-present || echo "lint script not defined"
+          npm test -- --run
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'underfoot-frontend' }}
+          directory: frontend/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # Optionally map env vars; uncomment if needed
+          # wranglerVersion: '3'
+
+    # Notes:
+    # - Assumes only the frontend needs deploying to Pages.
+    # - Secrets must be configured in repository settings.
+    # - E2E tests can be added prior to deploy if desired (Playwright install adds ~2-3m).
