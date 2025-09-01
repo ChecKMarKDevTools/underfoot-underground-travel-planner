@@ -1,5 +1,9 @@
 # Underfoot Underground Travel Planner
 
+<p align="center">
+  <img src="frontend/public/favicon.png" alt="Underfoot logo" width="140" height="140" />
+</p>
+
 > 🦄 Yes — I know\... _another_ project. It can't be helped! I really do plan on finishing them all (at some point). So, since I'm already over-worked and short on time as-is. Here's my 2nd attempt at **vibe coding** with ChatGPT at the wheel and GitHub Copilot playing backup. We'll see how it goes without me going to crazy with the overbearing-OCD. 🤞
 >
 > P.S. I'll keep notes of how it goes in the [JOURNEY](./docs/JOURNEY.md) file, because... why not?
@@ -139,6 +143,28 @@ wrangler deploy
 ```
 
 Then set `VITE_API_BASE` to the Worker URL for the frontend build.
+
+---
+
+## n8n Workflows Code
+
+The automation workflows powering the experimental chat / data stitching layer (used during the hackathon phase) are published as a sharable gist so you can import or remix them directly inside your own n8n instance:
+
+👉 <https://gist.github.com/anchildress1/cab1237affe75f0bed6629faeb940f2c>
+
+Import Instructions (quick):
+
+1. Open your n8n dashboard.
+2. Create New Workflow → Menu (⋮) → Import from URL.
+3. Paste the gist raw URL (or download the JSON and import from file).
+4. Review credentials placeholders, add your own keys (OpenAI, data sources, etc.).
+5. Activate and test.
+
+Notes:
+
+- Gist may evolve; pin a specific revision hash if you need reproducibility.
+- Secrets are never stored in the gist—remember to configure them locally.
+- Feel free to open an issue suggesting enhancements to the workflows.
 
 ---
 
