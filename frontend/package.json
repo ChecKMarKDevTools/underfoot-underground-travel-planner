@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "vite build",
     "preview": "vite preview --host --port 5173 --strictPort",
     "test": "npm run test:unit && npm run test:e2e",

@@ -38,7 +38,9 @@
     "npm": ">=11.5.1"
   },
   "scripts": {
-    "dev": "npm run -w backend dev & npm run -w frontend dev",
+    "dev": "concurrently -k -n backend,frontend -c cyan,magenta \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm run -w backend dev",
+    "dev:frontend": "npm run -w frontend dev",
     "build": "npm run -w backend build && npm run -w frontend build",
     "start": "npm run -w backend start",
     "commitlint": "commitlint --edit",
@@ -61,6 +63,7 @@
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "concurrently": "^9.2.1",
     "cspell": "^9.2.0",
     "esbuild": "^0.21.5",
     "eslint": "^9.33.0",

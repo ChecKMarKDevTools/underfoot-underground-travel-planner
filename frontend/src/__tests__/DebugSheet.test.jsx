@@ -7,13 +7,24 @@ test('returns null when closed', () => {
   expect(container.firstChild).toBeNull();
 });
 
-test('renders debug sections when open and closes on click', async () => {
+test('renders debug sections, history, and closes on click', async () => {
   const onClose = vi.fn();
+  const history = [
+    { id: '1', ts: Date.now(), data: { debug: { requestId: 'req1' }, chatResponse: { a: 1 } } },
+    {
+      id: '2',
+      ts: Date.now() - 1000,
+      data: { debug: { requestId: 'req2' }, chatResponse: { b: 2 } },
+    },
+  ];
   render(
     <DebugSheet
       open
       onClose={onClose}
-      data={{ parsed: { city: 'Pikeville' }, radiusCore: 5, filtered: { a: 1 }, raw: { b: 2 } }}
+      data={history[0].data}
+      history={history}
+      onSelectHistory={() => {}}
+      onClearHistory={() => {}}
     />,
   );
 
@@ -23,6 +34,8 @@ test('renders debug sections when open and closes on click', async () => {
   expect(screen.getByRole('heading', { name: /Raw Chat Response/i })).toBeInTheDocument();
 
   const user = userEvent.setup();
+  // Ensure copy buttons exist
+  expect(screen.getAllByText(/Copy/i).length).toBeGreaterThan(0);
   // click on the overlay to close
   const overlay = screen.getByTestId('overlay');
   await user.click(overlay);

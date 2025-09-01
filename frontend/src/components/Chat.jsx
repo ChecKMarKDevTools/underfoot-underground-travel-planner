@@ -44,25 +44,95 @@ export default function Chat({ onDebug, onAutoDebug }) {
     setInput('');
     setBusy(true);
     try {
-      const endpoint = `${API_BASE.replace(/\/$/, '')}/underfoot/chat`;
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, limit: LIMIT }),
-      });
-      const data = await res.json();
-      // Strict new shape: { response, items }
-      const replyText = data?.response;
-      // We'll build a bot message with optional attached items
-      let botMessage = null;
-      if (replyText) botMessage = { from: 'bot', text: replyText };
+      // Decide if we want to attempt streaming (simple heuristic: always try; fallback on error)
+      const sseUrl = `${API_BASE.replace(/\/$/, '')}/underfoot/chat?stream=true&message=${encodeURIComponent(
+        text,
+      )}`;
+      let usedStreaming = false;
+      if ('EventSource' in window) {
+        try {
+          usedStreaming = true;
+          await new Promise((resolve) => {
+            let finalPayload = null;
+            const es = new EventSource(sseUrl);
+            es.addEventListener('start', () => {
+              // Insert a placeholder bot message we'll update when complete
+              setMessages((m) => [...m, { from: 'bot', text: '…', streaming: true }]);
+            });
+            es.addEventListener('complete', (evt) => {
+              try {
+                finalPayload = JSON.parse(evt.data);
+              } catch {
+                finalPayload = { response: evt.data };
+              }
+              const replyText = finalPayload?.response;
+              const rawItems = Array.isArray(finalPayload?.items) ? finalPayload.items : [];
+              const attached = rawItems.slice(0, 6).map((r, idx) => ({
+                id: r.id ?? r.url ?? r.title ?? idx,
+                title: r.title ?? 'Untitled',
+                description: r.description ?? '(no summary provided)',
+                imageUrl: r.imageUrl,
+                url: r.url,
+                rating: r.rating,
+                source: r.source,
+              }));
+              setMessages((m) => {
+                const copy = [...m];
+                // Replace last streaming placeholder
+                for (let i = copy.length - 1; i >= 0; i--) {
+                  if (copy[i].streaming) {
+                    copy[i] = {
+                      from: 'bot',
+                      text: replyText || '(no reply)',
+                      items: attached.length ? attached : undefined,
+                      fallback: finalPayload?.debug?.fallback,
+                    };
+                    break;
+                  }
+                }
+                return copy;
+              });
+              const debugPayload = {
+                ...(finalPayload?.debug || {}),
+                chatResponse: finalPayload,
+                transport: 'sse',
+              };
+              onDebug?.(debugPayload);
+              if (debugPayload.fallback && typeof onAutoDebug === 'function') {
+                try {
+                  onAutoDebug();
+                } catch {
+                  /* noop */
+                }
+              }
+            });
+            es.addEventListener('error', (evt) => {
+              console.warn('SSE error', evt);
+            });
+            es.addEventListener('end', () => {
+              es.close();
+              resolve();
+            });
+          });
+        } catch (err) {
+          console.warn('SSE attempt failed, falling back', err);
+          usedStreaming = false;
+        }
+      }
 
-      // Normalize items (only new shape supported)
-      let rawItems = Array.isArray(data?.items) ? data.items : [];
-
-      let attached = [];
-      if (rawItems.length) {
-        attached = rawItems.slice(0, 6).map((r, idx) => ({
+      if (!usedStreaming) {
+        const endpoint = `${API_BASE.replace(/\/$/, '')}/underfoot/chat`;
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, limit: LIMIT }),
+        });
+        const data = await res.json();
+        const replyText = data?.response;
+        let botMessage = null;
+        if (replyText) botMessage = { from: 'bot', text: replyText };
+        const rawItems = Array.isArray(data?.items) ? data.items : [];
+        const attached = rawItems.slice(0, 6).map((r, idx) => ({
           id: r.id ?? r.url ?? r.title ?? idx,
           title: r.title ?? 'Untitled',
           description: r.description ?? '(no summary provided)',
@@ -71,24 +141,18 @@ export default function Chat({ onDebug, onAutoDebug }) {
           rating: r.rating,
           source: r.source,
         }));
-      }
-      if (botMessage) {
-        if (attached.length) botMessage.items = attached;
-        setMessages((m) => [...m, botMessage]);
-      }
-
-      // Pass through richer debug info; include full chat response under chatResponse
-      const debugPayload = {
-        ...(data?.debug || {}),
-        chatResponse: data,
-      };
-      onDebug?.(debugPayload);
-      if (debugPayload.fallback && typeof onAutoDebug === 'function') {
-        // Auto-open debug sheet for fallback responses if consumer wants it
-        try {
-          onAutoDebug();
-        } catch {
-          /* noop */
+        if (botMessage) {
+          if (attached.length) botMessage.items = attached;
+          setMessages((m) => [...m, botMessage]);
+        }
+        const debugPayload = { ...(data?.debug || {}), chatResponse: data, transport: 'http' };
+        onDebug?.(debugPayload);
+        if (debugPayload.fallback && typeof onAutoDebug === 'function') {
+          try {
+            onAutoDebug();
+          } catch {
+            /* noop */
+          }
         }
       }
     } catch {
@@ -96,7 +160,6 @@ export default function Chat({ onDebug, onAutoDebug }) {
         ...m,
         { from: 'bot', text: 'My local informants ghosted me. Try again or broaden the area?' },
       ]);
-      // Provide synthetic minimal debug for UI even on network error
       onDebug?.({ synthetic: true, error: 'network-or-cors', at: Date.now() });
     } finally {
       setBusy(false);

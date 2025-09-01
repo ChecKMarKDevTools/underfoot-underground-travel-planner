@@ -3,23 +3,48 @@ import { test, expect } from '@playwright/test';
 test('chat shows bot response and inline items when API returns data (mocked)', async ({
   page,
 }) => {
-  // Robust pattern: allow query params or differing base origins
+  // Intercept streaming (SSE) and non-stream chat endpoints; simulate full SSE lifecycle.
   await page.route('**/underfoot/chat*', async (route) => {
+    const url = route.request().url();
+    const payload = {
+      response: 'Mocked secret spots 🌲',
+      items: [
+        {
+          id: 'a1',
+          title: 'Hidden Cavern',
+          description: 'Limestone chamber',
+          url: 'https://example.com/cavern',
+        },
+      ],
+      debug: { requestId: 'mock-123' },
+    };
+
+    if (url.includes('stream=true')) {
+      // Simulate SSE events: start -> complete (with data) -> end
+      const sseBody = [
+        'event: start',
+        'data: {}',
+        '',
+        'event: complete',
+        `data: ${JSON.stringify(payload)}`,
+        '',
+        'event: end',
+        'data: {}',
+        '',
+      ].join('\n');
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/event-stream; charset=utf-8',
+        body: sseBody,
+      });
+      return;
+    }
+
+    // Fallback non-stream path (should not be used if SSE path works, but included for robustness)
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({
-        response: 'Mocked secret spots 🌲',
-        items: [
-          {
-            id: 'a1',
-            title: 'Hidden Cavern',
-            description: 'Limestone chamber',
-            url: 'https://example.com/cavern',
-          },
-        ],
-        debug: { requestId: 'mock-123' },
-      }),
+      body: JSON.stringify(payload),
     });
   });
 

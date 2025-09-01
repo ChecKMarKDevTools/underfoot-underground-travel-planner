@@ -1,6 +1,9 @@
 import request from 'supertest';
 import { beforeAll, afterAll, test, expect, vi } from 'vitest';
 
+// Track upstream geoapify call count for potential future caching assertions.
+let calls = 0;
+
 // We'll mock fetch; logic: first call returns upstream data, later we mutate to test cache.
 let geoPayload = {
   features: [
@@ -56,6 +59,8 @@ test('POST /underfoot/normalize-location caches responses', async () => {
     .send({ input: 'paris' })
     .set('Content-Type', 'application/json');
   expect(first.body.debug.cache).toBeUndefined();
+  // Ensure at least one upstream fetch occurred
+  expect(calls).toBeGreaterThanOrEqual(1);
 
   // Change upstream to different city; cache should hide change
   geoPayload = {
@@ -76,6 +81,8 @@ test('POST /underfoot/normalize-location caches responses', async () => {
     .set('Content-Type', 'application/json');
   expect(second.body.debug.cache).toBe('hit');
   expect(second.body.normalized.toLowerCase()).toContain('paris');
+  // calls should not increase by more than 1 additional fetch due to caching (loose upper bound)
+  expect(calls).toBeLessThanOrEqual(2);
 });
 
 test('POST /underfoot/normalize-location validates input', async () => {

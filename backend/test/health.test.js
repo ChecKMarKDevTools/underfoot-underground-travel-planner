@@ -2,12 +2,8 @@ import request from 'supertest';
 import { beforeAll, afterAll, test, expect } from 'vitest';
 
 beforeAll(async () => {
-  // Dynamically import the server file so it starts listening
-  const mod = await import('../src/index.js');
-  // Express listen returns the server instance; we can't access app directly, so we re-fetch via mod if exported
-  server = mod?.default?.server || mod.server || null; // Fallback if later we export something
-  // For supertest we can wrap the URL if server not exported; simpler: create a fresh express instance is not desired.
-  // Instead, rely on known PORT.
+  // Importing the module starts the shared server (side effect of index.js)
+  await import('../src/index.js');
 });
 
 // NOTE: Do not close the server here. Other test files depend on the shared

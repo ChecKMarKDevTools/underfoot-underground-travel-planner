@@ -75,6 +75,13 @@ export default defineConfig([
             'Do not use catch statements in test files. Use expect(...).rejects or .toThrow() for error assertions.',
         },
       ],
+      // Allow unused vars in tests (helpers, parameter documentation, etc.).
+      'no-unused-vars': [
+        'off',
+        {
+          argsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   {
