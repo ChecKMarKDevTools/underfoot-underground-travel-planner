@@ -6,17 +6,14 @@ beforeEach(() => {
   import.meta.env = { VITE_API_BASE: 'http://localhost:9999', VITE_LIMIT: '5' };
 });
 
-test('SSE debug.fallback triggers onAutoDebug', async () => {
-  const onAutoDebug = vi.fn();
-  class FallbackES {
+// Removed fallback auto debug behavior; ensure plain SSE complete still renders
+test('SSE complete renders response without fallback flag handling', async () => {
+  class PlainES {
     constructor() {
       this.listeners = {};
       setTimeout(() => {
         this._emit('start', {});
-        this._emit('complete', {
-          response: 'SSE with fallback',
-          debug: { fallback: true, requestId: 'fb1' },
-        });
+        this._emit('complete', { response: 'SSE plain', debug: { requestId: 's1' } });
         this._emit('end', {});
       }, 0);
     }
@@ -28,14 +25,13 @@ test('SSE debug.fallback triggers onAutoDebug', async () => {
     }
     close() {}
   }
-  global.EventSource = FallbackES;
+  global.EventSource = PlainES;
   global.fetch = vi.fn();
-  render(<Chat onAutoDebug={onAutoDebug} />);
+  render(<Chat />);
   const user = userEvent.setup();
   await user.type(screen.getByLabelText(/Message Underfoot/i), 'hi');
   await user.click(screen.getByRole('button', { name: /Send/i }));
-  await waitFor(() => expect(screen.getByText('SSE with fallback')).toBeInTheDocument());
-  expect(onAutoDebug).toHaveBeenCalled();
+  await waitFor(() => expect(screen.getByText('SSE plain')).toBeInTheDocument());
 });
 
 test('SSE complete with plain text (non JSON) uses raw response path', async () => {

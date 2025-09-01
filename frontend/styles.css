@@ -4,15 +4,15 @@
 
 :root {
   /* color tokens (mirror of tailwind cm theme) */
-  --cm-primary: #6b33a2;
-  --cm-accent: #f054b2;
-  --cm-info: #00bbf9;
-  --cm-bg: #0e0e12;
-  --cm-panel: #16161d;
-  --cm-card: #1e1e28;
-  --cm-border: #2a2a37;
-  --cm-text: #f6f7fb;
-  --cm-sub: #b8bbd0;
+  --cm-primary: #8657d3; /* amethyst vein */
+  --cm-accent: #e6679e; /* rose quartz */
+  --cm-info: #3bb8c8; /* aquifer cyan */
+  --cm-bg: #0c0c11; /* deeper basalt */
+  --cm-panel: #15151c; /* shadowed basalt */
+  --cm-card: #1c1c25; /* slate card */
+  --cm-border: #272732; /* muted seam */
+  --cm-text: #f5f7fa; /* mist light */
+  --cm-sub: #a7abbe; /* lichen gray */
   --radius: 14px;
 }
 
@@ -86,7 +86,7 @@ button {
     filter 0.2s ease-in-out;
 }
 button:hover {
-  background-color: #232334;
+  background-color: #222231;
   filter: brightness(1.1);
 }
 button:disabled {
@@ -150,12 +150,12 @@ textarea:-moz-autofill {
 
 /* Selection styles */
 ::selection {
-  background: rgba(107, 51, 162, 0.25);
+  background: rgba(134, 87, 211, 0.28);
   color: var(--cm-text);
 }
 input::selection,
 textarea::selection {
-  background: rgba(107, 51, 162, 0.25);
+  background: rgba(134, 87, 211, 0.28);
   color: var(--cm-text);
 }
 

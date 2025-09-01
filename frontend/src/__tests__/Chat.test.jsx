@@ -8,7 +8,7 @@ beforeEach(() => {
   import.meta.env = { VITE_API_BASE: API_BASE, VITE_LIMIT: '5' };
 });
 
-test('renders updated initial bot message and allows typing', async () => {
+test('renders initial bot message and allows typing', async () => {
   render(<Chat />);
   expect(
     screen.getByText(

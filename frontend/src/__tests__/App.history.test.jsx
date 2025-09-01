@@ -4,10 +4,10 @@ import App from '../App';
 
 // Exercise every inline callback in App (onOpenDebug, onRestart, onDebug fallback branch,
 // onAutoDebug, onSelectHistory, onClearHistory, onClose)
-test('App debug history lifecycle including fallback auto-open and selection', async () => {
+test('App debug history lifecycle including selection and clear', async () => {
   const responses = [
     { response: 'Alpha reply', debug: { requestId: 'r-first' } },
-    { response: 'Beta reply', debug: { requestId: 'r-second', fallback: true } }, // triggers auto debug open
+    { response: 'Beta reply', debug: { requestId: 'r-second' } },
   ];
   let call = 0;
   const originalFetch = global.fetch;
@@ -38,7 +38,9 @@ test('App debug history lifecycle including fallback auto-open and selection', a
   await user.click(screen.getByRole('button', { name: /Send/i }));
   await waitFor(() => expect(screen.getByText('Beta reply')).toBeInTheDocument());
 
-  // Auto debug should have opened sheet (heading visible)
+  // Second message
+  // Manually open debug to interact with history after messages
+  await user.click(screen.getByRole('button', { name: /Debug View/i }));
   await waitFor(() =>
     expect(screen.getByRole('heading', { name: /Debug View/i })).toBeInTheDocument(),
   );

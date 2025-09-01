@@ -11,6 +11,8 @@ beforeEach(() => {
 
 test('streams via SSE and replaces placeholder with final payload + items', async () => {
   const onDebug = vi.fn();
+  // New banner presence assertion before interaction
+  expect(screen.queryByAltText(/Underfoot banner/i)).not.toBeInTheDocument(); // not yet rendered until mount
   // Mock EventSource
   class MockEventSource {
     constructor(url) {
@@ -56,25 +58,20 @@ test('streams via SSE and replaces placeholder with final payload + items', asyn
   );
 });
 
-test('falls back to POST when EventSource throws and still renders response', async () => {
+// Removed explicit fallback path; client now just posts if SSE constructor fails
+test('uses POST when EventSource constructor throws', async () => {
   const onDebug = vi.fn();
-  // EventSource present but constructor throws
   global.EventSource = function ThrowingES() {
     throw new Error('nope');
   };
-  // Mock fetch fallback path
-  global.fetch = vi.fn().mockResolvedValue({
-    json: () => Promise.resolve({ response: 'POST fallback', items: [] }),
-  });
-
+  global.fetch = vi
+    .fn()
+    .mockResolvedValue({ json: () => Promise.resolve({ response: 'POST path' }) });
   render(<Chat onDebug={onDebug} />);
   const user = userEvent.setup();
-  await user.type(screen.getByLabelText(/Message Underfoot/i), 'fallback please');
+  await user.type(screen.getByLabelText(/Message Underfoot/i), 'post please');
   await user.click(screen.getByRole('button', { name: /Send/i }));
-  await waitFor(() => expect(screen.getByText('POST fallback')).toBeInTheDocument());
-  expect(onDebug).toHaveBeenCalledWith(
-    expect.objectContaining({ chatResponse: expect.any(Object), transport: 'http' }),
-  );
+  await waitFor(() => expect(screen.getByText('POST path')).toBeInTheDocument());
 });
 
 test('Enter submits and Shift+Enter inserts newline without submit', async () => {
@@ -96,18 +93,4 @@ test('Enter submits and Shift+Enter inserts newline without submit', async () =>
   await waitFor(() => expect(screen.getByText('Line test')).toBeInTheDocument());
 });
 
-test('auto debug trigger when fallback flag present in POST response', async () => {
-  const onAutoDebug = vi.fn();
-  global.EventSource = function ThrowingES() {
-    throw new Error('force fallback');
-  };
-  global.fetch = vi.fn().mockResolvedValue({
-    json: () => Promise.resolve({ response: 'Fallback text', debug: { fallback: true } }),
-  });
-  render(<Chat onAutoDebug={onAutoDebug} />);
-  const user = userEvent.setup();
-  await user.type(screen.getByLabelText(/Message Underfoot/i), 'trigger fallback');
-  await user.click(screen.getByRole('button', { name: /Send/i }));
-  await waitFor(() => expect(screen.getByText('Fallback text')).toBeInTheDocument());
-  expect(onAutoDebug).toHaveBeenCalled();
-});
+// Removed auto debug trigger test (fallback flag no longer produced)

@@ -213,7 +213,7 @@ app.post('/underfoot/chat', async (req, res) => {
       const upstreamRes = await fetch(STONEWALKER_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ chatInput: message }),
       });
       upstreamStatus = upstreamRes.status;
       const text = await upstreamRes.text();
@@ -259,20 +259,8 @@ app.post('/underfoot/chat', async (req, res) => {
     const finalPayload = { ...base, debug };
     if (!upstreamError && upstreamStatus === 200) writeCache(key, finalPayload, CACHE_TTL_SECONDS);
 
-    if (upstreamError || (upstreamStatus != null && upstreamStatus >= 400)) {
-      const fallbackReason = upstreamError || `upstream-status-${upstreamStatus}`;
-      debug.fallback = true;
-      debug.fallbackReason = fallbackReason;
-      console.warn(JSON.stringify({ evt: 'chat.fallback', requestId, fallbackReason }, null, 0));
-      return res.status(200).json({
-        response:
-          base.response ||
-          'Stonewalker is pausing in the tunnel. Try again in a bit or rephrase your request.',
-        ...base,
-        debug,
-      });
-    }
-    res.json(finalPayload);
+    // Simply pass through upstream payload (even on non-200) with debug metadata; no synthetic fallback
+    res.status(upstreamStatus && upstreamStatus >= 400 ? upstreamStatus : 200).json(finalPayload);
   } catch (error) {
     console.error('Error processing /underfoot/chat:', error);
     res.status(500).json({
@@ -366,7 +354,7 @@ app.get('/underfoot/chat', async (req, res, next) => {
       const upstreamRes = await fetch(STONEWALKER_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ chatInput: message }),
       });
       upstreamStatus = upstreamRes.status;
       const text = await upstreamRes.text();
@@ -414,27 +402,7 @@ app.get('/underfoot/chat', async (req, res, next) => {
     const finalPayload = { ...base, debug };
     if (!upstreamError && upstreamStatus === 200) writeCache(key, finalPayload, CACHE_TTL_SECONDS);
 
-    if (upstreamError || (upstreamStatus != null && upstreamStatus >= 400)) {
-      const fallbackReason = upstreamError || `upstream-status-${upstreamStatus}`;
-      debug.fallback = true;
-      debug.fallbackReason = fallbackReason;
-      console.warn(JSON.stringify({ evt: 'chat.fallback', requestId, fallbackReason }, null, 0));
-      // Provide final fallback payload
-      const fallbackPayload = {
-        response:
-          base.response ||
-          'Stonewalker is pausing in the tunnel. Try again in a bit or rephrase your request.',
-        ...base,
-        debug,
-      };
-      send('complete', fallbackPayload);
-      send('end', { requestId });
-      res.end();
-      cleanup();
-      return;
-    }
-
-    // For now we only have a single complete event (no token streaming yet)
+    // Emit upstream payload regardless of status (no synthetic fallback)
     send('complete', finalPayload);
     send('end', { requestId });
     res.end();

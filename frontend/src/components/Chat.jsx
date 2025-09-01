@@ -9,7 +9,7 @@ const LIMIT = Number(import.meta.env.VITE_LIMIT || 5);
 // - Full height scrollable message column centered with max width.
 // - Input composer docked at bottom with subtle divider shadow.
 // - Auto-scroll to last message.
-export default function Chat({ onDebug, onAutoDebug }) {
+export default function Chat({ onDebug }) {
   const [messages, setMessages] = useState([
     {
       from: 'bot',
@@ -85,7 +85,6 @@ export default function Chat({ onDebug, onAutoDebug }) {
                       from: 'bot',
                       text: replyText || '(no reply)',
                       items: attached.length ? attached : undefined,
-                      fallback: finalPayload?.debug?.fallback,
                     };
                     break;
                   }
@@ -98,13 +97,6 @@ export default function Chat({ onDebug, onAutoDebug }) {
                 transport: 'sse',
               };
               onDebug?.(debugPayload);
-              if (debugPayload.fallback && typeof onAutoDebug === 'function') {
-                try {
-                  onAutoDebug();
-                } catch {
-                  /* noop */
-                }
-              }
             });
             es.addEventListener('error', (evt) => {
               console.warn('SSE error', evt);
@@ -125,7 +117,7 @@ export default function Chat({ onDebug, onAutoDebug }) {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, limit: LIMIT }),
+          body: JSON.stringify({ chatInput: text, limit: LIMIT }),
         });
         const data = await res.json();
         const replyText = data?.response;
@@ -147,13 +139,6 @@ export default function Chat({ onDebug, onAutoDebug }) {
         }
         const debugPayload = { ...(data?.debug || {}), chatResponse: data, transport: 'http' };
         onDebug?.(debugPayload);
-        if (debugPayload.fallback && typeof onAutoDebug === 'function') {
-          try {
-            onAutoDebug();
-          } catch {
-            /* noop */
-          }
-        }
       }
     } catch {
       setMessages((m) => [
@@ -187,11 +172,7 @@ export default function Chat({ onDebug, onAutoDebug }) {
                 >
                   <div>
                     {m.text}
-                    {m.from === 'bot' && m.fallback && (
-                      <span className="ml-2 text-[10px] uppercase tracking-wide text-cm-sub">
-                        (fallback)
-                      </span>
-                    )}
+                    {/* No fallback badge now that backend does not synthesize fallback */}
                   </div>
                   {!isUser && Array.isArray(m.items) && m.items.length > 0 && (
                     <div className="flex flex-col gap-3 pt-1 border-t border-cm-border/50">

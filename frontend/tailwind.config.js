@@ -5,15 +5,16 @@ export default {
     extend: {
       colors: {
         cm: {
-          primary: '#6B33A2',
-          accent: '#f054b2',
-          info: '#00bbf9',
-          bg: '#0e0e12',
-          panel: '#16161d',
-          card: '#1e1e28',
-          border: '#2a2a37',
-          text: '#f6f7fb',
-          sub: '#b8bbd0',
+          // Underground inspired palette: basalt, clay, quartz vein accents
+          primary: '#8657D3', // amethyst vein
+          accent: '#E6679E', // rose quartz accent
+          info: '#3BB8C8', // aquifer cyan
+          bg: '#0c0c11', // deeper basalt
+          panel: '#15151c',
+          card: '#1c1c25',
+          border: '#272732',
+          text: '#F5F7FA',
+          sub: '#A7ABBE',
         },
       },
       boxShadow: {

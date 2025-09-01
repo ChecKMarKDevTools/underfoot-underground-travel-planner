@@ -3,5 +3,7 @@
     {
       "file": "./.github/prompts/generate-commit-message.prompt.md"
     }
-  ]
+  ],
+  "codeql-scanner.github.owner": "CheckMarKDevTools",
+  "codeql-scanner.github.repo": "underfoot-underground-travel-planner"
 }
