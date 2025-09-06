@@ -68,6 +68,15 @@ PORT=3000
 
 ## Getting Started
 
+### For Users - Travel Planning
+**New to Underfoot?** Check out our comprehensive user documentation:
+
+📖 **[User Guide](./docs/user-guide/)** - Complete documentation for discovering hidden gems
+🚀 **[Quick Start How-To](./docs/user-guide/how-to-guide.md)** - Get started in under 10 minutes
+💬 **[Chat Interface Guide](./docs/user-guide/getting-started/chat-interface.md)** - Master the conversation
+
+### For Developers - Code Setup
+
 ```bash
 # Install deps (Node 22 LTS recommended)
 npm install
