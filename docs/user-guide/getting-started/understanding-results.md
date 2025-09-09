@@ -12,9 +12,6 @@ Sometimes you'll see a "Near(ish) By" section with places that are a bit further
 
 ## Result Card Details
 
-![Result Cards Detail](../screenshots/06-result-cards-detail.png)
-*Detailed view of result cards showing all available information*
-
 Each result card contains:
 
 ### 🏷️ **Title & Description**

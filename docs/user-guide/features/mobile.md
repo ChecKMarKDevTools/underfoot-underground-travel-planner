@@ -4,7 +4,7 @@ Underfoot is designed to work seamlessly on mobile devices, making it perfect fo
 
 ## Mobile-Optimized Design
 
-![Mobile View](../screenshots/07-mobile-view.png)
+![Mobile View](../screenshots/06-mobile-view.png)
 *Underfoot's interface optimized for mobile screens*
 
 ### Responsive Layout

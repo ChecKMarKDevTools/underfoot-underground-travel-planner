@@ -4,8 +4,11 @@ This step-by-step guide will get you discovering hidden gems with Underfoot in j
 
 ## 🚀 Getting Started (3 minutes)
 
+![Underfoot Landing Page](./screenshots/01-landing-page.png)
+*The Underfoot interface - clean and ready for your travel planning*
+
 ### Step 1: Open Underfoot
-1. Navigate to [Underfoot](http://localhost:5174/labs/underfoot/) in your web browser
+1. Navigate to Underfoot in your web browser
 2. You'll see a clean chat interface with the Underfoot logo
 3. Notice the message input area at the bottom and "Debug View" button in the top right
 
@@ -16,6 +19,10 @@ Think about your travel scenario:
 - **What makes something "underground" to you?** (locals only, not touristy, authentic, etc.)
 
 ### Step 3: Write Your Message
+
+![Chat Input Example](./screenshots/03-chat-input-filled.png)
+*Example query filled in and ready to send*
+
 Click in the input area and type naturally, like you're asking a local friend:
 
 **Example queries to try:**
@@ -24,10 +31,14 @@ Click in the input area and type naturally, like you're asking a local friend:
 - `"Small towns around Austin Texas, live music venues"`
 
 ### Step 4: Send and Explore
+
+![Loading State](./screenshots/04-chat-loading.png)
+*Chat showing processing state while Underfoot finds your hidden gems*
+
 1. Click "Send" or press Enter
 2. Watch as Underfoot processes your request
-3. Read the personalized response
-4. Explore the result cards below
+3. Wait for the personalized response with recommendations
+4. Explore the result cards when they appear
 
 ## 🎯 Understanding Your Results (2 minutes)
 
@@ -46,6 +57,10 @@ Each card contains:
 ## 🔍 Advanced Features (5 minutes)
 
 ### Debug View (Power Users)
+
+![Debug View Interface](./screenshots/05-debug-view-open.png)
+*Debug View showing technical details about your search*
+
 1. Click "Debug View" in the top right
 2. See technical details about your search
 3. Check processing times and source information
@@ -58,6 +73,10 @@ Continue chatting to refine your results:
 - `"What about evening activities near those spots?"`
 
 ### Mobile Usage
+
+![Mobile Interface](./screenshots/06-mobile-view.png)
+*Underfoot's mobile-optimized interface for on-the-go planning*
+
 - Works seamlessly on smartphones
 - Touch-friendly interface
 - Perfect for real-time discovery while traveling
@@ -166,6 +185,6 @@ When you visit places Underfoot recommends:
 
 ---
 
-**Ready to discover the underground?** [Start planning your adventure!](http://localhost:5174/labs/underfoot/)
+**Ready to discover the underground?** Start planning your adventure!
 
 *Happy exploring! 🎒*

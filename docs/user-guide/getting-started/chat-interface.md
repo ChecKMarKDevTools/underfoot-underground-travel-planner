@@ -57,13 +57,14 @@ Click the **Send** button or press `Enter` to send your message. You'll see:
 
 ## Getting Your Results
 
-![Chat with Results](../screenshots/04-chat-with-results.png)
-*Chat showing travel recommendations with result cards*
+![Chat Loading State](../screenshots/04-chat-loading.png)
+*Chat showing loading state while processing your travel request*
 
-After sending your message, you'll receive:
-- 📝 **Personalized response** explaining the recommendations
-- 🃏 **Result cards** with detailed information about each place
-- 🔍 **Debug information** (accessible via Debug View)
+After sending your message, you'll see:
+1. Your message appears in the chat
+2. The input becomes disabled with a "Digging..." button
+3. Underfoot processes your request
+4. A response will appear with personalized recommendations
 
 Each result card includes:
 - **Name and description** of the place

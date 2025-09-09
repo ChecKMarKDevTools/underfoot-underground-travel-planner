@@ -9,15 +9,14 @@ This directory contains screenshots that illustrate the Underfoot user interface
 - `02-chat-input-focused.png` - Message input area when focused and ready for typing
 - `03-chat-input-filled.png` - Example message filled in and ready to send
 
-### Results and Interaction
-- `04-chat-with-results.png` - Complete chat conversation showing results
-- `06-result-cards-detail.png` - Detailed view of result cards with all information
+### Chat Interaction
+- `04-chat-loading.png` - Chat showing loading state while processing requests
 
 ### Advanced Features
 - `05-debug-view-open.png` - Debug View panel showing technical information
 
 ### Mobile Experience
-- `07-mobile-view.png` - Mobile-optimized interface layout
+- `06-mobile-view.png` - Mobile-optimized interface layout
 
 ## Taking Screenshots
 
@@ -29,13 +28,14 @@ To capture these screenshots for documentation:
    npm run dev
    ```
 
-2. **Use the screenshot script** (when Playwright is available):
+2. **Use built-in browser tools** (Playwright available):
    ```bash
-   node scripts/take-screenshots.js
+   # Take screenshots using browser automation tools
+   # Screenshots are captured of the current app state
    ```
 
 3. **Manual capture process**:
-   - Navigate to `http://localhost:5174/labs/underfoot/`
+   - Navigate to `http://localhost:5173/labs/underfoot/`
    - Use browser developer tools to simulate mobile view
    - Capture screenshots at key interaction points
    - Save with descriptive filenames
@@ -57,4 +57,4 @@ When the UI changes:
 
 ---
 
-*Note: Some screenshot files may be placeholders until Playwright browser installation is resolved.*
+*Screenshots reflect the current state of the Underfoot UI as of the latest update.*

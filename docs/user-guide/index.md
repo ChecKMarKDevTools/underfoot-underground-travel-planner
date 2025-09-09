@@ -1,5 +1,8 @@
 # User Guide Index
 
+![Underfoot Interface](./screenshots/01-landing-page.png)
+*Underfoot - Your guide to discovering hidden gems and authentic travel experiences*
+
 Complete documentation for using Underfoot to discover hidden gems and plan authentic travel experiences.
 
 ## 🚀 Start Here
