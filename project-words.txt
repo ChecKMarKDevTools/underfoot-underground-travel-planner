@@ -15,6 +15,35 @@ wakatime
 Dollywood
 hackathons
 
+# API/database terms
+supabase
+SUPABASE
+Tallapoosa
+Yellowjacket
+upvotes
+bbox
+geotarget
+ilike
+apikey
+respondeed
+PLYM
+DSDY
+INNSKK
+Creds
+Yogrk
+Lvxir
+nbrightdatachallenge
+TFNPL
+devchallenge
+uopx
+ctgcl
+UQYW
+Shee
+uule
+Kagbbj
+langchain
+previouss
+
 # tools
 vite
 vitest

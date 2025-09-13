@@ -101,7 +101,33 @@ export default defineConfig([
     },
   },
   {
-    ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*'],
+    files: ['cloudflare-worker/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.worker,
+        fetch: 'readonly',
+        Response: 'readonly',
+        Request: 'readonly',
+        URL: 'readonly',
+        crypto: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        TransformStream: 'readonly',
+        ReadableStream: 'readonly',
+        WritableStream: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+      },
+    },
+    rules: {
+      'func-style': 'off', // Allow function declarations in Cloudflare Workers
+      'no-empty': ['error', { allowEmptyCatch: true }], // Allow empty catch blocks
+    },
+  },
+  {
+    ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*', 'cloudflare-worker/**/*'],
     rules: {
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     },

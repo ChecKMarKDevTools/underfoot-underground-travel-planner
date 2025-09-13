@@ -37,7 +37,6 @@ async function handleChatPost(request, env) {
     return json({ error: 'invalid_json' }, 400);
   }
   const chatInput = (body?.chatInput || '').trim();
-  const limit = body?.limit; // currently unused but passed through upstream
   if (!chatInput) return json({ error: 'empty_chat_input' }, 400);
 
   const key = chatInput.toLowerCase();
