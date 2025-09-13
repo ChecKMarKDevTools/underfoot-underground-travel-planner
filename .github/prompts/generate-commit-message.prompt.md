@@ -244,10 +244,14 @@ Common indicators of breaking changes include:
 6. If AI contributed, the following footers may be included: `Reviewed-by`, `Commit-generated-by`, `Generated-by`, `Co-authored-by`
 7. The appropriate footers for AI are as follows:
 
-- GitHub Copilot: `GitHub Copilot <github.copilot@github.com>`
-- Codex: `Codex <codex@openai.com>`
-- Gemini: `Gemini <gemini@google.com>`
-- Claude Code: `Claude Code <claude.code@anthropic.com>` </footer-rules> </commit-message-rules> <output-rules> <requirements>
+- GitHub Copilot: `GitHub Copilot`
+- Codex: `Codex`
+- Gemini: `Gemini`
+- Claude Code: `Claude Code`
+- Verdent: `Verdent Deck`
+
+</footer-rules> </commit-message-rules> 
+<output-rules> <requirements>
 
 ## Output Requirements
 
@@ -284,7 +288,7 @@ feat(config): add support for environment variables
 - update documentation
 
 Signed-off-by: Ashley Childress <6563688+anchildress1@users.noreply.github.com>
-Co-authored-by: GitHub Copilot <github.copilot@github.com>
+Co-authored-by: GitHub Copilot
 ```
 
 </example>
