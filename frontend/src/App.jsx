@@ -35,7 +35,9 @@ export default function App() {
         allowBackgroundInteraction
         onSelectHistory={(id) => {
           const found = debugHistory.find((e) => e.id === id);
-          if (found) setDebugData(found.data);
+          if (found) {
+            setDebugData(found.data);
+          }
         }}
         onClearHistory={() => setDebugHistory([])}
       />

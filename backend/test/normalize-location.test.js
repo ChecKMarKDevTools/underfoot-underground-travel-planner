@@ -1,10 +1,7 @@
 import request from 'supertest';
 import { beforeAll, afterAll, test, expect, vi } from 'vitest';
 
-// Track upstream geoapify call count for potential future caching assertions.
 let calls = 0;
-
-// We'll mock fetch; logic: first call returns upstream data, later we mutate to test cache.
 let geoPayload = {
   features: [
     {
@@ -21,7 +18,9 @@ let geoPayload = {
 };
 
 global.fetch = vi.fn(async (url) => {
-  if (url.includes('geoapify')) calls += 1;
+  if (url.includes('geoapify')) {
+    calls += 1;
+  }
   return {
     status: 200,
     async text() {
@@ -34,13 +33,10 @@ let app;
 beforeAll(async () => {
   process.env.GEOAPIFY_API_KEY = 'test-key';
   const mod = await import('../src/index.js');
-  // We exported { app } in index.js
   app = mod.app || mod.default?.app;
 });
 
-afterAll(async () => {
-  // Nothing to tear down; server closes with process.
-});
+afterAll(async () => {});
 
 test('POST /underfoot/normalize-location returns normalized location', async () => {
   const res = await request(app)
@@ -59,7 +55,6 @@ test('POST /underfoot/normalize-location caches responses', async () => {
     .send({ input: 'paris' })
     .set('Content-Type', 'application/json');
   expect(first.body.debug.cache).toBeUndefined();
-  // Ensure at least one upstream fetch occurred
   expect(calls).toBeGreaterThanOrEqual(1);
 
   // Change upstream to different city; cache should hide change
@@ -81,7 +76,6 @@ test('POST /underfoot/normalize-location caches responses', async () => {
     .set('Content-Type', 'application/json');
   expect(second.body.debug.cache).toBe('hit');
   expect(second.body.normalized.toLowerCase()).toContain('paris');
-  // calls should not increase by more than 1 additional fetch due to caching (loose upper bound)
   expect(calls).toBeLessThanOrEqual(2);
 });
 
@@ -95,7 +89,6 @@ test('POST /underfoot/normalize-location validates input', async () => {
 });
 
 test('POST /underfoot/normalize-location handles upstream error gracefully', async () => {
-  // Force fetch to return error status once
   geoPayload = { message: 'err' };
   global.fetch.mockImplementationOnce(async () => ({
     status: 500,
@@ -107,6 +100,6 @@ test('POST /underfoot/normalize-location handles upstream error gracefully', asy
     .post('/underfoot/normalize-location')
     .send({ input: 'london' })
     .set('Content-Type', 'application/json');
-  expect(res.status).toBe(200); // still 200
+  expect(res.status).toBe(200);
   expect(res.body.debug.fallback).toBe(true);
 });

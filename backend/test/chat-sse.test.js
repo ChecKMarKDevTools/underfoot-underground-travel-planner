@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { beforeAll, test, expect, vi } from 'vitest';
 
-// Mock upstream
 let upstreamPayload = { response: 'streamed hello', items: [{ id: 'a', title: 'Alpha' }] };
 let upstreamStatus = 200;
 
@@ -55,7 +54,6 @@ test('GET /underfoot/chat?stream=true returns start, complete, end events', asyn
 });
 
 test('SSE cache replay emits cacheHit true on second call', async () => {
-  // First call seeds cache
   await request(app).get('/underfoot/chat').query({ message: 'CacheThis', stream: 'true' });
   const res2 = await request(app)
     .get('/underfoot/chat')

@@ -1,24 +1,26 @@
 // Underfoot Cloudflare Worker backend
 // Provides: GET /health, POST /underfoot/chat, GET /underfoot/chat?chatInput=...&stream=true (SSE)
-// NOTE: Edge-local in-memory cache (per isolate). For multi-region consistency, migrate to KV/Durable Objects.
+// Updated to use new self-contained search backend instead of n8n webhook
 
 const cacheMap = new Map();
 let activeSSE = 0;
 
-function writeCache(key, value, ttlSeconds) {
+const writeCache = (key, value, ttlSeconds) => {
   cacheMap.set(key, { value, expires: Date.now() + ttlSeconds * 1000 });
-}
-function readCache(key) {
+};
+const readCache = (key) => {
   const rec = cacheMap.get(key);
-  if (!rec) return null;
+  if (!rec) {
+    return null;
+  }
   if (Date.now() > rec.expires) {
     cacheMap.delete(key);
     return null;
   }
   return rec.value;
-}
+};
 
-function json(obj, status = 200, extraHeaders = {}) {
+const json = (obj, status = 200, extraHeaders = {}) => {
   return new Response(JSON.stringify(obj), {
     status,
     headers: {
@@ -27,34 +29,38 @@ function json(obj, status = 200, extraHeaders = {}) {
       ...extraHeaders,
     },
   });
-}
+};
 
-async function handleChatPost(request, env) {
+const handleChatPost = async (request, env) => {
   let body;
   try {
     body = await request.json();
   } catch {
     return json({ error: 'invalid_json' }, 400);
   }
-  const chatInput = (body?.chatInput || '').trim();
-  const limit = body?.limit; // currently unused but passed through upstream
-  if (!chatInput) return json({ error: 'empty_chat_input' }, 400);
+  const chatInput = (body?.chatInput || body?.message || '').trim();
+  const force = body?.force || false;
+  if (!chatInput) {
+    return json({ error: 'empty_chat_input' }, 400);
+  }
 
   const key = chatInput.toLowerCase();
   const cached = readCache(key);
   const requestId = 'uf_' + crypto.randomUUID();
-  if (cached) {
+  if (cached && !force) {
     return json({ ...cached, debug: { ...(cached.debug || {}), cache: 'hit', requestId } });
   }
 
+  // Use the new search backend instead of Stonewalker webhook
+  const backendUrl = env.BACKEND_URL || 'http://localhost:3000';
   let upstreamStatus = 0;
   let upstreamError = null;
   let upstreamPayload = null;
   try {
-    const upstreamRes = await fetch(env.STONEWALKER_WEBHOOK, {
+    const upstreamRes = await fetch(`${backendUrl}/underfoot/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chatInput }),
+      body: JSON.stringify({ chatInput, force }),
     });
     upstreamStatus = upstreamRes.status;
     const text = await upstreamRes.text();
@@ -69,26 +75,43 @@ async function handleChatPost(request, env) {
 
   const base = {
     response: upstreamPayload?.response,
-    items: upstreamPayload?.items,
+    items: upstreamPayload?.places || upstreamPayload?.items,
+    user_intent: upstreamPayload?.user_intent,
+    user_location: upstreamPayload?.user_location,
     requestId,
   };
-  const debug = { requestId, upstreamStatus, upstreamError, cache: 'miss' };
+  const debug = {
+    requestId,
+    upstreamStatus,
+    upstreamError,
+    cache: 'miss',
+    backend: 'cloudflare-worker',
+    upstream: upstreamPayload?.debug,
+  };
   const finalPayload = { ...base, debug };
   if (!upstreamError && upstreamStatus === 200) {
-    const ttl = Number(env.CACHE_TTL_SECONDS || 60);
+    const ttl = Number(env.CACHE_TTL_SECONDS || 1800);
     writeCache(key, finalPayload, ttl);
   }
   const status = upstreamStatus && upstreamStatus >= 400 ? upstreamStatus : 200;
   return json(finalPayload, status);
-}
+};
 
-function handleChatSSE(url, env) {
-  const chatInput = (url.searchParams.get('chatInput') || '').trim();
-  if (!chatInput) return json({ error: 'missing_chatInput' }, 400);
+const handleChatSSE = (url, env) => {
+  const chatInput = (
+    url.searchParams.get('chatInput') ||
+    url.searchParams.get('message') ||
+    ''
+  ).trim();
+  if (!chatInput) {
+    return json({ error: 'missing_chatInput' }, 400);
+  }
   const key = chatInput.toLowerCase();
 
   const max = Number(env.SSE_MAX_CONNECTIONS || 100);
-  if (activeSSE >= max) return json({ error: 'sse_over_capacity' }, 503);
+  if (activeSSE >= max) {
+    return json({ error: 'sse_over_capacity' }, 503);
+  }
   activeSSE++;
 
   const requestId = 'uf_' + crypto.randomUUID();
@@ -104,10 +127,14 @@ function handleChatSSE(url, env) {
   const cleanup = () => {
     try {
       heartbeatTimer && clearInterval(heartbeatTimer);
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
     try {
       writer.close();
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
     activeSSE--;
   };
 
@@ -119,12 +146,13 @@ function handleChatSSE(url, env) {
         cleanup();
         return;
       }
-      // upstream fetch
+      // upstream fetch using new backend
+      const backendUrl = env.BACKEND_URL || 'http://localhost:3000';
       let upstreamStatus = 0;
       let upstreamError = null;
       let upstreamPayload = null;
       try {
-        const upstreamRes = await fetch(env.STONEWALKER_WEBHOOK, {
+        const upstreamRes = await fetch(`${backendUrl}/underfoot/search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chatInput }),
@@ -142,13 +170,22 @@ function handleChatSSE(url, env) {
 
       const base = {
         response: upstreamPayload?.response,
-        items: upstreamPayload?.items,
+        items: upstreamPayload?.places || upstreamPayload?.items,
+        user_intent: upstreamPayload?.user_intent,
+        user_location: upstreamPayload?.user_location,
         requestId,
       };
-      const debug = { requestId, upstreamStatus, upstreamError, cache: 'miss' };
+      const debug = {
+        requestId,
+        upstreamStatus,
+        upstreamError,
+        cache: 'miss',
+        backend: 'cloudflare-worker-sse',
+        upstream: upstreamPayload?.debug,
+      };
       const finalPayload = { ...base, debug };
       if (!upstreamError && upstreamStatus === 200) {
-        writeCache(key, finalPayload, Number(env.CACHE_TTL_SECONDS || 60));
+        writeCache(key, finalPayload, Number(env.CACHE_TTL_SECONDS || 1800));
       }
       await writeEvent('complete', finalPayload);
       await writeEvent('end', { requestId });
@@ -169,7 +206,7 @@ function handleChatSSE(url, env) {
       'Access-Control-Allow-Origin': '*',
     },
   });
-}
+};
 
 export default {
   async fetch(request, env) {

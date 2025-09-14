@@ -34,6 +34,20 @@ unlocker
 lefthook
 GEOAPIFY
 EMBEDED
+SERPAPI
+EVENTBRITE
+SUPABASE
+subreddits
+solotravel
+roadtrip
+langchain
+upvotes
+plpgsql
+pooler
+signups
+signup
+bbox
+ville
 
 # demo site hostnames
 localblog
@@ -53,3 +67,9 @@ substack
 anonymization
 deprioritized
 gmaps
+avant
+selftext
+orbitz
+travelocity
+PGRST
+burg

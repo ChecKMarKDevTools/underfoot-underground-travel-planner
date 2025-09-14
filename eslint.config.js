@@ -18,12 +18,19 @@ export default defineConfig([
     'frontend/coverage/**',
     'frontend/playwright-report/**',
     'frontend/test-results/**',
+    'supabase/functions/**',
   ]),
   js.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
+    },
+    rules: {
+      // Additional base rules beyond js.configs.recommended
+      curly: ['error', 'all'],
+      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
   {
@@ -48,12 +55,6 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-        },
-      ],
       'react/jsx-uses-react': 'off', // Not needed in React 17+
       'react/jsx-uses-vars': 'error', // Detects JSX usage of variables
     },
@@ -93,6 +94,29 @@ export default defineConfig([
     },
   },
   {
+    files: ['cloudflare-worker/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+        crypto: 'readonly',
+        fetch: 'readonly',
+        Response: 'readonly',
+        Request: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        TransformStream: 'readonly',
+        ReadableStream: 'readonly',
+        WritableStream: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+      },
+    },
+  },
+  {
     files: ['backend/**/*.js'],
     languageOptions: {
       globals: {
@@ -114,7 +138,6 @@ export default defineConfig([
     rules: {
       '@cspell/spellchecker': ['warn', { autoFix: true }],
       'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
-      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     },
   },
 ]);

@@ -39,7 +39,9 @@ export default function Chat({ onDebug }) {
   const send = async (e) => {
     e.preventDefault();
     const text = input.trim();
-    if (!text) return;
+    if (!text) {
+      return;
+    }
     setMessages((m) => [...m, { from: 'user', text }]);
     setInput('');
     setBusy(true);
@@ -122,7 +124,9 @@ export default function Chat({ onDebug }) {
         const data = await res.json();
         const replyText = data?.response;
         let botMessage = null;
-        if (replyText) botMessage = { from: 'bot', text: replyText };
+        if (replyText) {
+          botMessage = { from: 'bot', text: replyText };
+        }
         const rawItems = Array.isArray(data?.items) ? data.items : [];
         const attached = rawItems.slice(0, 6).map((r, idx) => ({
           id: r.id ?? r.url ?? r.title ?? idx,
@@ -134,7 +138,9 @@ export default function Chat({ onDebug }) {
           source: r.source,
         }));
         if (botMessage) {
-          if (attached.length) botMessage.items = attached;
+          if (attached.length) {
+            botMessage.items = attached;
+          }
           setMessages((m) => [...m, botMessage]);
         }
         const debugPayload = { ...(data?.debug || {}), chatResponse: data, transport: 'http' };

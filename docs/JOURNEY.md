@@ -6,11 +6,38 @@
 
 ---
 
-## Hackathon Week Reality (August 27, 2025) — Goldilocks'ing the ADRs
+## Next Up: A Real App (September 6, 2025)
 
+Now that the POC is done, hackathon sprint finished (and mostly recovered), it's time to migrate this backend to something I know how to work with. Then we can sprinkle in some new agents, add more complex cache handling system, and while I'm at it let's see if we can get AI to sort out some of this documentation to bring things up to what it _really_ looks like out in the wild. Not necessarily what it looks like in my head. Once that's all settled? Onwards to learn some mobile dev things. 😆🦄
+
+## Sprint Complete & Lessons Learned (September 1, 2025)
+
+Made it through the two-week sprint for the hackathon. The submission post? Written by ChatGPT at first, but I’d been working on my own version all week and updated it later.
+
+> 🦄 Yes, I left a note specifically asking they do not include that submission in the judging because I was hours past the deadline when those updates got posted.
+
+It’s killing me not having the app working yet. So, next up: build a branch and keep going. Maybe actually get the UI deployed and figure out if I need to cancel my Cloudflare subscription (that’s a whole other topic).
+
+**Things I learned:**
+
+- Contrary to what you'd think, a giant green “Ready” check mark _does NOT mean_ things are actually OK.
+- Do NOT wait until the last minute to load data—when the data magically doesn’t exist, it’s a disaster.
+- I have a terrible time making up my mind with this agent. I want structured JSON output, but I want it to work without hallucinations, and that’s tough.
+  - I'm honestly considering moving all of the agent stuff out of N8N where it's great for what it does but for this it's not fantastic so I'm thinking potentially LangChain... 🤷‍♀️
+- Letting ChatGPT code most of the nodes was mostly laziness—the idea of parsing HTML into JSON from scratch is a nightmare (and still is terror inducing, even with AI help). Eventually, I did figure out which settings would make it return normalcy... small wins. 😁
+- The countdown timer: set it with 48 hours left, had a schedule, but **still missed the deadline**.
+
+> Watched the seconds tick down to 11:58:30-something before hitting submit? Dangerous, but not a big deal — _this is for me_. Competition is secondary.
+
+- Swapping my basic cache for Supabase a couple days before the deadline? **Not a great idea.** Permissions turned the workflow into random errors. Google Sheets didn’t have this problem.
+- The initial Copilot PR setup wasn’t what I had in mind. I’ll see if there’s anything useful to pull from it, but I honestly forgot it was out there (again).
+
+So, I’m going to take a couple days to recover. Another blog post is coming. For now, I’m going to breathe, eat, and get ready for work tomorrow. After next weekend, I’ll be back to coding. Stay tuned.
 It took, what, maybe 36 hours this week for me to very vividly remember **why I never volunteer for hackathons**. My default operating mode is binary: either I go full Tilt-a-Whirl perfectionist or I ghost the idea entirely. There is **no comfortable middle** in my wiring, and trying to manufacture one feels like sanding my own neurons.
 
-The tug‑of‑war has been:
+### Noteworthy mentions
+
+Ongoing internal conversations and how I account for scope creep:
 
 > **Me:** "Ooh, I could turn this into Disneyland!"
 

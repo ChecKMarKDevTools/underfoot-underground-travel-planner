@@ -48,7 +48,9 @@ test('App debug history lifecycle including selection and clear', async () => {
   // History shows two entries (their IDs appear as UUIDs since requestId not nested under debug)
   const historyButtons = await waitFor(() => {
     const btns = screen.getAllByRole('button').filter((b) => b.title && /AM|PM/.test(b.title)); // heuristic: history buttons have a time title
-    if (btns.length < 2) throw new Error('not yet');
+    if (btns.length < 2) {
+      throw new Error('not yet');
+    }
     return btns;
   });
   // Click second entry (older) to exercise onSelectHistory

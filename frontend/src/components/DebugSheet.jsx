@@ -7,7 +7,9 @@ export default function DebugSheet({
   onClearHistory,
   allowBackgroundInteraction = false,
 }) {
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   // Provide full visibility: show entire debug object + raw chat response structure.
   const fullDebug = data || {};

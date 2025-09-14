@@ -35,7 +35,9 @@ test('restart button triggers window.location.reload', async () => {
   await user.click(screen.getByRole('button', { name: /Restart/i }));
   expect(reload).toHaveBeenCalled();
 
-  if (original) Object.defineProperty(window, 'location', original);
+  if (original) {
+    Object.defineProperty(window, 'location', original);
+  }
 });
 
 test('Chat calls onDebug and renders inline item cards from new shape', async () => {

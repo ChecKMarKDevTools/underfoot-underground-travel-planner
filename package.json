@@ -2,13 +2,15 @@
   "name": "underfoot-underground-travel-planner",
   "version": "0.0.0",
   "license": "Apache-2.0",
-  "description": "A submission for the Dev.to n8n + BrightData hackathon. Underground travel planner to find those hidden gems that are a must see.",
+  "description": "Underground travel planner to find hidden gems using free APIs and self-contained backend (post-hackathon version).",
   "keywords": [
-    "devto",
-    "n8n",
-    "brightdata",
-    "hackathon",
-    "travel"
+    "travel",
+    "hidden-gems",
+    "underground",
+    "serpapi",
+    "reddit-api",
+    "eventbrite-api",
+    "supabase"
   ],
   "type": "module",
   "repository": {
@@ -27,7 +29,8 @@
     "frontend",
     "backend",
     "n8n",
-    "brightdata"
+    "brightdata",
+    "supabase"
   ],
   "volta": {
     "node": "24.6.0",
@@ -67,7 +70,7 @@
     "@types/react-dom": "^19.1.7",
     "concurrently": "^9.2.1",
     "cspell": "^9.2.0",
-    "esbuild": "^0.21.5",
+    "esbuild": "^0.25.9",
     "eslint": "^9.33.0",
     "eslint-plugin-naming": "^0.1.10",
     "eslint-plugin-react": "^7.37.5",
@@ -79,8 +82,11 @@
     "remark": "^15.0.1",
     "remark-cli": "^12.0.1",
     "remark-frontmatter": "^5.0.0",
-  "remark-gfm": "^4.0.1",
-  "wrangler": "^3.90.0",
-    "uninstall": "^0.0.0"
+    "remark-gfm": "^4.0.1",
+    "uninstall": "^0.0.0",
+    "wrangler": "^4.34.0"
+  },
+  "dependencies": {
+    "vite": "7.1.5"
   }
 }

@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
- * This script fixes the issue where remark-stringify escapes GitHub
- * admonitions like > [!TIP] to > \[!TIP]
+ * This script fixes multiple markdown formatting issues:
+ * 1. Escaped GitHub admonitions like > \[!TIP] to > [!TIP]
+ * 2. Escaped ampersands in badge URLs like \& to &
+ * 3. Escaped backslashes like \ to proper content
+ * 4. Escaped checkbox markers like - \[/] to - [/]
  *
  * @security This script only modifies markdown formatting, no security implications
  */
@@ -10,8 +13,7 @@ import { glob } from 'glob';
 import process from 'node:process';
 
 /**
- * Fixes escaped GitHub admonitions in markdown files.
- * Converts function expression to declaration for clarity and consistency.
+ * Fixes escaped markdown elements in markdown files.
  */
 export const fixGithubAdmonitions = async () => {
   try {
@@ -21,15 +23,12 @@ export const fixGithubAdmonitions = async () => {
       ignore: ['node_modules/**', '.git/**', '.github/**'],
     });
 
-    console.log(`🔧 Fixing GitHub admonitions in ${files.length} markdown files...`);
+    console.log(`🔧 Fixing markdown formatting issues in ${files.length} files...`);
 
     for (const file of files) {
       let content = await readFile(file, 'utf8');
 
       // Preserve frontmatter and skip fenced code blocks when doing replacements.
-      // We'll operate on the body only (after frontmatter) and only on lines
-      // that are not inside ``` fences. This avoids accidentally changing
-      // YAML, code samples, or other sensitive regions.
       const lines = content.split(/\r?\n/);
 
       // detect frontmatter at the very top (--- or ...)
@@ -57,26 +56,38 @@ export const fixGithubAdmonitions = async () => {
         }
 
         // only operate on the body (after frontmatter) and when not in a code fence
-        if (i < bodyStart || inCodeFence) continue;
-
-        // We'll treat blockquote/admonition fixes separately from general
-        // escaped-underscore fixes. This lets us unescape admonition markers
-        // only in blockquotes (where they occur) while still converting
-        // escaped underscores that appear inside bold text or regular
-        // paragraphs.
+        if (i < bodyStart || inCodeFence) {
+          continue;
+        }
 
         let newLine = line;
 
         const isBlockquote = /^\s*>/.test(line);
 
         if (isBlockquote) {
-          // Unescape backslash before GitHub admonition markers like \[!TIP]
-          // Only remove the single backslash immediately before the `[` so other
-          // intentional backslashes remain untouched.
+          // Fix escaped GitHub admonition markers like \[!TIP] to [!TIP]
           newLine = newLine.replace(
             /\\(\[!(?:TIP|NOTE|WARNING|IMPORTANT|CAUTION|DANGER)\])/g,
             '$1',
           );
+        }
+
+        // Fix escaped ampersands in URLs and badges (outside of code blocks)
+        if (!/`.*`/.test(newLine)) {
+          newLine = newLine.replace(/\\(&)/g, '$1');
+        }
+
+        // Fix escaped checkboxes in task lists like - \[/] or - \[ ] or - \[x]
+        newLine = newLine.replace(/^(\s*- )\\(\[[^\]]*\])/, '$1$2');
+
+        // Fix standalone escaped backslashes that appear alone on lines or at start of lines
+        if (/^\s*\\(\s*)?$/.test(newLine)) {
+          newLine = newLine.replace(/^\s*\\(\s*)?$/, '');
+        }
+
+        // Fix escaped underscores in headings (# BACKEND\_TITLE -> # BACKEND_TITLE)
+        if (/^#+\s/.test(newLine)) {
+          newLine = newLine.replace(/\\_/g, '_');
         }
 
         // Convert escaped-underscore identifiers like `underfoot\_orchestrator`
@@ -103,12 +114,13 @@ export const fixGithubAdmonitions = async () => {
       if (changed) {
         const fixedContent = lines.join('\n');
         await writeFile(file, fixedContent, 'utf8');
+        console.log(`  ✓ Fixed: ${file}`);
       }
     }
 
-    console.log('🎉 GitHub admonitions fix complete!');
+    console.log('🎉 Markdown formatting fix complete!');
   } catch (error) {
-    console.error('❌ Error fixing GitHub admonitions:', error);
+    console.error('❌ Error fixing markdown formatting:', error);
     process.exit(1);
   }
 };

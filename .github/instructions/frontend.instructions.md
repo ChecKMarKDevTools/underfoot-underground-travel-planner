@@ -1,5 +1,5 @@
 ---
-applyTo: frontend/**
+applyTo: frontend/**/*
 ---
 
 # Underfoot UI — Frontend Guide
