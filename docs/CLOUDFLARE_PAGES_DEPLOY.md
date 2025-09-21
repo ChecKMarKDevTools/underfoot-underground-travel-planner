@@ -56,11 +56,11 @@ Pages handles immutable asset hashing (Vite fingerprints). If you adjust caching
 
 You now have three deployment modes for the API layer:
 
-| Mode | When to Use | Notes |
-| - | - | - |
-| External Node Host | You already deployed Express elsewhere | Set `VITE_API_BASE` to that host |
-| Cloudflare Worker (this repo) | Want edge latency + simple state | Use `cloudflare-worker/` directory |
-| Pages Functions | Single project (static + functions) | Port core routes into `/functions` |
+| Mode                          | When to Use                            | Notes                              |
+| ----------------------------- | -------------------------------------- | ---------------------------------- |
+| External Node Host            | You already deployed Express elsewhere | Set `VITE_API_BASE` to that host   |
+| Cloudflare Worker (this repo) | Want edge latency + simple state       | Use `cloudflare-worker/` directory |
+| Pages Functions               | Single project (static + functions)    | Port core routes into `/functions` |
 
 #### 7.1 Deploy the Worker (API)
 
@@ -76,11 +76,11 @@ Directory: `cloudflare-worker/`
 
 Endpoints provided:
 
-| Route | Method | Purpose |
-| - | - | - |
-| `/health` | GET | Basic status & cache size |
-| `/underfoot/chat` | POST | Pass-through chat to upstream n8n (body `{ chatInput }`) |
-| `/underfoot/chat?chatInput=...&stream=true` | GET | SSE (start / complete / heartbeat / end) |
+| Route                                       | Method | Purpose                                                  |
+| ------------------------------------------- | ------ | -------------------------------------------------------- |
+| `/health`                                   | GET    | Basic status & cache size                                |
+| `/underfoot/chat`                           | POST   | Pass-through chat to upstream n8n (body `{ chatInput }`) |
+| `/underfoot/chat?chatInput=...&stream=true` | GET    | SSE (start / complete / heartbeat / end)                 |
 
 Edge cache is in-memory per isolate. For multi-region coherence migrate to KV or Durable Object.
 
@@ -92,11 +92,11 @@ If you prefer a single Pages project, replicate the Worker logic inside `fronten
 
 ### 9. Troubleshooting
 
-| Symptom | Likely Cause | Fix |
-| - | - | - |
-| `/n8n-chat` shows "Chat Not Configured" | Missing both chat env vars | Set one of the vars in Pages dashboard and redeploy |
-| E2E test fails to find iframe | Build didn’t have `VITE_N8N_CHAT_IFRAME_URL` & query param unused | Use `/n8n-chat?iframe=1` or set env var |
-| Widget not loading | `@n8n/chat` dynamic import blocked or wrong webhook URL | Verify webhook URL is publicly reachable (200) |
+| Symptom                                 | Likely Cause                                                      | Fix                                                 |
+| --------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------- |
+| `/n8n-chat` shows "Chat Not Configured" | Missing both chat env vars                                        | Set one of the vars in Pages dashboard and redeploy |
+| E2E test fails to find iframe           | Build didn’t have `VITE_N8N_CHAT_IFRAME_URL` & query param unused | Use `/n8n-chat?iframe=1` or set env var             |
+| Widget not loading                      | `@n8n/chat` dynamic import blocked or wrong webhook URL           | Verify webhook URL is publicly reachable (200)      |
 
 ### 10. Minimal Principle Recap
 

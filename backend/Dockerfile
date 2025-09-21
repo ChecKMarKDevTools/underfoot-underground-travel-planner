@@ -17,7 +17,17 @@ COPY backend ./backend
 FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S backend -u 1001 -G nodejs
+
 COPY --from=build /app/backend /app/backend
 COPY --from=deps /app/node_modules /app/node_modules
+
+# Change ownership to non-root user
+RUN chown -R backend:nodejs /app
+
+USER backend
 EXPOSE 3000
 CMD ["node","backend/dist/index.js"]

@@ -18,13 +18,13 @@ We expect to transition primary interaction to the **n8n embedded widget** (see 
 
 ## Key Components
 
-| Component | Role |
-| - | - |
-| `Chat.jsx` | Core conversation view and message state, API bridge, Enter submit logic |
-| `ResultCard.jsx` | Modular result output (title, description, optional image, URL) |
-| `MainContent.jsx` | Conditional container mapping results to cards |
-| `DebugSheet.jsx` | Developer/debugging panel for inspecting structured response data |
-| `Header.jsx` | Minimal top bar: logo, restart, debug trigger |
+| Component         | Role                                                                     |
+| ----------------- | ------------------------------------------------------------------------ |
+| `Chat.jsx`        | Core conversation view and message state, API bridge, Enter submit logic |
+| `ResultCard.jsx`  | Modular result output (title, description, optional image, URL)          |
+| `MainContent.jsx` | Conditional container mapping results to cards                           |
+| `DebugSheet.jsx`  | Developer/debugging panel for inspecting structured response data        |
+| `Header.jsx`      | Minimal top bar: logo, restart, debug trigger                            |
 
 ## Interaction Contract (Custom Chat)
 

@@ -2,7 +2,7 @@
 applyTo: backend/**/*
 ---
 
-# BACKEND\_INSTRUCTIONS.md
+# BACKEND_INSTRUCTIONS.md
 
 > 🗺️ **Underfoot Backend** — single-agent orchestrator for the “underground” travel picks.
 > ⚙️ Node 24, Express, plain JavaScript. One OpenAI batch call. n8n for source aggregation.
