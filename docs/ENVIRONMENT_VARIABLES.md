@@ -4,17 +4,17 @@ Central reference for all environment variables used across Underfoot. Avoid exp
 
 ## Backend (Server Only)
 
-| Name | Required | Default | Description |
-| - | - | - | - |
-| `PORT` | No | `3000` | HTTP port the Express server listens on. |
-| `FRONTEND_ORIGIN` | No | `https://checkmarkdevtools.dev` | Allowed CORS origin for security. Set to frontend domain in production. |
-| `STONEWALKER_WEBHOOK` | Yes (prod) | Hardcoded test webhook | Upstream n8n (Stonewalker) orchestrator endpoint. Backend proxies all chat requests here. |
-| `OPENAI_API_KEY` | Optional | — | Enables upstream / model logic. No synthetic fallback is generated if absent; upstream errors surface. |
-| `GEOAPIFY_API_KEY` | Optional (needed for normalize endpoint) | — | Required for `/underfoot/normalize-location`. If not set that endpoint returns 503. |
-| `CACHE_TTL_SECONDS` | No | `60` | In-memory cache TTL for chat + normalization responses. |
-| `SSE_MAX_CONNECTIONS` | No | `100` | Soft cap on concurrent SSE chat streams. |
-| `NODE_ENV` | No | `development` | Standard environment indicator. |
-| `VITEST` | Auto (tests) | — | When truthy, adjusts behavior (e.g. skip caching first normalization occurrence). |
+| Name                  | Required                                 | Default                         | Description                                                                                            |
+| --------------------- | ---------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `PORT`                | No                                       | `3000`                          | HTTP port the Express server listens on.                                                               |
+| `FRONTEND_ORIGIN`     | No                                       | `https://checkmarkdevtools.dev` | Allowed CORS origin for security. Set to frontend domain in production.                                |
+| `STONEWALKER_WEBHOOK` | Yes (prod)                               | Hardcoded test webhook          | Upstream n8n (Stonewalker) orchestrator endpoint. Backend proxies all chat requests here.              |
+| `OPENAI_API_KEY`      | Optional                                 | —                               | Enables upstream / model logic. No synthetic fallback is generated if absent; upstream errors surface. |
+| `GEOAPIFY_API_KEY`    | Optional (needed for normalize endpoint) | —                               | Required for `/underfoot/normalize-location`. If not set that endpoint returns 503.                    |
+| `CACHE_TTL_SECONDS`   | No                                       | `60`                            | In-memory cache TTL for chat + normalization responses.                                                |
+| `SSE_MAX_CONNECTIONS` | No                                       | `100`                           | Soft cap on concurrent SSE chat streams.                                                               |
+| `NODE_ENV`            | No                                       | `development`                   | Standard environment indicator.                                                                        |
+| `VITEST`              | Auto (tests)                             | —                               | When truthy, adjusts behavior (e.g. skip caching first normalization occurrence).                      |
 
 ### Internal / Derived
 
@@ -23,18 +23,18 @@ Central reference for all environment variables used across Underfoot. Avoid exp
 
 ## Frontend (Browser-Exposed)
 
-| Name | Required | Default | Description |
-| - | - | - | - |
-| `VITE_API_BASE` | No | `window.location.origin` | Base URL for backend API calls. Must point to backend host when deployed. |
-| `VITE_LIMIT` | No | `5` (implicit) | Limit passed along with chat messages (item cap hint). |
+| Name            | Required | Default                  | Description                                                               |
+| --------------- | -------- | ------------------------ | ------------------------------------------------------------------------- |
+| `VITE_API_BASE` | No       | `window.location.origin` | Base URL for backend API calls. Must point to backend host when deployed. |
+| `VITE_LIMIT`    | No       | `5` (implicit)           | Limit passed along with chat messages (item cap hint).                    |
 
 ### Potential Future (Not Yet Implemented)
 
-| Name | Purpose |
-| - | - |
+| Name               | Purpose                                                                                 |
+| ------------------ | --------------------------------------------------------------------------------------- |
 | `VITE_CHAT_STREAM` | Explicit toggle for forcing streaming vs fallback to POST. Currently auto-attempts SSE. |
-| `ENABLE_SSE_CHAT` | Server feature flag if streaming needs staged rollout. |
-| `LOG_LEVEL` | Server log verbosity selection. |
+| `ENABLE_SSE_CHAT`  | Server feature flag if streaming needs staged rollout.                                  |
+| `LOG_LEVEL`        | Server log verbosity selection.                                                         |
 
 ## Security Notes
 

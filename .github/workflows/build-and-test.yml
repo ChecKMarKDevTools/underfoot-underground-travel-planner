@@ -20,7 +20,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies (workspaces)
-        run: npm ci --ignore-scripts
+        run: npm install --ignore-scripts
 
       - name: Format (Prettier)
         run: npm run format

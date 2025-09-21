@@ -30,13 +30,13 @@ We are **reaffirming the bespoke native React chat UI as the primary and shipped
 
 ## Open Questions / Near-Term Research
 
-| Topic | Question | Owner | Notes |
-| - | - | - | - |
-| Auth / Sessions | Lightweight per-session ID tracking + future persistence | TBD | sessionId already returned. |
-| Item Ranking | Introduce scoring visualization (stars, ordering justification) | TBD | UI slot reserved in cards (rating). |
-| Streaming | Evaluate incremental partials vs whole payload for perception of speed | TBD | Requires backend support. |
-| Caching Hints | Show when result came from cache vs live scrape | TBD | `source` field present (e.g., `cache`). |
-| Accessibility | Refine announcements for new batch of cards + bot reply | TBD | aria-live region exists; may need granular chunks. |
+| Topic           | Question                                                               | Owner | Notes                                              |
+| --------------- | ---------------------------------------------------------------------- | ----- | -------------------------------------------------- |
+| Auth / Sessions | Lightweight per-session ID tracking + future persistence               | TBD   | sessionId already returned.                        |
+| Item Ranking    | Introduce scoring visualization (stars, ordering justification)        | TBD   | UI slot reserved in cards (rating).                |
+| Streaming       | Evaluate incremental partials vs whole payload for perception of speed | TBD   | Requires backend support.                          |
+| Caching Hints   | Show when result came from cache vs live scrape                        | TBD   | `source` field present (e.g., `cache`).            |
+| Accessibility   | Refine announcements for new batch of cards + bot reply                | TBD   | aria-live region exists; may need granular chunks. |
 
 ## Alternatives Rejected (Now)
 

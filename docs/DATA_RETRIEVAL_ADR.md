@@ -199,32 +199,32 @@ provided `score` field (if present it is ignored / stripped).
 
 ### Error & Resilience Adjustments (Delta from v1)
 
-| Aspect | v1 Tiered | v2 Multi-Agent |
-| - | - | - |
-| Control | Sequential fallback tiers | Parallel orchestrated adapters |
-| Retry Surface | Per tier | Per adapter with granular breaker state |
-| Partial Results | Returned when tier fails | Continuous merge as adapters complete |
-| Caching | Limited | Explicit batch + freshness budgets |
-| Explain-ability | Basic scoring | Factor breakdown per result |
+| Aspect          | v1 Tiered                 | v2 Multi-Agent                          |
+| --------------- | ------------------------- | --------------------------------------- |
+| Control         | Sequential fallback tiers | Parallel orchestrated adapters          |
+| Retry Surface   | Per tier                  | Per adapter with granular breaker state |
+| Partial Results | Returned when tier fails  | Continuous merge as adapters complete   |
+| Caching         | Limited                   | Explicit batch + freshness budgets      |
+| Explain-ability | Basic scoring             | Factor breakdown per result             |
 
 ### Metrics & Observability (Planned)
 
-| Metric | Purpose |
-| - | - |
-| time.to.normalized.envelope | Chat agent efficiency |
-| adapter.latency.{name} | Source performance tracking |
-| adapter.error.rate | Reliability / breaker tuning |
-| merge.dedupe.count | Signal noise ratio |
-| result.coverage.primary | % of top N filled vs requested limit |
+| Metric                      | Purpose                              |
+| --------------------------- | ------------------------------------ |
+| time.to.normalized.envelope | Chat agent efficiency                |
+| adapter.latency.{name}      | Source performance tracking          |
+| adapter.error.rate          | Reliability / breaker tuning         |
+| merge.dedupe.count          | Signal noise ratio                   |
+| result.coverage.primary     | % of top N filled vs requested limit |
 
 ### Open Questions (v2 Specific)
 
-| Topic | Question | Notes |
-| - | - | - |
-| Streaming | Do we need incremental UI streaming or batch is fine? | Impacts fallback JSON vs cards. |
-| AuthZ | Will different user tiers restrict certain adapters? | Might require envelope augmentation. |
-| Cost Controls | How to prioritize cheaper cached data before paid Bright Data calls? | Weighted scheduling. |
-| Privacy | Do we redact PII before caching? | Envelope sanitization stage. |
+| Topic         | Question                                                             | Notes                                |
+| ------------- | -------------------------------------------------------------------- | ------------------------------------ |
+| Streaming     | Do we need incremental UI streaming or batch is fine?                | Impacts fallback JSON vs cards.      |
+| AuthZ         | Will different user tiers restrict certain adapters?                 | Might require envelope augmentation. |
+| Cost Controls | How to prioritize cheaper cached data before paid Bright Data calls? | Weighted scheduling.                 |
+| Privacy       | Do we redact PII before caching?                                     | Envelope sanitization stage.         |
 
 ### Migration Notes
 

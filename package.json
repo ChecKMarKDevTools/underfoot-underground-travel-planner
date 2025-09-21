@@ -87,6 +87,8 @@
     "wrangler": "^4.34.0"
   },
   "dependencies": {
+    "@esbuild/linux-x64": "^0.25.9",
+    "@rollup/rollup-linux-x64-gnu": "^4.50.1",
     "vite": "7.1.5"
   }
 }

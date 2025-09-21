@@ -26,11 +26,11 @@ Copy `.env.example` to `.env` to customize behavior. Only variables prefixed wit
 
 Key vars for the n8n chat page (`/n8n-chat`):
 
-| Variable | Purpose | Mode |
-| - | - | - |
-| `VITE_N8N_CHAT_IFRAME_URL` | Hosted n8n chat UI URL (renders full-screen iframe) | Iframe |
+| Variable                    | Purpose                                                     | Mode   |
+| --------------------------- | ----------------------------------------------------------- | ------ |
+| `VITE_N8N_CHAT_IFRAME_URL`  | Hosted n8n chat UI URL (renders full-screen iframe)         | Iframe |
 | `VITE_N8N_CHAT_WEBHOOK_URL` | n8n Chat Trigger webhook URL for dynamic `@n8n/chat` widget | Widget |
-| `VITE_N8N_CHAT_METADATA` | Optional JSON metadata string sent with widget requests | Widget |
+| `VITE_N8N_CHAT_METADATA`    | Optional JSON metadata string sent with widget requests     | Widget |
 
 Precedence: if the iframe URL is set it wins; otherwise the widget is used if its webhook URL is present. If neither is set the page shows a friendly "Chat Not Configured" message with guidance.
 

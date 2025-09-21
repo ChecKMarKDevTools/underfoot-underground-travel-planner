@@ -24,13 +24,13 @@ The native chat stack restores full control while keeping the ethos: _quirky, tr
 
 ## 3. Current Snapshot (Baseline)
 
-| Layer | State | Notes |
-| - | - | - |
-| Frontend Chat Page | `N8nChatPage` (iframe or widget) | Full-screen, theming done |
-| Backend | None (only example Express skeleton + optional n8n) | No conversation DB |
-| Streaming | None (widget internally handles) | No token-by-token control |
-| Persistence | None | User leaves → history gone |
-| Observability | Browser console only | No trace / metrics |
+| Layer              | State                                               | Notes                      |
+| ------------------ | --------------------------------------------------- | -------------------------- |
+| Frontend Chat Page | `N8nChatPage` (iframe or widget)                    | Full-screen, theming done  |
+| Backend            | None (only example Express skeleton + optional n8n) | No conversation DB         |
+| Streaming          | None (widget internally handles)                    | No token-by-token control  |
+| Persistence        | None                                                | User leaves → history gone |
+| Observability      | Browser console only                                | No trace / metrics         |
 
 ## 4. Target Architecture Overview
 
@@ -54,14 +54,14 @@ Browser (React UI) ──REST/SSE──> API Gateway (Express/Fastify/Worker)
 
 ## 5. API Contract (Initial Set)
 
-| Endpoint | Method | Purpose |
-| - | - | - |
-| `/api/chat/sessions` | POST | Create a new session (returns `{sessionId}`) |
-| `/api/chat/sessions/:id` | GET | Fetch session + recent messages |
-| `/api/chat/sessions/:id/message` | POST | Submit user message (returns `{messageId}`) |
-| `/api/chat/sessions/:id/stream` | GET (SSE) | Token / event stream (assistant responses + tool progress) |
-| `/api/chat/sessions/:id/history` | GET | Paginate older messages |
-| `/api/chat/messages/:id/cancel` | POST | Abort in-flight generation |
+| Endpoint                         | Method    | Purpose                                                    |
+| -------------------------------- | --------- | ---------------------------------------------------------- |
+| `/api/chat/sessions`             | POST      | Create a new session (returns `{sessionId}`)               |
+| `/api/chat/sessions/:id`         | GET       | Fetch session + recent messages                            |
+| `/api/chat/sessions/:id/message` | POST      | Submit user message (returns `{messageId}`)                |
+| `/api/chat/sessions/:id/stream`  | GET (SSE) | Token / event stream (assistant responses + tool progress) |
+| `/api/chat/sessions/:id/history` | GET       | Paginate older messages                                    |
+| `/api/chat/messages/:id/cancel`  | POST      | Abort in-flight generation                                 |
 
 ### SSE Events
 
@@ -131,22 +131,22 @@ created_at TIMESTAMPTZ DEFAULT now()
 
 ## 9. Cost / Fallback Model
 
-| State | Behavior |
-| - | - |
-| Normal | Native pipeline active |
-| Cost Spike / Provider Outage | Fallback to cached responses OR degrade to short answers |
-| Sustained Overrun | Temporarily disable native endpoints and revert `N8nChatPage` to iframe mode with a banner |
+| State                        | Behavior                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------ |
+| Normal                       | Native pipeline active                                                                     |
+| Cost Spike / Provider Outage | Fallback to cached responses OR degrade to short answers                                   |
+| Sustained Overrun            | Temporarily disable native endpoints and revert `N8nChatPage` to iframe mode with a banner |
 
 Mechanism: health & cost monitor sets a single environment variable (e.g., `CHAT_MODE=fallback`); frontend checks this at build (or via a tiny status JSON) to decide whether to show native or embed. No partial per-user gating.
 
 ## 10. Observability & Metrics
 
-| Metric | Description |
-| - | - |
+| Metric                             | Description                                |
+| ---------------------------------- | ------------------------------------------ |
 | `chat_first_token_latency_seconds` | Time from user POST to first `token` event |
-| `chat_tokens_generated_total` | Counter per message/session |
-| `chat_errors_total{code}` | Error cardinality |
-| `tool_latency_seconds{type}` | Tool call durations |
+| `chat_tokens_generated_total`      | Counter per message/session                |
+| `chat_errors_total{code}`          | Error cardinality                          |
+| `tool_latency_seconds{type}`       | Tool call durations                        |
 
 Logging fields: `requestId`, `sessionId`, `messageId`, `phase`, `latencyMs`, `tokenCount`.
 
@@ -198,22 +198,22 @@ export function useChatStream(sessionId, handlers) {
 
 ## 14. Risks & Mitigations
 
-| Risk | Impact | Mitigation |
-| - | - | - |
-| Cost runaway (token flood) | Budget exhaustion | Hard caps per session & rate limiting |
-| SSE connection churn | Load spike | Use keep-alive comments, idle timeout |
-| Model latency variance | Poor UX | Show streaming skeleton + first token latency metric |
-| Tool errors mid-stream | Confusing output | Emit explicit `tool.end` with error state; UX shows partial result |
-| Massive sessions | Memory & retrieval degrade | Periodic summarization & truncation |
+| Risk                       | Impact                     | Mitigation                                                         |
+| -------------------------- | -------------------------- | ------------------------------------------------------------------ |
+| Cost runaway (token flood) | Budget exhaustion          | Hard caps per session & rate limiting                              |
+| SSE connection churn       | Load spike                 | Use keep-alive comments, idle timeout                              |
+| Model latency variance     | Poor UX                    | Show streaming skeleton + first token latency metric               |
+| Tool errors mid-stream     | Confusing output           | Emit explicit `tool.end` with error state; UX shows partial result |
+| Massive sessions           | Memory & retrieval degrade | Periodic summarization & truncation                                |
 
 ## 15. Success Criteria
 
-| Metric | Goal |
-| - | - |
-| First token latency (P50) | < 1.2s |
-| Completion latency (P90, 200 tokens) | < 6s |
-| Error rate (5xx) | < 1% steady state |
-| Session resume adoption | > 40% returning users use same session within 24h |
+| Metric                               | Goal                                              |
+| ------------------------------------ | ------------------------------------------------- |
+| First token latency (P50)            | < 1.2s                                            |
+| Completion latency (P90, 200 tokens) | < 6s                                              |
+| Error rate (5xx)                     | < 1% steady state                                 |
+| Session resume adoption              | > 40% returning users use same session within 24h |
 
 ## 16. Open Questions
 
