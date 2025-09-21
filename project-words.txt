@@ -49,6 +49,17 @@ signup
 bbox
 ville
 
+# nginx technical terms
+sendfile
+nopush
+keepalive
+appuser
+
+# docker technical terms
+addgroup
+adduser
+appgroup
+
 # demo site hostnames
 localblog
 indiecalendar
