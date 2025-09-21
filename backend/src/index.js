@@ -42,7 +42,14 @@ const validateEnv = () => {
 validateEnv();
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to restrict origin for security
+const corsOptions = {
+  origin: process.env.FRONTEND_ORIGIN || 'https://checkmarkdevtools.dev',
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 
 const PORT = Number(process.env.PORT || 3000);

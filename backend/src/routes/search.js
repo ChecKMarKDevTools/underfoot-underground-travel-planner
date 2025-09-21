@@ -103,7 +103,11 @@ router.post('/search', async (req, res) => {
           status: 'success',
         };
       } else {
-        console.error(`${sourceName} failed:`, result.reason);
+        console.error('Source failed:', {
+          source: sourceName,
+          error: result.reason?.message || 'Unknown error',
+          requestId,
+        });
         sourceStats[sourceName] = {
           count: 0,
           status: 'failed',

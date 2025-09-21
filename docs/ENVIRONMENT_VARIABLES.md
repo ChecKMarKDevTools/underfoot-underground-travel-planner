@@ -7,6 +7,7 @@ Central reference for all environment variables used across Underfoot. Avoid exp
 | Name | Required | Default | Description |
 | - | - | - | - |
 | `PORT` | No | `3000` | HTTP port the Express server listens on. |
+| `FRONTEND_ORIGIN` | No | `https://checkmarkdevtools.dev` | Allowed CORS origin for security. Set to frontend domain in production. |
 | `STONEWALKER_WEBHOOK` | Yes (prod) | Hardcoded test webhook | Upstream n8n (Stonewalker) orchestrator endpoint. Backend proxies all chat requests here. |
 | `OPENAI_API_KEY` | Optional | — | Enables upstream / model logic. No synthetic fallback is generated if absent; upstream errors surface. |
 | `GEOAPIFY_API_KEY` | Optional (needed for normalize endpoint) | — | Required for `/underfoot/normalize-location`. If not set that endpoint returns 503. |

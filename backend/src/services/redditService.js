@@ -73,7 +73,12 @@ const searchRedditRSS = async (location, theme = '') => {
           results.push(...posts);
         }
       } catch (error) {
-        console.warn(`RSS fetch failed for r/${subreddit}:`, error.message);
+        console.warn('RSS fetch failed:', {
+          subreddit: `r/${subreddit}`,
+          error: error.message,
+          location,
+          theme,
+        });
       }
 
       await new Promise((resolve) => setTimeout(resolve, 500));
