@@ -4,6 +4,7 @@ import cors from 'cors';
 import { randomUUID } from 'crypto';
 import searchRouter from './routes/search.js';
 import { getCacheStats, cleanExpiredCache } from './services/supabaseService.js';
+import { initializeCacheManager } from './services/cacheManagerService.js';
 
 // Environment validation
 const validateEnv = () => {
@@ -40,6 +41,9 @@ const validateEnv = () => {
 };
 
 validateEnv();
+
+// Initialize intelligent cache management system
+initializeCacheManager();
 
 const app = express();
 app.use(cors());

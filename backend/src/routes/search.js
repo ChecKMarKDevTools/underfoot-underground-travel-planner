@@ -7,7 +7,17 @@ import {
   setCachedSearchResults,
   getCachedLocation,
   setCachedLocation,
+  enhancedSearchWithVectors,
+  findUndergroundKeywords,
+  populateKeywordEmbeddings,
 } from '../services/supabaseService.js';
+import { 
+  intelligentCacheLookup,
+  smartCacheStore,
+  getCacheAnalytics,
+  resetCacheMetrics,
+  intelligentCacheCleanup,
+} from '../services/cacheManagerService.js';
 import { searchHiddenGems } from '../services/serpService.js';
 import { searchRedditRSS } from '../services/redditService.js';
 import { searchLocalEvents } from '../services/eventService.js';
@@ -46,11 +56,36 @@ router.post('/search', async (req, res) => {
     );
 
     if (!force) {
+      const vectorCacheResult = await intelligentCacheLookup(chatInput, '');
+      if (vectorCacheResult.cached) {
+        console.log(
+          JSON.stringify({
+            evt: 'search.vector_cache_hit',
+            requestId,
+            source: vectorCacheResult.source,
+            similarity: vectorCacheResult.similarity,
+            elapsedMs: Date.now() - started,
+          }),
+        );
+
+        return res.json({
+          ...vectorCacheResult.results,
+          debug: {
+            ...(vectorCacheResult.results.debug || {}),
+            cache: `${vectorCacheResult.source}_hit`,
+            similarity: vectorCacheResult.similarity,
+            requestId,
+            executionTimeMs: Date.now() - started,
+          },
+        });
+      }
+
+      // Fallback to traditional cache if vector search didn't find anything
       const cached = await getCachedSearchResults(chatInput, '');
       if (cached) {
         console.log(
           JSON.stringify({
-            evt: 'search.cache_hit',
+            evt: 'search.traditional_cache_hit',
             requestId,
             elapsedMs: Date.now() - started,
           }),
@@ -60,7 +95,7 @@ router.post('/search', async (req, res) => {
           ...cached,
           debug: {
             ...(cached.debug || {}),
-            cache: 'hit',
+            cache: 'traditional_hit',
             requestId,
             executionTimeMs: Date.now() - started,
           },
@@ -123,6 +158,9 @@ router.post('/search', async (req, res) => {
       summary,
     );
 
+    // Get underground keywords for query enhancement
+    const undergroundKeywords = await findUndergroundKeywords(parsed.intent);
+    
     const finalResult = {
       user_intent: parsed.intent,
       user_location: searchContext.location,
@@ -137,10 +175,12 @@ router.post('/search', async (req, res) => {
         sourceStats,
         scoringSummary: summary,
         cacheStatus: 'miss',
+        undergroundKeywords: undergroundKeywords.slice(0, 5), // Include top 5 relevant keywords
       },
     };
 
-    await setCachedSearchResults(chatInput, searchContext.location, finalResult, 30);
+    // Store using intelligent caching with vector embeddings
+    await smartCacheStore(chatInput, searchContext.location, finalResult, 30);
 
     console.log(
       JSON.stringify({
@@ -150,6 +190,7 @@ router.post('/search', async (req, res) => {
         resultCount: finalResult.places.length,
         primaryCount: categorized.primary.length,
         nearbyCount: categorized.nearby.length,
+        keywordMatches: undergroundKeywords.length,
       }),
     );
 
@@ -363,5 +404,81 @@ const generateFallbackResponse = (intent, location, categorized) => {
 
   return `${location} offers ${totalPlaces} discoveries for ${intent}. Some paths lead nearby, others require a short journey—but each promises something beyond the ordinary tourist trail.`;
 };
+
+// ============================================================================
+// ADMIN ROUTES FOR VECTOR SEARCH AND CACHE MANAGEMENT
+// ============================================================================
+
+// Cache analytics endpoint
+router.get('/cache/analytics', async (req, res) => {
+  try {
+    const analytics = await getCacheAnalytics();
+    res.json(analytics);
+  } catch (error) {
+    console.error('Cache analytics error:', error);
+    res.status(500).json({ error: 'Failed to get cache analytics' });
+  }
+});
+
+// Manual cache cleanup endpoint
+router.post('/cache/cleanup', async (req, res) => {
+  try {
+    const result = await intelligentCacheCleanup();
+    res.json(result);
+  } catch (error) {
+    console.error('Cache cleanup error:', error);
+    res.status(500).json({ error: 'Failed to cleanup cache' });
+  }
+});
+
+// Reset cache metrics endpoint
+router.post('/cache/reset-metrics', async (req, res) => {
+  try {
+    resetCacheMetrics();
+    res.json({ success: true, message: 'Cache metrics reset' });
+  } catch (error) {
+    console.error('Reset metrics error:', error);
+    res.status(500).json({ error: 'Failed to reset metrics' });
+  }
+});
+
+// Populate keyword embeddings endpoint (one-time setup)
+router.post('/admin/populate-embeddings', async (req, res) => {
+  try {
+    const result = await populateKeywordEmbeddings();
+    res.json({ 
+      success: result, 
+      message: result ? 'Keywords populated successfully' : 'Failed to populate keywords'
+    });
+  } catch (error) {
+    console.error('Populate embeddings error:', error);
+    res.status(500).json({ error: 'Failed to populate embeddings' });
+  }
+});
+
+// Test vector search endpoint
+router.post('/vector/test', async (req, res) => {
+  try {
+    const { query, location } = req.body;
+    
+    if (!query || !location) {
+      return res.status(400).json({ error: 'Query and location are required' });
+    }
+
+    const vectorResult = await enhancedSearchWithVectors(query, location);
+    const keywords = await findUndergroundKeywords(query);
+    
+    res.json({
+      query,
+      location,
+      vectorResult,
+      relevantKeywords: keywords.slice(0, 10),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Vector test error:', error);
+    res.status(500).json({ error: 'Vector search test failed' });
+  }
+});
 
 export default router;
