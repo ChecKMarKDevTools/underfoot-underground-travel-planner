@@ -1,0 +1,93 @@
+version: 2
+updates:
+  # Enable version updates for npm in root directory
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  # Enable version updates for npm in frontend workspace
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  # Enable version updates for npm in backend workspace
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  # Enable Docker base image updates
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  # Enable GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "anchildress1"
+    assignees:
+      - "anchildress1"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

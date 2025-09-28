@@ -13,12 +13,12 @@
     "@supabase/supabase-js": "^2.36.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "esbuild": "0.25.9",
+    "esbuild": "0.25.10",
     "express": "^5.1.0",
     "node-fetch": "^3.3.0",
     "openai": "^5.12.2",
-    "vite": "7.1.5",
-    "wrangler": "4.34.0"
+    "vite": "7.1.6",
+    "wrangler": "4.38.0"
   },
   "devDependencies": {
     "supertest": "^7.0.0",
