@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Underfoot Underground Travel Planner — High-Level Implementation Plan
 
 > 🦄 Source of truth for the v1 build plan. Chatbot-only UX, Node **24**, flat monorepo (`/frontend`, `/backend`, `/n8n`, `/docs`).
@@ -252,3 +254,7 @@ PORT=3000
 ---
 
 <small>This document was generated with the help of ChatGPT as directed by Ashley Childress</small>
+
+---
+
+_This document was generated with Verdent AI assistance._

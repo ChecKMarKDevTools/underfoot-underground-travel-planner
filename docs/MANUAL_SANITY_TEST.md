@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Manual Sanity Test Checklist
 
 Purpose: quick end-to-end verification that core interfaces function (health, chat JSON, SSE stream, cache, debug UI). Run before major commits or deployments.
@@ -73,3 +75,7 @@ History Cap: PASS
 ---
 
 _Update this file when interfaces or environment variables change._
+
+---
+
+_This document was generated with Verdent AI assistance._

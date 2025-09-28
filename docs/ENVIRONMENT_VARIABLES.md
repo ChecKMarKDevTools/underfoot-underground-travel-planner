@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Environment Variables
 
 Central reference for all environment variables used across Underfoot. Avoid exposing secrets to the frontend — only variables explicitly prefixed with `VITE_` are shipped to the browser.
@@ -61,3 +63,7 @@ VITE_LIMIT=5
 ---
 
 _Generated documentation — keep synchronized when adding or renaming variables._
+
+---
+
+_This document was generated with Verdent AI assistance._

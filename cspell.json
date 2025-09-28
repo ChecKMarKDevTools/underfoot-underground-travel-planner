@@ -12,6 +12,7 @@
   "useGitignore": true,
   "ignorePaths": [
     "/{node_modules,coverage,dist,playwright-report}/",
-    "{.env*,*.config.js,*.yml,package*.json,*.txt,*.tmp,**/*.stitch}"
+    "{.env*,*.config.js,*.yml,*.toml,package*.json,*.txt,*.tmp,**/*.stitch}",
+    "supabase/config.toml"
   ]
 }

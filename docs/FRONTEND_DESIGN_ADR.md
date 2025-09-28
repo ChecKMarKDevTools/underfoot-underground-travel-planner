@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Frontend Design ADR: Native Chat UI (Reaffirmed) vs Embedded n8n Widget
 
 ## Status
@@ -88,3 +90,7 @@ We are **reaffirming the bespoke native React chat UI as the primary and shipped
 ## Decision Review Window
 
 Revisit only if a compelling workflow visualization or orchestration requirement emerges that native UI cannot satisfy with reasonable effort.
+
+---
+
+_This document was generated with Verdent AI assistance._

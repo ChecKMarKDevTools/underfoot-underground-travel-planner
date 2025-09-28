@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Frontend (Underfoot)
 
 This folder contains the single-page React frontend built with Vite and Tailwind.
@@ -95,3 +97,7 @@ export PLAYWRIGHT_BASE_URL=http://localhost:5173/labs/underfoot
 ```
 
 Then re-run the tests.
+
+---
+
+_This document was generated with Verdent AI assistance._

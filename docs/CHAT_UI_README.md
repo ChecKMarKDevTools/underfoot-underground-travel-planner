@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Underfoot Chat UI
 
 ## Purpose
@@ -82,3 +84,7 @@ If both native and embed variants coexist, a lightweight runtime flag can select
 ## Review Cadence
 
 Reassess necessity every two iterations once embed PoC lands.
+
+---
+
+_This document was generated with Verdent AI assistance._

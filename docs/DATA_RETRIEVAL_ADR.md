@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Data Retrieval ADR
 
 ## Title
@@ -240,3 +242,7 @@ provided `score` field (if present it is ignored / stripped).
 5. Update ADR status from Draft → Accepted once first three adapters stable.
 
 ---
+
+---
+
+_This document was generated with Verdent AI assistance._

@@ -6,6 +6,12 @@
 
 ---
 
+## Only a Break First! (September 27, 2025)
+
+So I have worked on and off on this app for the last couple of weeks, but it's been weak prompting with small SPIKE type research. Not anything major. So, Now there's a new plan outside of the hackathon that might be supportable long-term. Plus, [Verdent](https://verdent.ai) has jumped in after Copilot/ChatGPT and it's mostly wowed me since I first set out to break it. So far, that effort remains largely unsuccessful (and it's rude absent acknowledgement of my attempts—it cleans up everything I try to break!)
+
+So it's time for some serious dev work again. Let's go back to Supabase (and see if we can restart the server that was shut down due to inefficient (read nonexistent) security)! So let's see what we can get done before credits run out (or netflix gets cancelled 🤨).
+
 ## Next Up: A Real App (September 6, 2025)
 
 Now that the POC is done, hackathon sprint finished (and mostly recovered), it's time to migrate this backend to something I know how to work with. Then we can sprinkle in some new agents, add more complex cache handling system, and while I'm at it let's see if we can get AI to sort out some of this documentation to bring things up to what it _really_ looks like out in the wild. Not necessarily what it looks like in my head. Once that's all settled? Onwards to learn some mobile dev things. 😆🦄

@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Native Chat Long-Term Vision
 
 Status: Draft (living document)
@@ -232,3 +234,7 @@ PRs can update this document; keep a concise changelog section below.
 ---
 
 This vision avoids end-user feature flags: either the native system is online or we fall back wholesale to the n8n embed. Simple, predictable, transparent.
+
+---
+
+_This document was generated with Verdent AI assistance._

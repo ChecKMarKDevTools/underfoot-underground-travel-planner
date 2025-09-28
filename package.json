@@ -28,8 +28,6 @@
   "workspaces": [
     "frontend",
     "backend",
-    "n8n",
-    "brightdata",
     "supabase"
   ],
   "volta": {

@@ -1,3 +1,5 @@
+_Document created: September 27, 2025_
+
 # Results Strategy — “More Than Three, Not a Buffet”
 
 Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish) By** fallback that feels intentional (not a pity list).
@@ -117,3 +119,7 @@ We’ll reliably land **4–6** without chasing infinity:
 - Use a **Near(ish) By** section to make the “more than three” promise true, readable, and cheap.
 
 <small>This doc was generated with ChatGPT and lightly edited by me.</small>
+
+---
+
+_This document was generated with Verdent AI assistance._
