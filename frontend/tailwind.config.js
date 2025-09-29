@@ -1,73 +1,92 @@
+/** @type {import('tailwindcss').Config} */
 export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
-  content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
-      colors: {
-        // Dream Horizon Color Scheme
-        'pearl-white': '#FDFDFE',
-        'mist-surface': '#F3F5F8',
-        'midnight-navy': '#0D1B2A',
-        'aurora-purple': '#9D4EDD',
-        'soft-teal': '#1FAAA0',
-        'mid-orange': '#FF914D',
-        'plasma-pink': '#E03FD8',
-        'deep-space': '#0A0E1A',
-        'dark-surface': '#1A1F2E',
-
-        cm: {
-          // Dream Horizon inspired palette with mystical underground theme
-          primary: '#9D4EDD', // Aurora Purple
-          accent: '#E03FD8', // Plasma Pink
-          info: '#1FAAA0', // Soft Teal
-          cta: '#FF914D', // Mid Orange
-
-          // Light theme defaults
-          bg: '#FDFDFE', // Pearl White
-          panel: '#F3F5F8', // Mist Surface
-          card: '#FFFFFF', // Pure White Cards
-          border: '#E1E7ED', // Light Border
-          text: '#0D1B2A', // Midnight Navy
-          sub: '#64748B', // Slate Gray
-
-          // Dark theme variants (applied via class)
-          'bg-dark': '#0A0E1A', // Deep Space
-          'panel-dark': '#1A1F2E', // Dark Surface
-          'card-dark': '#262B3A', // Dark Card
-          'border-dark': '#2D3748', // Dark Border
-          'text-dark': '#FDFDFE', // Pearl White
-          'sub-dark': '#A0AEC0', // Light Gray
-        },
-      },
-      boxShadow: {
-        soft: '0 8px 30px rgba(0,0,0,.35)',
-        aurora: '0 4px 20px rgba(157, 78, 221, 0.3)',
-        mystical: '0 8px 32px rgba(157, 78, 221, 0.2)',
-      },
       fontFamily: {
-        // Keep existing font
-        pangolin: ['Pangolin', 'cursive'],
-        // Add new Dream Horizon fonts
-        flavors: ['Flavors', 'cursive'],
-        inter: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['Orbitron', 'monospace'],
+        brand: ['Flavors', 'Kablam', 'Frijole', 'display'],
+        body: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      colors: {
+        cyber: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        neon: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
+        mystic: {
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7c3aed',
+          800: '#6b21a8',
+          900: '#581c87',
+        },
+        matrix: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+        },
+        void: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+        },
       },
       animation: {
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-up': 'slideUp 0.4s ease-out',
-        'mystical-glow': 'mysticalGlow 2s ease-in-out infinite alternate',
+        glow: 'glow 2s ease-in-out infinite alternate',
+        steam: 'steam 3s ease-in-out infinite',
+        gear: 'spin 20s linear infinite',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        glow: {
+          '0%': { boxShadow: '0 0 5px theme(colors.cyber.400)' },
+          '100%': {
+            boxShadow: '0 0 20px theme(colors.cyber.400), 0 0 30px theme(colors.neon.400)',
+          },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        mysticalGlow: {
-          '0%': { boxShadow: '0 0 20px rgba(157, 78, 221, 0.3)' },
-          '100%': { boxShadow: '0 0 30px rgba(157, 78, 221, 0.6)' },
+        steam: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)', opacity: '0.7' },
+          '50%': { transform: 'translateY(-10px) scale(1.1)', opacity: '1' },
         },
       },
     },

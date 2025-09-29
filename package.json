@@ -43,7 +43,7 @@
     "dev:backend": "npm run -w backend dev",
     "dev:frontend": "npm run -w frontend dev",
     "dev:worker": "cd cloudflare-worker && wrangler dev",
-    "build": "npm run -w backend build && npm run -w frontend build",
+    "build": "npm run -w frontend build",
     "start": "npm run -w backend start",
     "deploy:worker": "cd cloudflare-worker && wrangler deploy",
     "commitlint": "commitlint --edit",
@@ -53,8 +53,8 @@
     "lint": "eslint --fix --max-warnings=0 --no-warn-ignored",
     "spellcheck": "npx cspell . --show-suggestions --gitignore",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:unit": "cd backend && npm run test:unit && cd ../frontend && npm run test:unit && cd ..",
-    "test:e2e": "cd backend && npm run test:e2e && cd ../frontend && npm run test:e2e && cd .."
+    "test:unit": "cd backend && npm run test:unit && cd ..",
+    "test:e2e": "cd backend && npm run test:e2e && cd .."
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

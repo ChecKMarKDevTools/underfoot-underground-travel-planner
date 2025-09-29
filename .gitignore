@@ -203,3 +203,4 @@ dist
 # Ignore all local temp files
 *.tmp
 dist/
+/.worktrees/

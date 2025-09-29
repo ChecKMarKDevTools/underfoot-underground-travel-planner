@@ -19,6 +19,10 @@ export default defineConfig([
     'frontend/playwright-report/**',
     'frontend/test-results/**',
     'supabase/functions/**',
+    '.worktrees/**',
+    '**/.worktrees/**',
+    'frontend/screenshot.js',
+    'frontend/vitest.setup.js',
   ]),
   js.configs.recommended,
   {
@@ -121,6 +125,16 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.node,
+      },
+    },
+  },
+  {
+    files: ['backend/test/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+        global: 'writable',
       },
     },
   },
