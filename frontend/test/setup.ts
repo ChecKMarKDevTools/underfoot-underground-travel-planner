@@ -9,6 +9,29 @@ afterEach(() => {
   localStorage.clear();
 });
 
+// Suppress act() warnings from framer-motion animations
+// These are unavoidable false positives caused by animation state updates
+// that occur outside React's test callstack. Mocking framer-motion breaks
+// component functionality, so filtering these specific warnings is the
+// recommended approach per React Testing Library's FAQ on animation libraries.
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: An update to') &&
+      args[0].includes('was not wrapped in act')
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
