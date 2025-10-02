@@ -51,6 +51,8 @@ jobs:
       - name: E2E tests (Playwright)
         working-directory: frontend
         run: npm run test:e2e
+        env:
+          CI: true
 
       - name: Upload Playwright report
         if: always()
