@@ -5,14 +5,29 @@
     {
       "name": "project-words",
       "path": "./project-words.txt",
-      "addWords": true
+      "addWords": true,
+      "noSuggest": false,
+      "useCompounds": false
     }
   ],
-  "dictionaries": ["project-words", "en_us", "en_slang", "softwareTerms", "git"],
+  "caseSensitive": false,
+  "dictionaries": [
+    "project-words",
+    "en_us",
+    "en_slang",
+    "softwareTerms",
+    "git",
+    "npm",
+    "node",
+    "typescript",
+    "html",
+    "css"
+  ],
   "useGitignore": true,
   "ignorePaths": [
     "/{node_modules,coverage,dist,playwright-report}/",
     "{.env*,*.config.js,*.yml,*.toml,package*.json,*.txt,*.tmp,**/*.stitch}",
-    "supabase/config.toml"
+    "supabase/config.toml",
+    "**/*/mockGooglePlaces.*"
   ]
 }

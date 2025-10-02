@@ -1,132 +1,94 @@
-# tech words
-blockquotes
+# Project-specific names
 checkmarkdevtools
-Pikeville
-Childress
-hackathon
-devto
-brightdata
-pgvector
-TIMESTAMPTZ
-SERP
-unlocker
-lefthook
-wakatime
-Dollywood
-hackathons
-Verdent
-Pydantic
-WCAG
-Contentful
-mapbox
-ILIKE
-beforeunload
-rebranded
-Polyform
+stonewalker
 
-# tools
-vite
-vitest
-blocklist
-Avenir
-commitlint
-frontmatter
-substack
-endheader
-rollup
-pipefail
-wakatime
-SERP
-subflow
-subflows
-unlocker
-lefthook
-GEOAPIFY
-EMBEDED
-SERPAPI
-EVENTBRITE
-SUPABASE
-subreddits
-solotravel
-roadtrip
-langchain
-upvotes
-plpgsql
-pooler
-signups
-signup
-bbox
-ville
-treosh
-lighthouserc
-nosniff
-Cutover
-ossp
-TTFB
+# People
+childress
+verdent
+
+# Services/APIs
+contentful
+eventbrite
+geoapify
+qdrant
+supabase
+
+# API providers
+serp
+serpapi
+
+# Libraries/Tools
 aiohttp
-geocoder
-Overengineering
-NEWREL
-Qdrant
+langchain
+lefthook
+lighthouserc
+mapbox
+pgvector
+plpgsql
+pydantic
 pywrangler
-bikeshedding
+treosh
+wakatime
 
-# demo site hostnames
-localblog
-indiecalendar
-historyclub
-indiecommunity
-railnerds
+# Database/SQL terms
+ilike
+pgrst
+timestamptz
 
-# demo content words
-Creekside
-Stonewalker
-Pikeville
-localblog
-substack
+# Locations/Demo content
+dollywood
+pikeville
+smithing
+smithed
+ville
 
-# domain specific
-anonymization
-deprioritized
-gmaps
-avant
+# Reddit-specific
+roadtrip
 selftext
+solotravel
+subreddits
+
+# Travel sites
 orbitz
 travelocity
-PGRST
-burg
-trunc
-cloudflare
 
-# UI specific terms
+# Tech terms
+bbox
+beforeunload
+brightdata
+geocoder
 geospatial
-Orbitron
-Kablam
-smithed
-Smithing
-dotenv
-fseventsd
-icns
-timemachine
-donotpresent
-apdisk
-pids
-jscoverage
-wscript
-jspm
-eslintcache
-stylelintcache
-Microbundle
-Nuxt
-nuxt
-vuepress
-ionide
-worktrees
-Ddkg
-Ruhx
-IRAR
-Vbdq
-Zwok
-Highgate
+gmaps
+latlng
 moveend
+nosniff
+ossp
+pooler
+signup
+signups
+ttfb
+unlocker
 zoomend
+
+# Architecture/process terms
+anonymization
+bikeshedding
+cutover
+deprioritized
+overengineering
+subflow
+subflows
+
+# Misc
+avant
+hackathon
+hackathons
+newrel
+orbitron
+polyform
+rebranded
+substack
+wcag
+
+# Fun words
+kablam

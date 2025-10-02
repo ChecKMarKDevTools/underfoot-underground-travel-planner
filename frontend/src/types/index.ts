@@ -18,6 +18,7 @@ export interface Place {
   historicalPeriod?: string;
   artifacts?: string[];
   imageUrl?: string;
+  address?: string;
 }
 
 export interface DebugData {

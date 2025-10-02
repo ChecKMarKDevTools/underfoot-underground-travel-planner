@@ -56,6 +56,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               'transition-all duration-200 min-h-[60px] max-h-32',
             )}
             rows={1}
+            maxLength={1000}
             disabled={isLoading}
             aria-label="Message input"
           />
