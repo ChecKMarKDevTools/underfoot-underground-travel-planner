@@ -4,9 +4,10 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
-const supabaseAdmin = supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
+const supabaseAdmin =
+  supabaseServiceKey && supabaseUrl ? createClient(supabaseUrl, supabaseServiceKey) : null;
 
 const generateCacheKey = (query, location) => {
   const normalized = `${query.trim().toLowerCase()}|${location.trim().toLowerCase()}`;
@@ -14,6 +15,10 @@ const generateCacheKey = (query, location) => {
 };
 
 const getCachedSearchResults = async (query, location) => {
+  if (!supabase) {
+    return null;
+  }
+
   try {
     const queryHash = generateCacheKey(query, location);
     const { data, error } = await supabase
@@ -36,6 +41,10 @@ const getCachedSearchResults = async (query, location) => {
 };
 
 const setCachedSearchResults = async (query, location, results, ttlMinutes = 30) => {
+  if (!supabase) {
+    return false;
+  }
+
   try {
     const queryHash = generateCacheKey(query, location);
     const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000).toISOString();
@@ -66,6 +75,10 @@ const setCachedSearchResults = async (query, location, results, ttlMinutes = 30)
 };
 
 const getCachedLocation = async (rawInput) => {
+  if (!supabase) {
+    return null;
+  }
+
   try {
     const { data, error } = await supabase
       .from('location_cache')
@@ -99,6 +112,10 @@ const setCachedLocation = async (
   rawCandidates = [],
   ttlHours = 24,
 ) => {
+  if (!supabase) {
+    return false;
+  }
+
   try {
     const expiresAt = new Date(Date.now() + ttlHours * 60 * 60 * 1000).toISOString();
 
@@ -149,6 +166,14 @@ const cleanExpiredCache = async () => {
 };
 
 const getCacheStats = async () => {
+  if (!supabase) {
+    return {
+      searchResults: 0,
+      locationCache: 0,
+      connected: false,
+    };
+  }
+
   try {
     const [searchCount, locationCount] = await Promise.all([
       supabase.from('search_results').select('id', { count: 'exact', head: true }),

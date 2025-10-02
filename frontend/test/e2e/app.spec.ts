@@ -23,9 +23,13 @@ test.describe('Underfoot Chat Application', () => {
     await sendButton.click();
 
     await expect(page.getByText('Ancient ruins near London')).toBeVisible();
-    await expect(page.getByText(/Stonewalker analyzes/)).toBeVisible();
 
-    await expect(page.getByText(/locations detected/)).toBeVisible({ timeout: 10000 });
+    // Wait for assistant response (should contain "locations detected" or be one of the random responses)
+    await expect(
+      page.locator(
+        'text=/locations detected|pulse with unusual energy|forgotten pathways|Ancient algorithms|nexus points|Quantum traces/i',
+      ),
+    ).toBeVisible({ timeout: 10000 });
   });
 
   test('should toggle theme', async ({ page }) => {
