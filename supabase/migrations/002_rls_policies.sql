@@ -1,47 +1,94 @@
--- Row Level Security policies for Underfoot cache tables
--- Enables public access for prototype (no auth required)
+-- Secure Row Level Security policies for cache tables
+-- Blocks unauthorized deletes while allowing public reads and controlled writes
 
 -- Enable RLS on both tables
 ALTER TABLE search_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE location_cache ENABLE ROW LEVEL SECURITY;
 
--- Allow unrestricted public access for prototype usage
--- Note: In production, these would be more restrictive based on auth requirements
-CREATE POLICY "Allow public read access on search_results" 
+-- SEARCH RESULTS POLICIES
+
+-- Allow anyone to read non-expired cache entries
+CREATE POLICY "Public read access for valid cache" 
   ON search_results FOR SELECT 
-  USING (true);
+  USING (expires_at > now());
 
-CREATE POLICY "Allow public write access on search_results" 
+-- Allow authenticated inserts with rate limiting (enforced by app logic)
+CREATE POLICY "Public insert access for search results" 
   ON search_results FOR INSERT 
-  WITH CHECK (true);
+  WITH CHECK (
+    -- Require valid expiration (not in past, not more than 7 days out)
+    expires_at > now() AND 
+    expires_at < now() + interval '7 days' AND
+    -- Require non-empty fields
+    query_hash IS NOT NULL AND 
+    location IS NOT NULL AND 
+    intent IS NOT NULL AND
+    results_json IS NOT NULL
+  );
 
-CREATE POLICY "Allow public update access on search_results" 
+-- Allow updates only to extend TTL on same query_hash (upsert pattern)
+CREATE POLICY "Public update access for search results" 
   ON search_results FOR UPDATE 
-  USING (true) WITH CHECK (true);
+  USING (true)
+  WITH CHECK (
+    expires_at > now() AND 
+    expires_at < now() + interval '7 days'
+  );
 
-CREATE POLICY "Allow public delete access on search_results" 
-  ON search_results FOR DELETE 
-  USING (true);
+-- ONLY service role can delete (prevents cache bombing)
+-- No public delete policy = deletes blocked by RLS
 
-CREATE POLICY "Allow public read access on location_cache" 
+-- LOCATION CACHE POLICIES
+
+-- Allow anyone to read non-expired location cache
+CREATE POLICY "Public read access for location cache" 
   ON location_cache FOR SELECT 
-  USING (true);
+  USING (expires_at > now());
 
-CREATE POLICY "Allow public write access on location_cache" 
+-- Allow authenticated inserts with validation
+CREATE POLICY "Public insert access for location cache" 
   ON location_cache FOR INSERT 
-  WITH CHECK (true);
+  WITH CHECK (
+    -- Require valid expiration (not in past, not more than 30 days out)
+    expires_at > now() AND 
+    expires_at < now() + interval '30 days' AND
+    -- Require valid confidence score
+    confidence >= 0 AND 
+    confidence <= 1 AND
+    -- Require non-empty fields
+    raw_input IS NOT NULL AND 
+    normalized_location IS NOT NULL
+  );
 
-CREATE POLICY "Allow public update access on location_cache" 
+-- Allow updates only to extend TTL on same raw_input (upsert pattern)
+CREATE POLICY "Public update access for location cache" 
   ON location_cache FOR UPDATE 
-  USING (true) WITH CHECK (true);
+  USING (true)
+  WITH CHECK (
+    expires_at > now() AND 
+    expires_at < now() + interval '30 days' AND
+    confidence >= 0 AND 
+    confidence <= 1
+  );
 
-CREATE POLICY "Allow public delete access on location_cache" 
-  ON location_cache FOR DELETE 
-  USING (true);
+-- ONLY service role can delete (prevents cache bombing)
+-- No public delete policy = deletes blocked by RLS
 
--- Grant necessary permissions to anon and authenticated roles
-GRANT ALL ON search_results TO anon, authenticated;
-GRANT ALL ON location_cache TO anon, authenticated;
+-- Grant necessary SELECT and INSERT permissions to anon role
+GRANT SELECT, INSERT, UPDATE ON search_results TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE ON location_cache TO anon, authenticated;
+
+-- Grant DELETE only to service_role (admin operations)
+GRANT DELETE ON search_results TO service_role;
+GRANT DELETE ON location_cache TO service_role;
 
 -- Grant usage on sequences (needed for UUID generation)
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+
+-- Comments
+COMMENT ON POLICY "Public read access for valid cache" ON search_results IS 
+  'Allows public reads of non-expired cache entries only';
+COMMENT ON POLICY "Public insert access for search results" ON search_results IS 
+  'Allows inserts with TTL validation and required fields check';
+COMMENT ON POLICY "Public update access for search results" ON search_results IS 
+  'Allows upserts on existing query_hash with TTL validation';

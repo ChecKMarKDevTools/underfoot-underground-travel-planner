@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS search_results (
   intent text NOT NULL,
   results_json jsonb NOT NULL,
   created_at timestamptz DEFAULT now(),
-  expires_at timestamptz NOT NULL
+  expires_at timestamptz NOT NULL,
+  CONSTRAINT valid_expiration CHECK (expires_at > created_at),
+  CONSTRAINT reasonable_ttl CHECK (expires_at < created_at + interval '7 days')
 );
 
 -- Location normalization cache table  
@@ -20,7 +22,9 @@ CREATE TABLE IF NOT EXISTS location_cache (
   confidence float NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
   raw_candidates jsonb DEFAULT '[]'::jsonb,
   created_at timestamptz DEFAULT now(),
-  expires_at timestamptz NOT NULL
+  expires_at timestamptz NOT NULL,
+  CONSTRAINT valid_expiration CHECK (expires_at > created_at),
+  CONSTRAINT reasonable_ttl CHECK (expires_at < created_at + interval '30 days')
 );
 
 -- Indexes for performance
@@ -37,9 +41,23 @@ BEGIN
   DELETE FROM search_results WHERE expires_at < now();
   DELETE FROM location_cache WHERE expires_at < now();
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Enable pg_cron extension for automatic cleanup
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- Schedule cleanup to run every hour (requires pg_cron)
+-- This removes the need for manual cleanup calls
+SELECT cron.schedule(
+  'cleanup-expired-cache',
+  '0 * * * *',  -- Every hour at minute 0
+  $$SELECT clean_expired_cache()$$
+);
 
 -- Comments for documentation
 COMMENT ON TABLE search_results IS 'Cache for search query results with TTL expiration';
 COMMENT ON TABLE location_cache IS 'Cache for location normalization with confidence scores';
 COMMENT ON FUNCTION clean_expired_cache IS 'Removes expired cache entries from both cache tables';
+COMMENT ON CONSTRAINT valid_expiration ON search_results IS 'Prevents setting expiration before creation time';
+COMMENT ON CONSTRAINT reasonable_ttl ON search_results IS 'Prevents cache entries lasting longer than 7 days';
+COMMENT ON CONSTRAINT reasonable_ttl ON location_cache IS 'Prevents location cache lasting longer than 30 days';
