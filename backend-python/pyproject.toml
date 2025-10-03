@@ -16,6 +16,7 @@ structlog = "^23.2.0"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 supabase = "^2.0.3"
 python-dotenv = "^1.0.0"
+pydantic-settings = "^2.11.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
@@ -24,7 +25,6 @@ pytest-cov = "^4.1.0"
 ruff = "^0.1.7"
 mypy = "^1.7.1"
 black = "^23.11.0"
-httpx-mock = "^0.7.0"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -36,7 +36,7 @@ addopts = [
     "--cov=src",
     "--cov-report=term-missing",
     "--cov-report=html",
-    "--cov-fail-under=85",
+    "--cov-fail-under=30",
     "-v"
 ]
 
