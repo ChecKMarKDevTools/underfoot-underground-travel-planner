@@ -135,8 +135,26 @@ GRANT DELETE ON location_cache TO service_role;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
 
 -- =============================================================================
--- STEP 5: Automatic Cleanup
+-- STEP 5: Automatic Cleanup (Daily at 3 AM)
 -- =============================================================================
+
+-- Update cleanup function to check event dates, not cache expiration
+CREATE OR REPLACE FUNCTION clean_expired_cache()
+RETURNS void AS $$
+BEGIN
+  -- Delete search results where ALL events have passed (startDate < now)
+  DELETE FROM search_results 
+  WHERE NOT EXISTS (
+    SELECT 1 
+    FROM jsonb_array_elements(results_json) AS event
+    WHERE (event->>'startDate')::timestamptz > now()
+  )
+  AND jsonb_array_length(results_json) > 0;
+  
+  -- Delete location cache based on expires_at
+  DELETE FROM location_cache WHERE expires_at < now();
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Enable pg_cron extension
 CREATE EXTENSION IF NOT EXISTS pg_cron;
@@ -144,10 +162,10 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 -- Remove existing job if it exists
 SELECT cron.unschedule('cleanup-expired-cache') WHERE true;
 
--- Schedule cleanup every hour
+-- Schedule cleanup daily at 3 AM
 SELECT cron.schedule(
   'cleanup-expired-cache',
-  '0 * * * *',
+  '0 3 * * *',
   $$SELECT clean_expired_cache()$$
 );
 

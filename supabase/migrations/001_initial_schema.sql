@@ -34,11 +34,20 @@ CREATE INDEX IF NOT EXISTS idx_search_results_location ON search_results(locatio
 CREATE INDEX IF NOT EXISTS idx_location_cache_raw_input ON location_cache(raw_input);
 CREATE INDEX IF NOT EXISTS idx_location_cache_expires ON location_cache(expires_at);
 
--- Function to clean expired cache entries
+-- Function to clean cache entries where all events have passed
 CREATE OR REPLACE FUNCTION clean_expired_cache()
 RETURNS void AS $$
 BEGIN
-  DELETE FROM search_results WHERE expires_at < now();
+  -- Delete search results where ALL events have passed (startDate < now)
+  DELETE FROM search_results 
+  WHERE NOT EXISTS (
+    SELECT 1 
+    FROM jsonb_array_elements(results_json) AS event
+    WHERE (event->>'startDate')::timestamptz > now()
+  )
+  AND jsonb_array_length(results_json) > 0;
+  
+  -- Delete location cache based on expires_at
   DELETE FROM location_cache WHERE expires_at < now();
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -46,18 +55,18 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Enable pg_cron extension for automatic cleanup
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- Schedule cleanup to run every hour (requires pg_cron)
+-- Schedule cleanup to run daily at 3 AM (requires pg_cron)
 -- This removes the need for manual cleanup calls
 SELECT cron.schedule(
   'cleanup-expired-cache',
-  '0 * * * *',  -- Every hour at minute 0
+  '0 3 * * *',  -- Daily at 3:00 AM
   $$SELECT clean_expired_cache()$$
 );
 
 -- Comments for documentation
 COMMENT ON TABLE search_results IS 'Cache for search query results with TTL expiration';
 COMMENT ON TABLE location_cache IS 'Cache for location normalization with confidence scores';
-COMMENT ON FUNCTION clean_expired_cache IS 'Removes expired cache entries from both cache tables';
+COMMENT ON FUNCTION clean_expired_cache IS 'Removes cache entries where all events have passed (based on event startDate)';
 COMMENT ON CONSTRAINT valid_expiration ON search_results IS 'Prevents setting expiration before creation time';
 COMMENT ON CONSTRAINT reasonable_ttl ON search_results IS 'Prevents cache entries lasting longer than 7 days';
 COMMENT ON CONSTRAINT reasonable_ttl ON location_cache IS 'Prevents location cache lasting longer than 30 days';
