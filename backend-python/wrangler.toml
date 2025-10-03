@@ -1,0 +1,48 @@
+name = "underfoot-python-backend"
+main = "src/workers/chat_worker.py"
+compatibility_date = "2025-01-01"
+
+[build]
+command = "poetry export -f requirements.txt --output requirements.txt --without-hashes"
+
+[vars]
+ENVIRONMENT = "production"
+LOG_LEVEL = "INFO"
+CACHE_TTL_SECONDS = "60"
+SSE_MAX_CONNECTIONS = "100"
+RATE_LIMIT_PER_MINUTE = "100"
+
+# Production routes
+[[routes]]
+pattern = "underfoot.workers.dev"
+zone_name = "workers.dev"
+
+[[routes]]
+pattern = "api.checkmarkdevtools.dev/underfoot/*"
+zone_name = "checkmarkdevtools.dev"
+
+# Development routes (comment out for production)
+# [[routes]]
+# pattern = "localhost:8787/*"
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+[logpush]
+enabled = true
+
+# Analytics
+[analytics_engine]
+enabled = true
+
+# Secrets (set via `wrangler secret put <NAME>`)
+# wrangler secret put OPENAI_API_KEY
+# wrangler secret put GEOAPIFY_API_KEY
+# wrangler secret put SERPAPI_KEY
+# wrangler secret put REDDIT_CLIENT_ID
+# wrangler secret put REDDIT_CLIENT_SECRET
+# wrangler secret put EVENTBRITE_TOKEN
+# wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_ANON_KEY
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
