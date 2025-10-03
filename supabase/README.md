@@ -34,45 +34,43 @@ Your original RLS policies had **critical security vulnerabilities**:
 - **Input validation**: Checks operation, table, data
 - **Proper error handling**: Returns meaningful HTTP status codes
 
-## How to Deploy
+## 🚀 Quick Deploy (2 minutes)
 
-### Option 1: Local Supabase (for development)
+### Option 1: SQL Editor (Easiest - No CLI Required)
+
+1. **Open Supabase SQL Editor**: https://app.supabase.com/project/uqvwaiexsgprdbdecoxx/sql/new
+2. **Copy migration**: Open `supabase/complete-migration.sql` and copy all contents
+3. **Paste and Run**: Paste into SQL Editor → Click "Run"
+4. **Verify**: Run `bash supabase/test-security.sh` in your terminal
+5. **Done!** ✅
+
+### Option 2: Supabase CLI (for automation)
 
 ```bash
-# Install Supabase CLI (if not installed)
+cd supabase
+bash deploy.sh
+```
+
+Prompts you to:
+- Login to Supabase
+- Link your project
+- Push migrations
+- Deploy edge function
+
+### Option 3: Local Development
+
+```bash
+# Install Supabase CLI
 brew install supabase/tap/supabase
 
-# Start local Supabase
+# Start local instance
 cd supabase
 supabase start
-
-# Get your local keys (printed after start)
-# Set these in your .env:
-# SUPABASE_URL=http://127.0.0.1:54321
-# SUPABASE_ANON_KEY=<from supabase start output>
-# SUPABASE_SERVICE_ROLE_KEY=<from supabase start output>
 
 # Apply migrations
 supabase db reset
 
-# Deploy edge function
-supabase functions deploy merge-cache
-```
-
-### Option 2: Supabase Cloud (for production)
-
-```bash
-# Link to your cloud project
-supabase link --project-ref <your-project-id>
-
-# Push migrations
-supabase db push
-
-# Deploy edge function
-supabase functions deploy merge-cache --no-verify-jwt
-
-# Get your keys from:
-# https://app.supabase.com/project/<your-project>/settings/api
+# Get local keys from: supabase status
 ```
 
 ## Environment Variables Needed
@@ -89,26 +87,23 @@ SUPABASE_SERVICE_ROLE_KEY=<admin-key-backend-only-never-expose>
 - **Local**: Run `supabase status` after `supabase start`
 - **Cloud**: Project Settings → API in Supabase dashboard
 
-## Verification
+## ✅ Test Security (Required)
 
-After deploying, test that RLS is working:
+After deploying, verify RLS is blocking unauthorized deletes:
 
 ```bash
-# This should work (read with anon key)
-curl -X GET '<SUPABASE_URL>/rest/v1/search_results' \
-  -H "apikey: <ANON_KEY>" \
-  -H "Authorization: Bearer <ANON_KEY>"
-
-# This should FAIL with 403 (delete with anon key)
-curl -X DELETE '<SUPABASE_URL>/rest/v1/search_results?id=eq.<some-id>' \
-  -H "apikey: <ANON_KEY>" \
-  -H "Authorization: Bearer <ANON_KEY>"
-
-# This should work (delete with service role key)
-curl -X DELETE '<SUPABASE_URL>/rest/v1/search_results?id=eq.<some-id>' \
-  -H "apikey: <SERVICE_ROLE_KEY>" \
-  -H "Authorization: Bearer <SERVICE_ROLE_KEY>"
+bash supabase/test-security.sh
 ```
+
+**Expected output:**
+```
+✅ PASS: Anon read works
+✅ PASS: Anon insert works
+✅ PASS: Anon delete blocked (HTTP 403) - Security working!
+✅ PASS: Service role delete works
+```
+
+**If you see failures**, the migration didn't apply. Re-run the SQL in the editor.
 
 ## What Changed
 
@@ -122,8 +117,13 @@ curl -X DELETE '<SUPABASE_URL>/rest/v1/search_results?id=eq.<some-id>' \
 
 ## Next Steps
 
-1. **Install Supabase CLI**: `brew install supabase/tap/supabase`
-2. **Choose local or cloud deployment** (see above)
-3. **Apply migrations**: `supabase db reset` (local) or `supabase db push` (cloud)
-4. **Set environment variables** in your backend
-5. **Test the security** using the verification commands
+1. **Deploy migrations** (use SQL Editor option above)
+2. **Test security** with `bash supabase/test-security.sh`
+3. **Verify env variables** in your backend `.env`:
+   ```
+   SUPABASE_URL=https://uqvwaiexsgprdbdecoxx.supabase.co
+   SUPABASE_ANON_KEY=<your-anon-key>
+   SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+   ```
+4. **Restart your backend** to pick up the new config
+5. **Monitor cache health**: Query the `cache_health` view in SQL Editor
