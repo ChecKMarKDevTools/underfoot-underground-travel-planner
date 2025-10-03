@@ -5,12 +5,14 @@ This system implements intelligent caching and search optimization using Supabas
 ## 🎯 Features
 
 ### Vector Search Capabilities
+
 - **Semantic Similarity Matching**: Uses OpenAI embeddings to find similar queries even with different wording
 - **Underground Keywords Database**: Pre-populated database of underground travel-specific terms
 - **Multi-layered Cache Strategy**: Memory → Vector → Traditional → Database fallback
 - **Intelligent TTL Management**: Adaptive cache expiration based on query popularity
 
 ### Performance Optimizations
+
 - **Cache Warming**: Proactively caches related queries based on usage patterns
 - **Batch Processing**: Efficient embedding generation with rate limiting
 - **Memory Cache**: Fast in-process cache for frequently accessed results
@@ -21,7 +23,9 @@ This system implements intelligent caching and search optimization using Supabas
 ### New Tables
 
 #### `underground_keywords`
+
 Stores underground travel keywords with vector embeddings:
+
 ```sql
 - id (uuid, primary key)
 - keyword (text, unique)
@@ -31,8 +35,10 @@ Stores underground travel keywords with vector embeddings:
 - created_at, updated_at (timestamptz)
 ```
 
-#### `semantic_cache` 
+#### `semantic_cache`
+
 Intelligent cache with vector similarity matching:
+
 ```sql
 - id (uuid, primary key)
 - original_query, normalized_query (text)
@@ -44,19 +50,23 @@ Intelligent cache with vector similarity matching:
 ```
 
 ### Enhanced Existing Tables
+
 - Added vector columns to `search_results` and `location_cache`
 - New vector similarity indexes for fast cosine similarity search
 
 ## 🚀 Setup & Deployment
 
 ### 1. Database Migration
+
 ```bash
 # Run the new migrations
 supabase migration up
 ```
 
 ### 2. Environment Variables
+
 Add to your `.env` file:
+
 ```bash
 OPENAI_API_KEY=your_openai_api_key
 SUPABASE_URL=your_supabase_url
@@ -65,13 +75,16 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
 ### 3. Seed Data & Embeddings
+
 ```bash
 # Populate underground keywords (one-time setup)
 curl -X POST http://localhost:3000/underfoot/admin/populate-embeddings
 ```
 
 ### 4. Enable pgvector Extension
+
 In your Supabase SQL editor:
+
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
 ```
@@ -79,6 +92,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 ## 📡 API Endpoints
 
 ### Core Search (Enhanced)
+
 ```bash
 POST /underfoot/search
 {
@@ -88,6 +102,7 @@ POST /underfoot/search
 ```
 
 Now includes:
+
 - Vector similarity cache lookup
 - Underground keyword matching
 - Enhanced query analysis
@@ -96,11 +111,13 @@ Now includes:
 ### Cache Management
 
 #### Get Analytics
+
 ```bash
 GET /underfoot/cache/analytics
 ```
 
 Returns:
+
 ```json
 {
   "database": { "semantic_cache_count": 150, ... },
@@ -110,11 +127,13 @@ Returns:
 ```
 
 #### Manual Cache Cleanup
+
 ```bash
 POST /underfoot/cache/cleanup
 ```
 
 #### Reset Metrics
+
 ```bash
 POST /underfoot/cache/reset-metrics
 ```
@@ -122,6 +141,7 @@ POST /underfoot/cache/reset-metrics
 ### Vector Search Testing
 
 #### Test Vector Similarity
+
 ```bash
 POST /underfoot/vector/test
 {
@@ -135,6 +155,7 @@ Returns matching cached results and relevant keywords.
 ## 🔧 Configuration
 
 ### Vector Search Settings
+
 Located in `backend/src/services/supabaseService.js`:
 
 ```javascript
@@ -148,6 +169,7 @@ const VECTOR_CONFIG = {
 ```
 
 ### Cache Management Settings
+
 Located in `backend/src/services/cacheManagerService.js`:
 
 ```javascript
@@ -164,18 +186,21 @@ const CACHE_CONFIG = {
 ## 🧠 How It Works
 
 ### 1. Query Processing
+
 1. **Memory Cache Check**: Fastest lookup for recently accessed queries
 2. **Vector Similarity Search**: Semantic matching using embeddings
 3. **Traditional Cache**: Hash-based exact match fallback
 4. **Fresh Search**: If no cache hit, perform new search and store with embeddings
 
 ### 2. Intelligent Caching
+
 1. **Adaptive TTL**: Popular queries cached longer
 2. **Semantic Storage**: Results stored with vector embeddings
 3. **Cache Warming**: Related queries pre-cached based on patterns
 4. **Smart Eviction**: Low-value entries removed during cleanup
 
 ### 3. Underground Keywords
+
 1. **Semantic Enhancement**: Query matched against underground travel terms
 2. **Context Enrichment**: Relevant keywords added to search context
 3. **Weighted Scoring**: Keywords have relevance weights for better matching
@@ -183,12 +208,14 @@ const CACHE_CONFIG = {
 ## 📊 Performance Monitoring
 
 ### Cache Hit Rates
+
 - **Memory Cache**: Fastest, highest priority
 - **Vector Cache**: Semantic similarity matches
 - **Traditional Cache**: Exact hash matches
 - **Database**: Fresh queries
 
 ### Analytics Available
+
 - Hit/miss ratios by cache type
 - Average response times
 - Query popularity metrics
@@ -198,6 +225,7 @@ const CACHE_CONFIG = {
 ## 🛠️ Development & Testing
 
 ### Testing Vector Search
+
 ```bash
 # Test semantic similarity
 curl -X POST http://localhost:3000/underfoot/vector/test \
@@ -206,13 +234,16 @@ curl -X POST http://localhost:3000/underfoot/vector/test \
 ```
 
 ### Cache Analytics
+
 ```bash
 # Get detailed cache statistics
 curl http://localhost:3000/underfoot/cache/analytics
 ```
 
 ### Debugging
+
 Enable debug logging in services:
+
 ```javascript
 const CACHE_CONFIG = {
   performanceLogEnabled: true,
@@ -223,11 +254,13 @@ const CACHE_CONFIG = {
 ## 🔐 Security Considerations
 
 ### Row Level Security (RLS)
-- **underground_keywords**: Read-only for public, write for service role only
-- **semantic_cache**: Full access for caching operations
+
+- **underground\_keywords**: Read-only for public, write for service role only
+- **semantic\_cache**: Full access for caching operations
 - **Enhanced policies**: More restrictive than original prototype setup
 
 ### API Access
+
 - **Admin endpoints**: Require service-level access
 - **Cache operations**: Public read, restricted write/delete
 - **Embedding generation**: Rate limited via OpenAI API
@@ -235,11 +268,13 @@ const CACHE_CONFIG = {
 ## 🚧 Future Enhancements
 
 ### Phase 2 (Python Backend)
+
 - `vectorService.py` ready for Python backend integration
 - Async/await support for better performance
 - Advanced analytics and ML-based cache warming
 
 ### Phase 3 (Advanced Features)
+
 - Query intent classification
 - Location-specific embedding fine-tuning
 - Collaborative filtering for recommendations
@@ -248,6 +283,7 @@ const CACHE_CONFIG = {
 ## 📝 Usage Examples
 
 ### Basic Search with Vector Caching
+
 ```javascript
 import { intelligentCacheLookup, smartCacheStore } from './services/cacheManagerService.js';
 
@@ -265,6 +301,7 @@ await smartCacheStore(query, location, results);
 ```
 
 ### Working with Underground Keywords
+
 ```javascript
 import { findUndergroundKeywords } from './services/supabaseService.js';
 

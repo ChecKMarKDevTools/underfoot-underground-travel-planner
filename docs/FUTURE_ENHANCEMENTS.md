@@ -25,7 +25,7 @@ This is a list of all design decisions I made throughout the process with a focu
 - [ ] Consider setting up asynchronous request via an API Web hook that notifies you when the request is complete
 - [ ] Post-hackathon the question becomes "how do I actually support this thing realistically and financially", especially because my projects end up costing me a fortune if I'm not careful...
   - [ ] I'm thinking probably Google places API because I do have some bandwidth there without incurring additional fees.
-  - [/]And honestly, I'd rather pay for it out-of-pocket before I would put up with any sort of billing implementation. Which is easy to say when your user base consists of exactly 0, but more than that could be complicated. 🫤
+  - \[/]And honestly, I'd rather pay for it out-of-pocket before I would put up with any sort of billing implementation. Which is easy to say when your user base consists of exactly 0, but more than that could be complicated. 🫤
 
 ### Chat agent - Stonewalker
 
