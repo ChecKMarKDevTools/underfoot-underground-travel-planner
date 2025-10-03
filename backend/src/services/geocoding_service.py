@@ -1,35 +1,30 @@
-"""Geocoding service using Geoapify."""
+"""Geocoding service using Google Maps API (GCP $300 credits)."""
 
 import httpx
 
-from src.config.constants import GEOCODING_API_LIMIT, HTTP_CONNECT_TIMEOUT_SECONDS, HTTP_TIMEOUT_SECONDS
+from src.config.constants import HTTP_CONNECT_TIMEOUT_SECONDS, HTTP_TIMEOUT_SECONDS
 from src.config.settings import get_settings
 from src.models.domain_models import NormalizedLocation
-from src.utils.errors import UpstreamError
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 settings = get_settings()
 
 
-async def normalize_location(raw_input: str) -> NormalizedLocation:
-    """Normalize location using Geoapify geocoding API.
+async def normalize_location(raw_input):
+    """Normalize location using Google Maps Geocoding API.
 
     Args:
         raw_input: Raw location string from user
 
     Returns:
         Normalized location with coordinates and confidence
-
-    Raises:
-        UpstreamError: If geocoding API fails
     """
     try:
-        url = f"https://api.geoapify.com/v1/geocode/search"
+        url = "https://maps.googleapis.com/maps/api/geocode/json"
         params = {
-            "text": raw_input.strip(),
-            "limit": GEOCODING_API_LIMIT,
-            "apiKey": settings.geoapify_api_key,
+            "address": raw_input.strip(),
+            "key": settings.google_maps_api_key,
         }
 
         async with httpx.AsyncClient(
@@ -39,30 +34,29 @@ async def normalize_location(raw_input: str) -> NormalizedLocation:
             response.raise_for_status()
             data = response.json()
 
-        features = data.get("features", [])
-        if not features:
-            logger.warning("geocoding.no_results", input=raw_input)
+        if data.get("status") != "OK" or not data.get("results"):
+            logger.warning("geocoding.no_results", input=raw_input, status=data.get("status"))
             return NormalizedLocation(
                 normalized=raw_input,
                 confidence=0.5,
                 coordinates=None,
             )
 
-        feature = features[0]
-        props = feature.get("properties", {})
-
-        city = props.get("city") or props.get("town") or props.get("village")
-        region = props.get("state") or props.get("region")
-        country = props.get("country")
-
-        parts = [p for p in [city, region, country] if p]
-        normalized = ", ".join(parts)
-
-        confidence = props.get("rank", {}).get("confidence", 0.8)
-
+        result = data["results"][0]
+        normalized = result.get("formatted_address", raw_input)
+        
+        location = result.get("geometry", {}).get("location", {})
         coordinates = None
-        if props.get("lat") and props.get("lon"):
-            coordinates = {"lat": props["lat"], "lng": props["lon"]}
+        if location.get("lat") and location.get("lng"):
+            coordinates = {"lat": location["lat"], "lng": location["lng"]}
+
+        location_type = result.get("geometry", {}).get("location_type", "APPROXIMATE")
+        confidence = {
+            "ROOFTOP": 1.0,
+            "RANGE_INTERPOLATED": 0.9,
+            "GEOMETRIC_CENTER": 0.8,
+            "APPROXIMATE": 0.7,
+        }.get(location_type, 0.6)
 
         logger.info(
             "geocoding.success",

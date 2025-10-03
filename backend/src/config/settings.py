@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     openai_api_key: str
-    geoapify_api_key: str
+    google_maps_api_key: str
     serpapi_key: str
     reddit_client_id: str
     reddit_client_secret: str
@@ -21,10 +21,6 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_anon_key: str
     supabase_service_role_key: str | None = None
-
-    cache_ttl_seconds: int = 60
-    sse_max_connections: int = 100
-    rate_limit_per_minute: int = 100
 
     class Config:
         env_file = ".env"
