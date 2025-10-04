@@ -13,7 +13,7 @@ Design decisions, architectural patterns, and system diagrams.
 ### 🛠️ Technical Guides (`/tech_guides`)
 Setup instructions, deployment guides, and technical reference.
 
-- [Google Maps Setup](tech_guides/GOOGLE_MAPS_SETUP.md) - API key setup and security
+- [Integration Plan](tech_guides/INTEGRATION_PLAN.md) - Backend-Supabase-Frontend integration
 - [Environment Variables](tech_guides/ENVIRONMENT_VARIABLES.md) - All env vars explained
 - [Deployment Guide](tech_guides/DEPLOYMENT_GUIDE.md) - Production deployment
 - [Cloudflare Deployment](tech_guides/CLOUDFLARE_DEPLOYMENT_STRATEGY.md) - Cloudflare-specific setup
@@ -33,8 +33,9 @@ Project planning, roadmaps, and historical context.
 - [Development Plan](planning/DEVELOPMENT_PLAN.md) - Overall development roadmap
 - [Implementation Plan](planning/IMPLEMENTATION_PLAN.md) - Feature implementation details
 - [Implementation Summary](planning/IMPLEMENTATION_SUMMARY.md) - What's been built
+- [Python Migration Summary](planning/PYTHON_MIGRATION_SUMMARY.md) - JS to Python migration
+- [Setup Complete](planning/SETUP_COMPLETE.md) - Initial backend setup
 - [Orchestration Plan](planning/ORCHESTRATION_PLAN.md) - Backend orchestration
-- [Python Backend Migration](planning/PYTHON_BACKEND_MIGRATION_PLAN.md) - Migration notes
 - [Research Spikes](planning/RESEARCH_SPIKES.md) - Technical research
 - [Future Enhancements](planning/FUTURE_ENHANCEMENTS.md) - Roadmap items
 - [Results Strategy](planning/RESULTS_STRATEGY_V1.md) - Results handling
@@ -60,11 +61,11 @@ Example data and configurations.
 
 1. **New Developer Setup**
    - Read [Architecture Decisions](architecture/ARCHITECTURE_DECISION.md)
-   - Follow [Google Maps Setup](tech_guides/GOOGLE_MAPS_SETUP.md)
+   - Follow [Integration Plan](tech_guides/INTEGRATION_PLAN.md)
    - Configure [Environment Variables](tech_guides/ENVIRONMENT_VARIABLES.md)
 
 2. **Deployment**
-   - See [Deployment Guide](tech_guides/DEPLOYMENT_GUIDE.md)
+   - See [Integration Plan](tech_guides/INTEGRATION_PLAN.md) for full flow
    - For Cloudflare: [Cloudflare Deployment](tech_guides/CLOUDFLARE_DEPLOYMENT_STRATEGY.md)
 
 3. **Testing**
