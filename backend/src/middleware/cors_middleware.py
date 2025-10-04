@@ -20,9 +20,6 @@ def add_cors_middleware(app):
         "https://checkmarkdevtools.dev",
     ]
 
-    if settings.environment == "development":
-        allowed_origins.append("*")
-
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins,

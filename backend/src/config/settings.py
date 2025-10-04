@@ -8,7 +8,6 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
-    environment: Literal["development", "staging", "production"] = "development"
     log_level: str = "INFO"
 
     openai_api_key: str
