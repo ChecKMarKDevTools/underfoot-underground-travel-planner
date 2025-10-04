@@ -478,22 +478,6 @@ typing-extensions = ">=4.8.0"
 all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=2.11.2)", "orjson (>=3.2.1)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.5)", "pyyaml (>=5.3.1)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0)", "uvicorn[standard] (>=0.12.0)"]
 
 [[package]]
-name = "gotrue"
-version = "2.9.1"
-description = "Python Client Library for Supabase Auth"
-optional = false
-python-versions = "<4.0,>=3.8"
-groups = ["main"]
-files = [
-    {file = "gotrue-2.9.1-py3-none-any.whl", hash = "sha256:6ffccd0d971d8e2883a650640fa94e53483c022119d687d1496cd79040736127"},
-    {file = "gotrue-2.9.1.tar.gz", hash = "sha256:bc076c2030e5b5a189937fc1985b311844105ad1c78685b353f05253d0ebffed"},
-]
-
-[package.dependencies]
-httpx = {version = ">=0.24,<0.28", extras = ["http2"]}
-pydantic = ">=1.10,<3"
-
-[[package]]
 name = "h11"
 version = "0.16.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -557,14 +541,14 @@ trio = ["trio (>=0.22.0,<1.0)"]
 
 [[package]]
 name = "httpx"
-version = "0.25.2"
+version = "0.26.0"
 description = "The next generation HTTP client."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "httpx-0.25.2-py3-none-any.whl", hash = "sha256:a05d3d052d9b2dfce0e3896636467f8a5342fb2b902c819428e1ac65413ca118"},
-    {file = "httpx-0.25.2.tar.gz", hash = "sha256:8b8fcaa0c8ea7b05edd69a094e63a2094c4efcb48129fb757361bc423c0ad9e8"},
+    {file = "httpx-0.26.0-py3-none-any.whl", hash = "sha256:8915f5a3627c4d47b73e8202457cb28f1266982d1159bd5779d86a80c0eab1cd"},
+    {file = "httpx-0.26.0.tar.gz", hash = "sha256:451b55c30d5185ea6b23c2c793abf9bb237d2a7dfb901ced6ff69ad37ec1dfaf"},
 ]
 
 [package.dependencies]
@@ -1067,6 +1051,27 @@ toml = ["tomli (>=2.0.1)"]
 yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
+name = "pyjwt"
+version = "2.10.1"
+description = "JSON Web Token implementation in Python"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb"},
+    {file = "pyjwt-2.10.1.tar.gz", hash = "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953"},
+]
+
+[package.dependencies]
+cryptography = {version = ">=3.4.0", optional = true, markers = "extra == \"crypto\""}
+
+[package.extras]
+crypto = ["cryptography (>=3.4.0)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.4.0)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
+docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[[package]]
 name = "pytest"
 version = "7.4.4"
 description = "pytest: simple powerful testing with Python"
@@ -1334,39 +1339,56 @@ typing = ["mypy (>=1.4)", "rich", "twisted"]
 
 [[package]]
 name = "supabase"
-version = "2.8.1"
+version = "2.21.1"
 description = "Supabase client for Python."
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "supabase-2.8.1-py3-none-any.whl", hash = "sha256:dfa8bef89b54129093521d5bba2136ff765baf67cd76d8ad0aa4984d61a7815c"},
-    {file = "supabase-2.8.1.tar.gz", hash = "sha256:711c70e6acd9e2ff48ca0dc0b1bb70c01c25378cc5189ec9f5ed9655b30bc41d"},
+    {file = "supabase-2.21.1-py3-none-any.whl", hash = "sha256:8e75bcc1498e8447f7352b1172ff742a1255eca823a3d99a58ee701d2eb5470b"},
+    {file = "supabase-2.21.1.tar.gz", hash = "sha256:e38993df74a7d38a3660c3400b40af4fa3018f97c53ddc070836d2eab856b70f"},
 ]
 
 [package.dependencies]
-gotrue = ">=2.7.0,<3.0.0"
-httpx = ">=0.24,<0.28"
-postgrest = ">=0.17.0,<0.18.0"
-realtime = ">=2.0.0,<3.0.0"
-storage3 = ">=0.8.0,<0.9.0"
-supafunc = ">=0.6.0,<0.7.0"
-typing-extensions = ">=4.12.2,<5.0.0"
+httpx = ">=0.26,<0.29"
+postgrest = "*"
+realtime = "*"
+storage3 = "*"
+supabase-auth = "*"
+supabase-functions = "*"
 
 [[package]]
-name = "supafunc"
-version = "0.6.0"
-description = "Library for Supabase Functions"
+name = "supabase-auth"
+version = "2.21.1"
+description = "Python Client Library for Supabase Auth"
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "supafunc-0.6.0-py3-none-any.whl", hash = "sha256:6e7fbc9992c2722216e1799f314aacf4ac147628741ad7cdd5c7be367e21f619"},
-    {file = "supafunc-0.6.0.tar.gz", hash = "sha256:2f7b538d52f268dc5cc7e25743085665242ee1cc8b2b2d867ff0bccfea2d1856"},
+    {file = "supabase_auth-2.21.1-py3-none-any.whl", hash = "sha256:17365da49a4961ad00ba7b7fd9569d65a1107e767db965cce050e2d799fc6820"},
+    {file = "supabase_auth-2.21.1.tar.gz", hash = "sha256:584e6bd834287b4a030c2b0e82366970093301f63c464f1abf4ce3049e142b24"},
 ]
 
 [package.dependencies]
-httpx = {version = ">=0.24,<0.28", extras = ["http2"]}
+httpx = {version = ">=0.26,<0.29", extras = ["http2"]}
+pydantic = ">=1.10,<3"
+pyjwt = {version = ">=2.10.1", extras = ["crypto"]}
+
+[[package]]
+name = "supabase-functions"
+version = "2.21.1"
+description = "Library for Supabase Functions"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "supabase_functions-2.21.1-py3-none-any.whl", hash = "sha256:dcc3291c5df6a4c6363c346528e6c3fe3b09a1d6c9b992797eb51d53eb38679d"},
+    {file = "supabase_functions-2.21.1.tar.gz", hash = "sha256:2482cb39d730c4d9f8b9bc53964a668288717b0fb033a75e98d2f76276728957"},
+]
+
+[package.dependencies]
+httpx = {version = ">=0.26,<0.29", extras = ["http2"]}
+strenum = ">=0.4.15"
 
 [[package]]
 name = "tqdm"
@@ -1518,4 +1540,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "08c8e9d57be319a46e17cb3731cb54c4fd9e0f40f0885eb3a0c3952f5d09647c"
+content-hash = "164dd29c92f226c1e9376d0b673be76459f49497a8d90babc72dd2c9a150ec9e"
