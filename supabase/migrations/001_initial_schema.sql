@@ -52,16 +52,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Enable pg_cron extension for automatic cleanup
-CREATE EXTENSION IF NOT EXISTS pg_cron;
-
--- Schedule cleanup to run daily at 3 AM (requires pg_cron)
--- This removes the need for manual cleanup calls
-SELECT cron.schedule(
-  'cleanup-expired-cache',
-  '0 3 * * *',  -- Daily at 3:00 AM
-  $$SELECT clean_expired_cache()$$
-);
+-- Note: Automatic cleanup via pg_cron removed (not available on Supabase Cloud)
+-- Run cleanup manually via backend or edge function as needed
 
 -- Comments for documentation
 COMMENT ON TABLE search_results IS 'Cache for search query results with TTL expiration';
