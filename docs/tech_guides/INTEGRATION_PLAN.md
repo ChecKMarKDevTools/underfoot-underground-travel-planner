@@ -20,20 +20,21 @@
 ## Integration Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0ea5e9', 'primaryTextColor':'#000', 'primaryBorderColor':'#0ea5e9', 'lineColor':'#64748b', 'secondaryColor':'#8b5cf6', 'tertiaryColor':'#f59e0b', 'background':'#fff', 'mainBkg':'#f1f5f9', 'secondBkg':'#e2e8f0', 'tertiaryBkg':'#cbd5e1', 'textColor':'#1e293b', 'border1':'#94a3b8', 'border2':'#64748b'}}}%%
 graph TB
-    subgraph Frontend
-        UI[React UI]
+    subgraph Frontend["Frontend (React + Vite)"]
+        UI[User Interface]
         API_CLIENT[API Client]
     end
     
-    subgraph Backend
-        WORKER[FastAPI Worker]
+    subgraph Backend["Backend (FastAPI Worker)"]
+        WORKER[Chat Worker]
         SERVICES[Services Layer]
         CACHE[Cache Service]
     end
     
-    subgraph Data
-        SUPABASE[(Supabase)]
+    subgraph Data["Data Layer"]
+        SUPABASE[(Supabase PostgreSQL)]
         KV[(KV Store)]
     end
     
@@ -137,6 +138,7 @@ export function connectSSE(message: string, onMessage: (data: any) => void) {
 ### 3.1 Chat Request Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'actorBkg':'#0ea5e9', 'actorBorder':'#0284c7', 'actorTextColor':'#fff', 'actorLineColor':'#64748b', 'signalColor':'#1e293b', 'signalTextColor':'#1e293b', 'labelBoxBkgColor':'#f1f5f9', 'labelBoxBorderColor':'#94a3b8', 'labelTextColor':'#1e293b', 'loopTextColor':'#1e293b', 'noteBkgColor':'#fef3c7', 'noteBorderColor':'#f59e0b', 'noteTextColor':'#78350f', 'activationBkgColor':'#dbeafe', 'activationBorderColor':'#0ea5e9', 'sequenceNumberColor':'#fff'}}}%%
 sequenceDiagram
     participant User
     participant Frontend
@@ -159,6 +161,7 @@ sequenceDiagram
 ### 3.2 Map Integration Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'actorBkg':'#0ea5e9', 'actorBorder':'#0284c7', 'actorTextColor':'#fff', 'actorLineColor':'#64748b', 'signalColor':'#1e293b', 'signalTextColor':'#1e293b', 'labelBoxBkgColor':'#f1f5f9', 'labelBoxBorderColor':'#94a3b8', 'labelTextColor':'#1e293b', 'loopTextColor':'#1e293b', 'noteBkgColor':'#fef3c7', 'noteBorderColor':'#f59e0b', 'noteTextColor':'#78350f', 'activationBkgColor':'#dbeafe', 'activationBorderColor':'#0ea5e9', 'sequenceNumberColor':'#fff'}}}%%
 sequenceDiagram
     participant User
     participant Frontend
@@ -212,7 +215,7 @@ test('complete chat flow', async ({ page }) => {
 
 ## Phase 5: Deployment
 
-### 5.1 Cloudflare Workers
+### 5.1 Backend - Cloudflare Workers
 **File**: `backend/wrangler.toml`
 
 **Actions**:
@@ -220,13 +223,14 @@ test('complete chat flow', async ({ page }) => {
 - Configure routes for checkmarkdevtools.dev
 - Deploy with `wrangler deploy`
 
-### 5.2 Cloudflare Pages (Frontend)
+### 5.2 Frontend - Cloudflare Workers
 **File**: `frontend/wrangler.toml` (create)
 
 **Actions**:
-- Configure build command: `npm run build`
-- Set environment variables
-- Deploy with `wrangler pages deploy`
+- Configure build: `npm run build`
+- Set up Workers Sites for static assets
+- Configure environment variables
+- Deploy with `wrangler deploy`
 
 ### 5.3 Environment Configuration
 

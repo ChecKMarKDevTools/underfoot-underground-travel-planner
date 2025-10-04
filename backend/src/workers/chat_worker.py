@@ -16,6 +16,7 @@ from src.models.response_models import ErrorResponse, HealthResponse
 from src.services import cache_service, search_service
 from src.utils.errors import UnderfootError
 from src.utils.logger import get_logger, setup_logging
+from src.utils.input_validator import InputValidator, IntentParser
 
 setup_logging()
 logger = get_logger(__name__)
@@ -160,9 +161,23 @@ async def search(request: SearchRequest):
         Search results with AI-generated response
     """
     try:
-        result = await search_service.execute_search(request.chat_input, request.force)
+        sanitized_input = InputValidator.validate_chat_input(request.chat_input)
+        
+        intent = IntentParser.parse_intent(sanitized_input)
+        logger.info("search.intent_parsed", **intent)
+        
+        vector_query = IntentParser.extract_vector_query(intent)
+        
+        result = await search_service.execute_search(
+            chat_input=sanitized_input,
+            force=request.force,
+            intent=intent,
+            vector_query=vector_query,
+        )
         return result
 
+    except UnderfootError:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

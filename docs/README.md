@@ -16,8 +16,7 @@ Setup instructions, deployment guides, and technical reference.
 - [Integration Plan](tech_guides/INTEGRATION_PLAN.md) - Backend-Supabase-Frontend integration
 - [Environment Variables](tech_guides/ENVIRONMENT_VARIABLES.md) - All env vars explained
 - [Deployment Guide](tech_guides/DEPLOYMENT_GUIDE.md) - Production deployment
-- [Cloudflare Deployment](tech_guides/CLOUDFLARE_DEPLOYMENT_STRATEGY.md) - Cloudflare-specific setup
-- [Cloudflare Pages](tech_guides/CLOUDFLARE_PAGES_DEPLOY.md) - Pages deployment
+- [Cloudflare Deployment](tech_guides/CLOUDFLARE_DEPLOYMENT_STRATEGY.md) - Cloudflare Workers setup
 - [Testing Guide](tech_guides/TESTING.md) - Testing strategy and setup
 - [Supabase Cleanup](tech_guides/SUPABASE_CLEANUP_STRATEGY.md) - Database maintenance
 

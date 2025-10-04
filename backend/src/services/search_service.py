@@ -20,12 +20,19 @@ from src.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-async def execute_search(chat_input: str, force: bool = False) -> dict:
+async def execute_search(
+    chat_input: str,
+    force: bool = False,
+    intent: dict | None = None,
+    vector_query: str | None = None,
+) -> dict:
     """Execute complete search orchestration.
 
     Args:
         chat_input: User's search query
         force: Force bypass cache
+        intent: Parsed user intent
+        vector_query: Optimized query for vector search
 
     Returns:
         Complete search response
@@ -33,7 +40,13 @@ async def execute_search(chat_input: str, force: bool = False) -> dict:
     started = time.perf_counter()
     request_id = f"search_{uuid4().hex[:12]}"
 
-    logger.info("search.start", request_id=request_id, input_preview=chat_input[:100])
+    logger.info(
+        "search.start",
+        request_id=request_id,
+        input_preview=chat_input[:100],
+        intent=intent,
+        vector_query=vector_query,
+    )
 
     if not force:
         cached = await cache_service.get_cached_search_results(chat_input, "")
