@@ -30,8 +30,8 @@ if settings.openai_api_key:
 # Configuration
 EMBEDDING_MODEL = "text-embedding-ada-002"
 EMBEDDING_DIMENSIONS = 1536
-DEFAULT_SIMILARITY_THRESHOLD = 0.85
-DEFAULT_DISTANCE_RADIUS_MILES = 50
+DEFAULT_SIMILARITY_THRESHOLD = 0.77  # Lower threshold for better cache hits
+DEFAULT_DISTANCE_RADIUS_MILES = 80   # Hard cutoff - beyond this = excluded
 DEFAULT_CACHE_TTL_MINUTES = 30
 
 
@@ -72,16 +72,17 @@ async def find_similar_intent_nearby(
 
     This is the main vector search function. It:
     1. Generates an embedding for the user's intent
-    2. Searches for cached results with similar intent (85%+ similarity)
-    3. Filters by geographic distance (within 50 miles by default)
-    4. Returns the best match based on 80% intent + 20% proximity
+    2. Searches for cached results with similar intent (77%+ similarity)
+    3. HARD CUTOFF: Excludes anything beyond distance_miles (80mi default)
+    4. Uses exponential distance decay (close is WAY better than far)
+    5. Scoring: 70% intent similarity + 30% proximity (with exponential decay)
 
     Args:
         intent: User's search intent (e.g., "dive bars", "underground spots")
         latitude: User's location latitude
         longitude: User's location longitude
-        distance_miles: Maximum distance radius in miles (default: 50)
-        similarity_threshold: Minimum intent similarity 0-1 (default: 0.85)
+        distance_miles: HARD cutoff distance in miles (default: 80, beyond = excluded)
+        similarity_threshold: Minimum intent similarity 0-1 (default: 0.77)
 
     Returns:
         Cached search results dict or None if no match found
