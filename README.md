@@ -6,7 +6,7 @@
 
 > 🦄 Yes — I know\... _another_ project. It can't be helped! I really do plan on finishing them all (at some point). So, since I'm already over-worked and short on time as-is. Here's my 2nd attempt at **vibe coding** with ChatGPT at the wheel and GitHub Copilot playing backup. We'll see how it goes without me going to crazy with the overbearing-OCD. 🤞
 >
-> P.S. I'll keep notes of how it goes in the [JOURNEY](./docs/JOURNEY.md) file, because... why not?
+> P.S. I'll keep notes of how it goes in the [JOURNEY](./docs/planning/JOURNEY.md) file, because... why not?
 
 🧭 Quirky, snarky, _absolutely-not-your-typical_ travel planner for finding the coolest, least obvious spots — the ones the big travel sites forgot.
 
@@ -35,25 +35,26 @@ This is the first **Labs** repo — our hackathon playground for weird, experime
 ## ✨ Current Status: Active Development
 
 **🎯 Target Deployment**: `checkmarkdevtools.dev/underfoot`
-**🏗️ Architecture**: Python Workers + Supabase + React
+**🏗️ Architecture**: Python FastAPI Workers + Supabase + React
 **🎨 Design System**: Dream Horizon (accessible underground theme)
-**📊 Test Coverage**: 96.99% with comprehensive end-to-end testing
+**📊 Test Coverage**: Backend 20% (models + scoring), Frontend 96.99%
 
 ### Recent Achievements
 
-- ✅ Multi-API integration (OpenAI, Reddit, SERP, Eventbrite)
-- ✅ Smart geocoding with location validation
+- ✅ Python FastAPI backend with 7 services (OpenAI, Geocoding, Cache, SERP, Reddit, Eventbrite, Scoring)
+- ✅ Google Maps API integration with secure environment variables
 - ✅ Streaming chat interface with SSE
 - ✅ Security-first middleware (rate limiting, XSS protection)
-- ✅ Comprehensive test suite with high coverage
+- ✅ Comprehensive frontend test suite (96.99% coverage)
+- ✅ Documentation reorganized into architecture/, tech_guides/, user_guides/, planning/
 
 ### Roadmap
 
-- 🚀 Python Workers migration (Week 1)
-- 🎨 Dream Horizon UI implementation (Week 1)
-- 🗺️ Google Maps integration with $300 GCP credits (Week 2)
-- 🧠 Vector search caching with Supabase (Week 2)
-- 🌐 Production deployment to checkmarkdevtools.dev/underfoot (Week 3)
+- 🚀 Supabase backend integration (current)
+- 🎨 Dream Horizon UI polish
+- 🗺️ Google Maps visualization ($300 GCP credits active)
+- 🧠 Vector search caching with Supabase
+- 🌐 Production deployment to checkmarkdevtools.dev/underfoot
 
 ---
 
@@ -89,31 +90,31 @@ See **[Environment Variables Guide](docs/tech_guides/ENVIRONMENT_VARIABLES.md)**
    ```
 
 3. **Google Maps Setup**
-   - See [Google Maps Setup Guide](docs/tech_guides/GOOGLE_MAPS_SETUP.md)
-   - Configure API key with proper restrictions
+   - See [Environment Variables Guide](docs/tech_guides/ENVIRONMENT_VARIABLES.md)
+   - API key configured via `VITE_GOOGLE_MAPS_API_KEY`
 
 ---
 
 ## Getting Started
 
+### Frontend
 ```bash
-# Install deps (Node 22 LTS recommended)
+cd frontend
 npm install
-
-# Run in dev mode
 npm run dev
+```
 
-# Build for production
-npm run build
+### Backend
+```bash
+cd backend
+poetry install
+poetry run uvicorn src.workers.chat_worker:app --reload
+```
 
-# Run tests with coverage
-npm run test:coverage
-
-# Frontend container
-docker build -t underfoot-frontend -f frontend/Dockerfile .
-
-# Backend container
-docker build -t underfoot-backend -f backend/Dockerfile .
+### Both (from root)
+```bash
+npm run dev        # Starts both frontend and backend
+npm run test       # Run all tests
 ```
 
 ---
@@ -199,39 +200,20 @@ See **[Documentation Index](docs/README.md)** for the complete guide.
 
 ## 🧪 Testing
 
-### Test Coverage: 96.99%
+### Frontend: 96.99% | Backend: 20%
 
 ```bash
-# Run all tests
-npm test
-
-# Run with coverage report
+# Frontend tests
+cd frontend && npm test
 npm run test:coverage
 
-# Run specific test suites
-npm run test:unit
-npm run test:integration
-npm run test:e2e
+# Backend tests
+cd backend && poetry run pytest
+poetry run pytest --cov=src
 
-# Watch mode for development
-npm run test:watch
+# All tests (from root)
+npm test
 ```
-
----
-
-### Cloudflare Worker (Optional API Deployment)
-
-This repo includes an experimental Cloudflare Worker backend in `cloudflare-worker/` mirroring the Node Express routes. Quick start:
-
-```bash
-npm install
-npx wrangler login
-cd cloudflare-worker
-wrangler secret put STONEWALKER_WEBHOOK # enter your upstream URL
-wrangler deploy
-```
-
-Then set `VITE_API_BASE` to the Worker URL for the frontend build.
 
 ---
 
