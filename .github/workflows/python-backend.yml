@@ -1,0 +1,164 @@
+name: Python Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend-python/**'
+      - '.github/workflows/python-backend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend-python/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: ./backend-python
+        run: |
+          poetry install
+
+      - name: Run tests with coverage
+        working-directory: ./backend-python
+        run: |
+          poetry run pytest --cov=src --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend-python/coverage.xml
+          flags: python-backend
+          name: python-backend-coverage
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: ./backend-python
+        run: |
+          poetry install
+
+      - name: Run Ruff linting
+        working-directory: ./backend-python
+        run: |
+          poetry run ruff check .
+
+      - name: Run Black formatting check
+        working-directory: ./backend-python
+        run: |
+          poetry run black --check .
+
+      - name: Run MyPy type checking
+        working-directory: ./backend-python
+        run: |
+          poetry run mypy src/
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install security tools
+        run: |
+          pip install safety bandit
+
+      - name: Run Safety check
+        working-directory: ./backend-python
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          safety check -r requirements.txt
+
+      - name: Run Bandit security scan
+        working-directory: ./backend-python
+        run: |
+          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: bandit-security-report
+          path: backend-python/bandit-report.json
+
+  deploy:
+    needs: [test, lint, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Export requirements
+        working-directory: ./backend-python
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend-python
+          command: deploy --config wrangler.toml
+
+      - name: Create deployment notification
+        if: success()
+        run: |
+          echo "✅ Python backend deployed successfully to Cloudflare Workers"
+          echo "🔗 URL: https://underfoot-python-backend.workers.dev"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed. Check logs for details."

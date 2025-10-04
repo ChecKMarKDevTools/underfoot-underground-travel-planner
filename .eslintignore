@@ -1,0 +1,5 @@
+# Python backend - no ESLint needed
+backend/**/*.py
+backend/
+
+# Keep only frontend JS/TS linting
