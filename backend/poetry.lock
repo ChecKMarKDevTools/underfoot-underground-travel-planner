@@ -851,21 +851,20 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "postgrest"
-version = "0.17.0"
+version = "2.21.1"
 description = "PostgREST client for Python. This library provides an ORM interface to PostgREST."
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "postgrest-0.17.0-py3-none-any.whl", hash = "sha256:df2530e903955ffddbd21d92a99abc8d09d6efb357ce33438fca68d4b46b5d95"},
-    {file = "postgrest-0.17.0.tar.gz", hash = "sha256:5ee05d8d6796b9d716585d2ad589db57ef832af6c2592a3e39dcef8993929cff"},
+    {file = "postgrest-2.21.1-py3-none-any.whl", hash = "sha256:1abeafe10ea07650eb7e28f56dd90fb8a940dd67a52468d8878d3fe86d360121"},
+    {file = "postgrest-2.21.1.tar.gz", hash = "sha256:490cd9402b1a3da28397aba0208298eca842d277ee1c213018da524c8a94bb74"},
 ]
 
 [package.dependencies]
-deprecation = ">=2.1.0,<3.0.0"
-httpx = {version = ">=0.24,<0.28", extras = ["http2"]}
+deprecation = ">=2.1.0"
+httpx = {version = ">=0.26,<0.29", extras = ["http2"]}
 pydantic = ">=1.9,<3.0"
-strenum = ">=0.4.9,<0.5.0"
 
 [[package]]
 name = "pyasn1"
@@ -1540,4 +1539,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "164dd29c92f226c1e9376d0b673be76459f49497a8d90babc72dd2c9a150ec9e"
+content-hash = "9cbb593300493d22b825460f2b80f2b5c14c53962735983402fb668c5f7bb7f8"
