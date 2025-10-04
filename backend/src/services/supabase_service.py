@@ -26,8 +26,20 @@ def get_supabase_client() -> Client:
 class SupabaseService:
     """Service for Supabase operations."""
     
-    def __init__(self):
-        self.client = get_supabase_client()
+    _instance = None
+    _client = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    @property
+    def client(self) -> Client:
+        """Lazy-load Supabase client."""
+        if self._client is None:
+            self._client = get_supabase_client()
+        return self._client
     
     async def store_search_results(
         self,
