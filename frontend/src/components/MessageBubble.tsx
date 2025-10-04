@@ -24,11 +24,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, duration: 0.3 }}
-      className={cn('flex', isUser ? 'justify-end' : 'justify-start')}
+      className={cn('flex w-full', isUser ? 'justify-end' : 'justify-start')}
     >
       <div
         className={cn(
-          'max-w-[80%]',
+          'w-[80%]',
           'space-y-2',
         )}
       >
