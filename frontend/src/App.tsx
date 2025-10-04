@@ -7,8 +7,7 @@ import { MapView } from './components/MapView';
 import { DebugPanel } from './components/DebugPanel';
 import { useTheme } from './hooks/useTheme';
 import { Message, Place, DebugData } from './types';
-import { mockPlaces, generateMockDebugData, responses } from './data/mockData';
-import { googlePlacesService } from './services/mockGooglePlaces';
+import { sendChatMessage, SearchResponse } from './services/api';
 import { generateId } from './utils';
 
 function App() {
@@ -42,49 +41,37 @@ function App() {
       setIsLoading(true);
 
       try {
-        // Try to search for real places using Google Places API (mock version)
-        const googlePlaces = await googlePlacesService.searchPlaces(content, {
-          lat: 51.5074,
-          lng: -0.1278,
-        });
+        const response: SearchResponse = await sendChatMessage(content, false);
 
-        let places: Place[] = [];
+        const places: Place[] = response.results.map((result: any) => ({
+          id: result.place_id || generateId(),
+          name: result.name || 'Unknown Location',
+          description: result.description || result.editorial_summary?.overview || '',
+          latitude: result.geometry?.location?.lat || result.lat || 0,
+          longitude: result.geometry?.location?.lng || result.lng || 0,
+          category: result.category || 'mystical',
+          confidence: result.confidence || result.rating || 0.5,
+          historicalPeriod: result.historical_period,
+          artifacts: result.artifacts,
+          imageUrl: result.image_url,
+          address: result.formatted_address || result.vicinity || result.address,
+        }));
 
-        if (googlePlaces.length > 0) {
-          // Convert Google Places to our Place format
-          places = googlePlaces.map((gp) => googlePlacesService.convertToPlace(gp));
-        } else {
-          // Fallback to mock places if no Google results
-          places = mockPlaces.slice(0, Math.floor(Math.random() * 3) + 1);
-        }
-
-        // Simulate AI processing delay
-        await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));
-
-        // Generate response based on places found
-        let response = responses[Math.floor(Math.random() * responses.length)];
-
-        if (googlePlaces.length > 0) {
-          const topPlace = places[0];
-          response = `${places.length} locations detected. ${topPlace?.name} shows strongest resonance. Check the confidence ratings before exploring.`;
-        }
-
-        const debugData = generateMockDebugData(content);
-
-        // Enhanced debug data with Google Places info
-        debugData.dataSource =
-          googlePlaces.length > 0
-            ? [
-                'Google Places API',
-                'Cyber-Enhanced Mystical Sight',
-                'Digital Ley Line Analysis',
-                'Real-time Location Matrix',
-              ]
-            : debugData.dataSource;
+        const debugData: DebugData = response.debug || {
+          searchQuery: content,
+          processingTime: 0,
+          confidence: 0.8,
+          keywords: [],
+          geospatialData: {},
+          llmReasoning: 'Search completed',
+          dataSource: ['Backend API'],
+        };
 
         const assistantMessage: Message = {
           id: generateId(),
-          content: response,
+          content: response.results.length > 0
+            ? `Found ${response.results.length} location${response.results.length !== 1 ? 's' : ''}. ${places[0]?.name} shows strongest resonance.`
+            : 'No locations found matching your query.',
           role: 'assistant',
           timestamp: new Date(),
           places,
@@ -94,29 +81,32 @@ function App() {
         setMessages((prev) => [...prev, assistantMessage]);
         setCurrentDebugData(debugData);
 
-        // Auto-select first place if none selected
         if (!selectedPlace && places.length > 0) {
           setSelectedPlace(places[0].id);
         }
       } catch (error) {
         console.error('Error processing message:', error);
 
-        // Fallback to mock data on error
-        const fallbackPlaces = mockPlaces.slice(0, Math.floor(Math.random() * 3) + 1);
-        const debugData = generateMockDebugData(content);
-
-        const assistantMessage: Message = {
+        const errorMessage: Message = {
           id: generateId(),
-          content:
-            'Connection disrupted. Consulting backup archives to show what I can still sense.',
+          content: error instanceof Error
+            ? `Error: ${error.message}`
+            : 'Failed to process search. Check backend connection.',
           role: 'assistant',
           timestamp: new Date(),
-          places: fallbackPlaces,
-          debugData,
+          places: [],
+          debugData: {
+            searchQuery: content,
+            processingTime: 0,
+            confidence: 0,
+            keywords: [],
+            geospatialData: {},
+            llmReasoning: 'Error occurred during search',
+            dataSource: ['Error Handler'],
+          },
         };
 
-        setMessages((prev) => [...prev, assistantMessage]);
-        setCurrentDebugData(debugData);
+        setMessages((prev) => [...prev, errorMessage]);
       } finally {
         setIsLoading(false);
       }

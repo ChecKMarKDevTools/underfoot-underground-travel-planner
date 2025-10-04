@@ -1,22 +1,15 @@
-"""Cache service with dual-layer caching (KV + Supabase)."""
+"""Cache service with Supabase persistence."""
 
 import hashlib
 import json
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from supabase import Client, create_client
-
 from src.config.constants import LOCATION_CACHE_TTL_HOURS, SUPABASE_CACHE_TTL_MINUTES
-from src.config.settings import get_settings
+from src.services.supabase_service import supabase_service
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
-settings = get_settings()
-
-supabase: Client | None = None
-if settings.supabase_url and settings.supabase_anon_key:
-    supabase = create_client(settings.supabase_url, settings.supabase_anon_key)
 
 
 def generate_cache_key(query: str, location: str = "") -> str:
@@ -43,25 +36,14 @@ async def get_cached_search_results(query: str, location: str) -> dict[str, Any]
     Returns:
         Cached results or None if not found
     """
-    if not supabase:
-        return None
-
     try:
         query_hash = generate_cache_key(query, location)
-        result = (
-            supabase.table("search_results")
-            .select("*")
-            .eq("query_hash", query_hash)
-            .gt("expires_at", datetime.now(timezone.utc).isoformat())
-            .single()
-            .execute()
-        )
-
-        if result.data:
+        result = await supabase_service.get_search_results(query_hash)
+        
+        if result:
             logger.info("cache.hit", cache_type="search_results", query_hash=query_hash)
-            return json.loads(result.data["results_json"])
-
-        return None
+        
+        return result
 
     except Exception as e:
         logger.warning("cache.read_error", error=str(e), cache_type="search_results")
@@ -82,26 +64,20 @@ async def set_cached_search_results(
     Returns:
         True if successful, False otherwise
     """
-    if not supabase:
-        return False
-
     try:
         query_hash = generate_cache_key(query, location)
-        expires_at = (datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)).isoformat()
-
-        supabase.table("search_results").upsert(
-            {
-                "query_hash": query_hash,
-                "location": location.strip(),
-                "intent": query.strip(),
-                "results_json": json.dumps(results),
-                "expires_at": expires_at,
-            },
-            on_conflict="query_hash",
-        ).execute()
-
-        logger.info("cache.write", cache_type="search_results", query_hash=query_hash)
-        return True
+        success = await supabase_service.store_search_results(
+            query_hash=query_hash,
+            location=location.strip(),
+            intent=query.strip(),
+            results=results,
+            ttl_seconds=ttl_minutes * 60,
+        )
+        
+        if success:
+            logger.info("cache.write", cache_type="search_results", query_hash=query_hash)
+        
+        return success
 
     except Exception as e:
         logger.error("cache.write_error", error=str(e), cache_type="search_results")
@@ -195,23 +171,10 @@ async def get_cache_stats() -> dict[str, Any]:
     Returns:
         Cache statistics including counts and connection status
     """
-    if not supabase:
-        return {"search_results": 0, "location_cache": 0, "connected": False}
-
     try:
-        search_count = (
-            supabase.table("search_results").select("id", count="exact", head=True).execute()
-        )
-        location_count = (
-            supabase.table("location_cache").select("id", count="exact", head=True).execute()
-        )
-
-        return {
-            "search_results": search_count.count or 0,
-            "location_cache": location_count.count or 0,
-            "connected": True,
-        }
+        stats = await supabase_service.get_stats()
+        return stats
 
     except Exception as e:
         logger.error("cache.stats_error", error=str(e))
-        return {"search_results": 0, "location_cache": 0, "connected": False}
+        return {"search_results_count": 0, "location_cache_count": 0, "connected": False}
