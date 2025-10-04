@@ -61,7 +61,7 @@ SELECT * FROM find_similar_intents_nearby(
 ## Database Schema
 
 ```sql
-CREATE TABLE semantic_intent_cache (
+CREATE TABLE semantic_cache (
   id uuid PRIMARY KEY,
   
   -- Intent (vectorized)
@@ -104,13 +104,20 @@ Uses **exponential decay** so close results are strongly preferred:
 ```
 proximity_score = 1 - (distance_miles / 80)²
 
-0 miles   → 1.0   (perfect)
-20 miles  → 0.94  (great)
-40 miles  → 0.75  (okay)
-60 miles  → 0.44  (getting bad)
-80 miles  → 0.0   (cutoff)
-80+ miles → EXCLUDED
+This SUBTRACTS points as distance increases:
+0 miles   → 1.0   (perfect, no penalty)
+20 miles  → 0.94  (0.06 penalty)
+40 miles  → 0.75  (0.25 penalty)
+60 miles  → 0.44  (0.56 penalty - MORE THAN HALF!)
+80 miles  → 0.0   (1.0 penalty - TOTAL negation)
+80+ miles → EXCLUDED (not even scored)
 ```
+
+**The negation happens via `1 - (d/80)²`:**
+- At 0 miles: 1 - 0 = 1.0 (no negation)
+- At 40 miles: 1 - 0.25 = 0.75 (25% negated)
+- At 60 miles: 1 - 0.56 = 0.44 (56% negated)
+- At 80 miles: 1 - 1.0 = 0.0 (100% negated, cutoff)
 
 ## Relevance Scoring
 
@@ -131,17 +138,18 @@ from src.services.vector_cache_service import (
     store_semantic_cache
 )
 
-# Check cache
-cached = await find_similar_intent_nearby(
+# Check cache - returns list of up to 6 results
+cached_results = await find_similar_intent_nearby(
     intent="dive bars",
     latitude=45.5152,
     longitude=-122.6784,
     distance_miles=80,
-    similarity_threshold=0.77
+    similarity_threshold=0.77,
+    result_limit=6
 )
 
-if cached:
-    return cached  # Cache hit!
+if cached_results:
+    return cached_results  # List of up to 6 cached responses
 
 # Fresh search
 results = await search_apis(intent, location)

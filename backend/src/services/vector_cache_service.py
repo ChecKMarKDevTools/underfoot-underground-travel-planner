@@ -30,9 +30,10 @@ if settings.openai_api_key:
 # Configuration
 EMBEDDING_MODEL = "text-embedding-ada-002"
 EMBEDDING_DIMENSIONS = 1536
-DEFAULT_SIMILARITY_THRESHOLD = 0.77  # Lower threshold for better cache hits
-DEFAULT_DISTANCE_RADIUS_MILES = 80   # Hard cutoff - beyond this = excluded
+DEFAULT_SIMILARITY_THRESHOLD = 0.77
+DEFAULT_DISTANCE_RADIUS_MILES = 80
 DEFAULT_CACHE_TTL_MINUTES = 30
+DEFAULT_RESULT_LIMIT = 6  # Return up to 6 cached results
 
 
 async def generate_intent_embedding(intent: str) -> list[float] | None:
@@ -67,35 +68,37 @@ async def find_similar_intent_nearby(
     longitude: float,
     distance_miles: int = DEFAULT_DISTANCE_RADIUS_MILES,
     similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
-) -> dict[str, Any] | None:
+    result_limit: int = DEFAULT_RESULT_LIMIT,
+) -> list[dict[str, Any]]:
     """Find cached results with similar intent within geographic radius.
 
     This is the main vector search function. It:
     1. Generates an embedding for the user's intent
     2. Searches for cached results with similar intent (77%+ similarity)
     3. HARD CUTOFF: Excludes anything beyond distance_miles (80mi default)
-    4. Uses exponential distance decay (close is WAY better than far)
-    5. Scoring: 70% intent similarity + 30% proximity (with exponential decay)
+    4. Uses exponential distance decay (close >> far, heavily penalized)
+    5. Scoring: 70% intent + 30% proximity (exponential decay subtracts for distance)
 
     Args:
         intent: User's search intent (e.g., "dive bars", "underground spots")
         latitude: User's location latitude
         longitude: User's location longitude
-        distance_miles: HARD cutoff distance in miles (default: 80, beyond = excluded)
+        distance_miles: HARD cutoff in miles (default: 80, beyond = excluded)
         similarity_threshold: Minimum intent similarity 0-1 (default: 0.77)
+        result_limit: Max results to return (default: 6)
 
     Returns:
-        Cached search results dict or None if no match found
+        List of cached results (up to 6), empty list if no matches
     """
     if not supabase or not openai_client:
         logger.warning("vector.search.skip", reason="clients_not_initialized")
-        return None
+        return []
 
     try:
         # Generate embedding for the intent
         intent_embedding = await generate_intent_embedding(intent)
         if not intent_embedding:
-            return None
+            return []
 
         # Call PostgreSQL function to find similar intents nearby
         result = (
@@ -107,33 +110,32 @@ async def find_similar_intent_nearby(
                     "user_lng": longitude,
                     "max_distance_miles": distance_miles,
                     "intent_similarity_threshold": similarity_threshold,
-                    "result_limit": 1,  # Only need the best match
+                    "result_limit": result_limit,
                 },
             )
             .execute()
         )
 
         if result.data and len(result.data) > 0:
-            best_match = result.data[0]
             logger.info(
                 "vector.cache.hit",
-                cached_intent=best_match["intent"],
-                similarity=best_match["intent_similarity"],
-                distance_miles=best_match["distance_miles"],
-                relevance_score=best_match["relevance_score"],
+                count=len(result.data),
+                best_similarity=result.data[0]["intent_similarity"],
+                best_distance=result.data[0]["distance_miles"],
             )
 
-            # Update access count for analytics
-            supabase.rpc("update_cache_access", {"cache_id": best_match["id"]}).execute()
+            # Update access count for all returned results
+            for match in result.data:
+                supabase.rpc("update_cache_access", {"cache_id": match["id"]}).execute()
 
-            return best_match["cached_results"]
+            return [match["cached_results"] for match in result.data]
 
         logger.info("vector.cache.miss", intent=intent[:50])
-        return None
+        return []
 
     except Exception as e:
         logger.error("vector.search.error", error=str(e), intent=intent[:50])
-        return None
+        return []
 
 
 async def store_semantic_cache(
@@ -169,8 +171,8 @@ async def store_semantic_cache(
         # Calculate expiration
         expires_at = (datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)).isoformat()
 
-        # Store in semantic_intent_cache table
-        supabase.table("semantic_intent_cache").insert(
+        # Store in semantic_cache table
+        supabase.table("semantic_cache").insert(
             {
                 "intent": intent.strip(),
                 "intent_embedding": intent_embedding,
