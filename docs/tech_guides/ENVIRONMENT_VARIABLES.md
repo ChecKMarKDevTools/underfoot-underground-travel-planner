@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Environment Variables
 
@@ -28,6 +27,8 @@ Central reference for all environment variables used across Underfoot. Avoid exp
 | - | - | - | - |
 | `VITE_API_BASE` | No | `window.location.origin` | Base URL for backend API calls. Must point to backend host when deployed. |
 | `VITE_LIMIT` | No | `5` (implicit) | Limit passed along with chat messages (item cap hint). |
+| `VITE_GOOGLE_MAPS_API_KEY` | Yes (for maps) | — | Google Maps JavaScript API key. Required for map visualization features. Get from [Google Cloud Console](https://console.cloud.google.com/apis/credentials). |
+| `VITE_GOOGLE_PLACES_API_KEY` | Optional | — | Google Places API key for enhanced location search. Can use same key as Maps API. |
 
 ### Potential Future (Not Yet Implemented)
 
@@ -58,6 +59,8 @@ SSE_MAX_CONNECTIONS=100
 ```env
 VITE_API_BASE=http://localhost:3000
 VITE_LIMIT=5
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+VITE_GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
 ```
 
 ---

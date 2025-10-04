@@ -2,7 +2,18 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'html-transform',
+      transformIndexHtml(html) {
+        return html.replace(
+          /%VITE_GOOGLE_MAPS_API_KEY%/g,
+          process.env.VITE_GOOGLE_MAPS_API_KEY || ''
+        );
+      },
+    },
+  ],
   server: {
     port: 3000,
     open: true,

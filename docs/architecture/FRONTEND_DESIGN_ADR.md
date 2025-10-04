@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Frontend Design ADR: Native Chat UI (Reaffirmed) vs Embedded n8n Widget
 

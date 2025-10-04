@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Underfoot Underground Travel Planner — High-Level Implementation Plan
 

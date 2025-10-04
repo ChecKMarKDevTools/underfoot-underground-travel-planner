@@ -1,6 +1,5 @@
 # Architecture Overview: Backend vs Cloudflare Worker
 
-_Document created: September 27, 2025_
 
 ```mermaid
 graph TB

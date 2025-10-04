@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # CLOUDFLARE DEPLOYMENT STRATEGY: Express.js → Pages Functions
 

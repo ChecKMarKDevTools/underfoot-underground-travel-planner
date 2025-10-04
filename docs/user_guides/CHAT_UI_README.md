@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Underfoot Chat UI
 

@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Native Chat Long-Term Vision
 

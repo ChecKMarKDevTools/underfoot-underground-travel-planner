@@ -1,4 +1,3 @@
-_Document created: September 27, 2025_
 
 # Mermaid Diagrams: Underfoot System Documentation
 

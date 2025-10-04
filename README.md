@@ -72,34 +72,25 @@ This is the first **Labs** repo — our hackathon playground for weird, experime
 
 ## Environment Setup
 
-Copy `.env.example` → `.env` and update values:
+See **[Environment Variables Guide](docs/tech_guides/ENVIRONMENT_VARIABLES.md)** for complete documentation.
 
-```env
-# Vite configs
-VITE_API_BASE=https://api.example.com
-VITE_LIMIT=100
+**Quick Start:**
 
-# OpenAI API key
-OPENAI_API_KEY=your_api_key_here
+1. **Frontend** (`/frontend/.env`)
+   ```bash
+   cp frontend/.env.example frontend/.env
+   # Edit frontend/.env with your Google Maps API key
+   ```
 
-# Optional: External API keys for enhanced results
-REDDIT_CLIENT_ID=your_reddit_client_id
-REDDIT_CLIENT_SECRET=your_reddit_client_secret
-SERP_API_KEY=your_serp_api_key
-EVENTBRITE_TOKEN=your_eventbrite_token
+2. **Backend** (`/backend/.env`)
+   ```bash
+   cp backend/.env.example backend/.env
+   # Edit backend/.env with your API keys
+   ```
 
-# Default search radius in miles
-DEFAULT_RADIUS=10
-
-# Default date range extension in days
-DEFAULT_DATE_EXTEND=3
-
-# Server port
-PORT=3000
-
-# Optional: SSE configuration
-SSE_MAX_CONNECTIONS=100
-```
+3. **Google Maps Setup**
+   - See [Google Maps Setup Guide](docs/tech_guides/GOOGLE_MAPS_SETUP.md)
+   - Configure API key with proper restrictions
 
 ---
 
@@ -190,6 +181,19 @@ Non‑streaming: You can use `POST /underfoot/chat` with `{ "chatInput": "Hello"
 - **Headers**: Google Flavors (mystical, underground theme)
 - **Body**: Inter (clean, accessible, readable)
 - **Code**: JetBrains Mono (development context)
+
+---
+
+## 📚 Documentation
+
+Comprehensive documentation is organized in `/docs`:
+
+- **[Architecture](docs/architecture/)** - Design decisions and system diagrams
+- **[Technical Guides](docs/tech_guides/)** - Setup, deployment, and configuration
+- **[User Guides](docs/user_guides/)** - End-user documentation and testing
+- **[Planning](docs/planning/)** - Project roadmap and implementation notes
+
+See **[Documentation Index](docs/README.md)** for the complete guide.
 
 ---
 

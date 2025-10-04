@@ -12,7 +12,16 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAR3rAPrb1A3OQU5vWRmxnn8LX9VmOmjg&libraries=places,geometry"></script>
+    <script>
+      (function() {
+        const key = '%VITE_GOOGLE_MAPS_API_KEY%';
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -49,21 +49,18 @@ export function GoogleMapView({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Check if Google Maps is already loaded
-    if (window.google && window.google.maps) {
+    if (window.google?.maps) {
       setIsLoaded(true);
       return;
     }
 
-    // Otherwise wait for it to load
     const checkGoogleMaps = setInterval(() => {
-      if (window.google && window.google.maps) {
+      if (window.google?.maps) {
         setIsLoaded(true);
         clearInterval(checkGoogleMaps);
       }
     }, 50);
 
-    // Timeout after 10 seconds
     const timeout = setTimeout(() => {
       clearInterval(checkGoogleMaps);
       console.error('Google Maps failed to load');
