@@ -168,7 +168,7 @@ function App() {
 
         {/* Map */}
         <section
-          className="w-half min-w-0 p-4 border-l border-cyber-200 dark:border-cyber-700"
+          className="w-[40%] min-w-0 p-4 border-l border-cyber-200 dark:border-cyber-700"
           aria-label="Interactive map showing search results"
         >
           <MapView

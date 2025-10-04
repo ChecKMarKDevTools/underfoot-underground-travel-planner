@@ -28,7 +28,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       <div
         className={cn(
-          'max-w-[80%]', // Same max-width for both user and assistant
+          'max-w-[80%]',
           'space-y-2',
         )}
       >

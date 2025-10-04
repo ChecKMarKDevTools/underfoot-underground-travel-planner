@@ -61,3 +61,27 @@ Object.defineProperty(window, 'localStorage', {
   },
   writable: true,
 });
+
+// Mock Google Maps API
+(global as any).google = {
+  maps: {
+    Map: vi.fn(() => ({
+      setCenter: vi.fn(),
+      setZoom: vi.fn(),
+      addListener: vi.fn(),
+    })),
+    Marker: vi.fn(() => ({
+      setMap: vi.fn(),
+      addListener: vi.fn(),
+    })),
+    InfoWindow: vi.fn(() => ({
+      open: vi.fn(),
+      close: vi.fn(),
+    })),
+    Size: vi.fn((width, height) => ({ width, height })),
+    Point: vi.fn((x, y) => ({ x, y })),
+    Animation: {
+      DROP: 'DROP',
+    },
+  },
+};

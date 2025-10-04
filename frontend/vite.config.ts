@@ -30,6 +30,7 @@ export default defineConfig({
         'src/types/**',
         'src/services/googlePlaces.ts',
         'src/components/MapView.tsx',
+        'src/components/GoogleMapView.tsx',
       ],
       thresholds: {
         lines: 80,

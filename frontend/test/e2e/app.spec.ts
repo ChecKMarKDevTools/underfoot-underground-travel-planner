@@ -57,6 +57,5 @@ test.describe('Underfoot Chat Application', () => {
 
     const map = page.getByRole('region', { name: /map/ });
     await expect(map).toBeVisible();
-    await expect(page.getByText('Leaflet')).toBeVisible();
   });
 });
