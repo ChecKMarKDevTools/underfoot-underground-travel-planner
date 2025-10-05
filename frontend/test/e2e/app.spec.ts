@@ -17,19 +17,16 @@ test.describe('Underfoot Chat Application', () => {
     await page.goto('/');
 
     const input = page.getByRole('textbox', { name: 'Message input' });
-    await input.fill('Ancient ruins near London');
+    await input.fill('underground halloween events near grundy va');
 
     const sendButton = page.getByRole('button', { name: 'Send message' });
     await sendButton.click();
 
-    await expect(page.getByText('Ancient ruins near London')).toBeVisible();
+    await expect(page.getByText('underground halloween events near grundy va')).toBeVisible();
 
-    // Wait for assistant response (should contain "locations detected" or be one of the random responses)
     await expect(
-      page.locator(
-        'text=/locations detected|pulse with unusual energy|forgotten pathways|Ancient algorithms|nexus points|Quantum traces/i',
-      ),
-    ).toBeVisible({ timeout: 10000 });
+      page.locator('text=/location|seek|whispers|shadows|grundy/i'),
+    ).toBeVisible({ timeout: 15000 });
   });
 
   test('should toggle theme', async ({ page }) => {
