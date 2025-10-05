@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from src.config.constants import LOCATION_CACHE_TTL_HOURS, SUPABASE_CACHE_TTL_MINUTES
-from src.services.supabase_service import supabase_service
+from src.services.supabase_service import supabase
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -38,11 +38,11 @@ async def get_cached_search_results(query: str, location: str) -> dict[str, Any]
     """
     try:
         query_hash = generate_cache_key(query, location)
-        result = await supabase_service.get_search_results(query_hash)
-        
+        result = supabase.get_search_results(query_hash)
+
         if result:
             logger.info("cache.hit", cache_type="search_results", query_hash=query_hash)
-        
+
         return result
 
     except Exception as e:
@@ -66,17 +66,17 @@ async def set_cached_search_results(
     """
     try:
         query_hash = generate_cache_key(query, location)
-        success = await supabase_service.store_search_results(
+        success = supabase.store_search_results(
             query_hash=query_hash,
             location=location.strip(),
             intent=query.strip(),
             results=results,
             ttl_seconds=ttl_minutes * 60,
         )
-        
+
         if success:
             logger.info("cache.write", cache_type="search_results", query_hash=query_hash)
-        
+
         return success
 
     except Exception as e:
@@ -172,7 +172,7 @@ async def get_cache_stats() -> dict[str, Any]:
         Cache statistics including counts and connection status
     """
     try:
-        stats = await supabase_service.get_stats()
+        stats = supabase.get_stats()
         return stats
 
     except Exception as e:

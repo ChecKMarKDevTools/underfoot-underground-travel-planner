@@ -73,25 +73,20 @@ This is the first **Labs** repo — our hackathon playground for weird, experime
 
 ## Environment Setup
 
-See **[Environment Variables Guide](docs/tech_guides/ENVIRONMENT_VARIABLES.md)** for complete documentation.
-
 **Quick Start:**
 
 1. **Frontend** (`/frontend/.env`)
    ```bash
    cp frontend/.env.example frontend/.env
-   # Edit frontend/.env with your Google Maps API key
+   # Add: VITE_GOOGLE_MAPS_API_KEY=your_key
+   # Add: VITE_API_BASE=http://localhost:8000
    ```
 
 2. **Backend** (`/backend/.env`)
    ```bash
    cp backend/.env.example backend/.env
-   # Edit backend/.env with your API keys
+   # Configure API keys as needed
    ```
-
-3. **Google Maps Setup**
-   - See [Environment Variables Guide](docs/tech_guides/ENVIRONMENT_VARIABLES.md)
-   - API key configured via `VITE_GOOGLE_MAPS_API_KEY`
 
 ---
 
