@@ -10,7 +10,10 @@ export interface SearchRequest {
 }
 
 export interface SearchResponse {
-  results: any[];
+  user_intent: string;
+  user_location: string;
+  response: string;
+  places: any[];
   debug?: any;
   request_id?: string;
   timestamp?: string;

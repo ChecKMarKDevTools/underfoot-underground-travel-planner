@@ -17,8 +17,8 @@ function App() {
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
   const [debugMode, setDebugMode] = useState(false);
   const [currentDebugData, setCurrentDebugData] = useState<DebugData | null>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([51.5074, -0.1278]);
-  const [mapZoom, setMapZoom] = useState(12);
+  const [mapCenter, setMapCenter] = useState<[number, number]>([37.2018, -82.0993]);
+  const [mapZoom, setMapZoom] = useState(10);
 
   // Get all places from all messages
   const allPlaces = messages.reduce<Place[]>((acc, message) => {
@@ -43,7 +43,7 @@ function App() {
       try {
         const response: SearchResponse = await sendChatMessage(content, false);
 
-        const places: Place[] = response.results.map((result: any) => ({
+        const places: Place[] = (response.places || []).map((result: any) => ({
           id: result.place_id || generateId(),
           name: result.name || 'Unknown Location',
           description: result.description || result.editorial_summary?.overview || '',
