@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .cyber-border {
+    position: relative;
+    background: linear-gradient(45deg, theme(colors.cyber.600), theme(colors.neon.600));
+    padding: 2px;
+    border-radius: 8px;
+    pointer-events: none;
+  }
+
+  .cyber-border > * {
+    pointer-events: auto;
+  }
+
+  .cyber-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(
+      from 0deg,
+      theme(colors.cyber.400),
+      theme(colors.mystic.400),
+      theme(colors.neon.400)
+    );
+    border-radius: inherit;
+    padding: 1px;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: subtract;
+    pointer-events: none;
+  }
+
+  .gear-decoration {
+    position: relative;
+  }
+
+  .gear-decoration::before {
+    content: '⚙';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 16px;
+    color: theme(colors.cyber.500);
+    animation: gear 20s linear infinite;
+  }
+
+  .message-bubble {
+    @apply relative p-4 rounded-lg break-words;
+  }
+
+  .message-user {
+    @apply bg-gradient-to-br from-cyber-500 to-neon-600 text-white ml-auto shadow-xl;
+    border-bottom-right-radius: 4px;
+    box-shadow:
+      0 6px 16px rgba(6, 182, 212, 0.4),
+      0 3px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateZ(0);
+  }
+
+  .message-assistant {
+    @apply bg-gradient-to-br from-void-100 to-void-50 dark:from-void-800 dark:to-void-700 text-void-900 dark:text-void-100 mr-auto shadow-lg;
+    border-bottom-left-radius: 4px;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateZ(0);
+  }
+
+  .scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: theme(colors.cyber.400) transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb {
+    background: theme(colors.cyber.400);
+    border-radius: 3px;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.cyber.500);
+  }
+}
+
+@layer utilities {
+  .w-half {
+    width: 50% !important;
+  }
+}

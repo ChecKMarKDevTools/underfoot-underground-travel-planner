@@ -16,11 +16,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
 
       - name: Install dependencies (workspaces)
-        run: npm ci --ignore-scripts
+        run: npm ci
 
       - name: Format (Prettier)
         run: npm run format
@@ -30,6 +28,10 @@ jobs:
 
       - name: Spell Check (CSpell)
         run: npm run spellcheck
+
+      - name: Type Check (TypeScript)
+        working-directory: frontend
+        run: npm run typecheck
 
       - name: Unit tests (Vitest)
         working-directory: frontend
@@ -48,9 +50,9 @@ jobs:
 
       - name: E2E tests (Playwright)
         working-directory: frontend
-        env:
-          PLAYWRIGHT_BASE_URL: http://localhost:5173/labs/underfoot
         run: npm run test:e2e
+        env:
+          CI: true
 
       - name: Upload Playwright report
         if: always()

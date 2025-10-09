@@ -69,7 +69,7 @@ export default {
     // NEVER auto-inserts a trailer. lefthook commit-msg step will treat warnings as failure for
     // human commits, but the assistant can produce a draft without the trailer for manual review.
     'signed-off-by': [1, 'always'],
-    'trailer-exists': [1, 'always', 'Signed-off-by'],
+    // 'trailer-exists': [1, 'always', 'Signed-off-by'],
 
     // END of custom rules
   },

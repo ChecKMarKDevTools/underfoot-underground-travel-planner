@@ -58,7 +58,13 @@ const cache = new Map();
 app.use('/underfoot', searchRouter);
 
 app.get('/health', async (_req, res) => {
-  const cacheStats = await getCacheStats();
+  let cacheStats;
+  try {
+    cacheStats = await getCacheStats();
+  } catch (error) {
+    console.error('Health check: getCacheStats failed:', error);
+    cacheStats = { searchResults: 0, locationCache: 0, connected: false };
+  }
   res.json({
     ok: true,
     timestamp: new Date().toISOString(),
