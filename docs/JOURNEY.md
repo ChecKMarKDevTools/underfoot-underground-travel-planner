@@ -3,8 +3,21 @@
 > 🦄 **This is the source of truth for my second attempt at vibe coding.**
 > The first attempt — while locked behind work — is _very much_ not vibe-bedded.
 > This one? All vibes, all the time.
+> ... *theoretically* cause I'm terrrible at this vibe thing!
 
 ---
+
+## Slowly Coming Together (October 9, 2025)
+
+Well, this has been fun! Verdent has really been a lifesaver, but my perfectionist OCD is preventing most of the forward progress I planned to make by now. I'm trying here! 😅 There's a ton still left to do with primary being consolidating these random agent worktrees and stabilize with some form of "working" to show for it.
+
+As an aside, I managed to go through every single credit I have except for a final ~30 in the "extra" bucket—in less than a week! That's the whole monthly allotment and then some! 😯 Verdent seriously makes it way to easy to accomplish things with this setup. So Copilot "cheap" is back on board to handle the overflow.
+
+I do have a beautiful new responsive UI, a Supabase project that was built, dropped, and then rebuilt, and a backend that was moved from it's original implementation to Node. Then I decided I was truly sick of JS altogether, so we made another migration to Python. That's a ton of work in the last week-ish!
+
+_Onwards!_
+
+> 🦄 I almost forgot: remember that whole data issue that came up during the hackathon? I got an email today stating they've fixed the issue for me. 🤪
 
 ## Only a Break First! (September 27, 2025)
 
@@ -107,7 +120,7 @@ Four hours of bouncing ideas back and forth with ChatGPT.
 
 ## Day 0 — Key Decisions
 
-- **License:** Apache 2.0 (work requirement)
+- ~~**License:** Apache 2.0 (work requirement)~~ Since replaced with *MY* version.
 - **Scope:** Finds places that _don’t_ appear on major travel sites
 - **Tone:** Quirky, snarky, blog-post energy
 - **Backend:** Node 22 LTS + Express
