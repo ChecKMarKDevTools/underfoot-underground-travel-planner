@@ -23,19 +23,16 @@ pre-push:
       run: npm test
 
 commit-msg:
-  parallel: true
   commands:
     commitlint:
       run: |
         OUTPUT=$(npm run commitlint -- {1} 2>&1)
         echo "$OUTPUT"
-        # If commitlint exited with non-zero (errors), fail immediately
         STATUS=$?
         if [ $STATUS -ne 0 ]; then
           exit $STATUS
         fi
-        # Treat any 'warning' lines as failure to enforce stricter policy without level=2 in config
         if echo "$OUTPUT" | grep -qi "warning"; then
-          echo "Commit message contains warnings (treated as errors by lefthook)." >&2
+          echo "Commit message contains warnings (treated as errors)." >&2
           exit 1
         fi
