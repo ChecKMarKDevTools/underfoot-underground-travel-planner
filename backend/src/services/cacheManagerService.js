@@ -121,7 +121,7 @@ const intelligentCacheLookup = async (query, location, options = {}) => {
 /**
  * Smart cache storage with adaptive TTL
  */
-const smartCacheStore = async (query, location, results, options = {}) => {
+const smartCacheStore = async (query, location, results, _options = {}) => {
   try {
     // Determine TTL based on query popularity and characteristics
     const ttlMinutes = await calculateAdaptiveTtl(query, location);
@@ -208,7 +208,7 @@ const triggerCacheWarming = async (query, location) => {
 /**
  * Warm cache for related queries using vector similarity
  */
-const warmRelatedQueries = async (originalQuery, originalLocation) => {
+const warmRelatedQueries = async (originalQuery, _originalLocation) => {
   if (!supabaseAdmin) {
     return;
   }

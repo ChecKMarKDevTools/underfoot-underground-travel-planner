@@ -4,7 +4,6 @@ import OpenAI from 'openai';
 import fetch from 'node-fetch';
 import {
   getCachedSearchResults,
-  setCachedSearchResults,
   getCachedLocation,
   setCachedLocation,
   enhancedSearchWithVectors,
