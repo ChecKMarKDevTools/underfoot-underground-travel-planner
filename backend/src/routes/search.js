@@ -10,7 +10,7 @@ import {
   findUndergroundKeywords,
   populateKeywordEmbeddings,
 } from '../services/supabaseService.js';
-import { 
+import {
   intelligentCacheLookup,
   smartCacheStore,
   getCacheAnalytics,
@@ -159,7 +159,7 @@ router.post('/search', async (req, res) => {
 
     // Get underground keywords for query enhancement
     const undergroundKeywords = await findUndergroundKeywords(parsed.intent);
-    
+
     const finalResult = {
       user_intent: parsed.intent,
       user_location: searchContext.location,
@@ -445,8 +445,8 @@ router.post('/cache/reset-metrics', async (req, res) => {
 router.post('/admin/populate-embeddings', async (req, res) => {
   try {
     const result = await populateKeywordEmbeddings();
-    res.json({ 
-      success: result, 
+    res.json({
+      success: result,
       message: result ? 'Keywords populated successfully' : 'Failed to populate keywords'
     });
   } catch (error) {
@@ -459,14 +459,14 @@ router.post('/admin/populate-embeddings', async (req, res) => {
 router.post('/vector/test', async (req, res) => {
   try {
     const { query, location } = req.body;
-    
+
     if (!query || !location) {
       return res.status(400).json({ error: 'Query and location are required' });
     }
 
     const vectorResult = await enhancedSearchWithVectors(query, location);
     const keywords = await findUndergroundKeywords(query);
-    
+
     res.json({
       query,
       location,

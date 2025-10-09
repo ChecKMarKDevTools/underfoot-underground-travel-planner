@@ -3,11 +3,11 @@
  * Provides intelligent caching operations for the Underfoot application
  */
 
-import { 
-  supabaseAdmin, 
-  findSimilarCachedResults, 
+import {
+  supabaseAdmin,
+  findSimilarCachedResults,
   setSemanticCachedResults,
-  VECTOR_CONFIG 
+  VECTOR_CONFIG
 } from './supabaseService.js';
 
 // Cache management configuration
@@ -16,17 +16,17 @@ const CACHE_CONFIG = {
   defaultTtlMinutes: 30,
   popularQueryTtlMinutes: 120,
   locationCacheTtlHours: 24,
-  
+
   // Warming strategies
   warmupBatchSize: 5,
   warmupDelayMs: 1000,
   popularityThreshold: 5, // queries accessed 5+ times are "popular"
-  
-  // Cleanup strategies  
+
+  // Cleanup strategies
   cleanupIntervalHours: 6,
   maxCacheSize: 10000,
   evictionBatchSize: 100,
-  
+
   // Analytics
   metricsRetentionDays: 30,
   performanceLogEnabled: true,
@@ -50,7 +50,7 @@ const cacheMetrics = {
 const intelligentCacheLookup = async (query, location, options = {}) => {
   const startTime = Date.now();
   cacheMetrics.totalQueries++;
-  
+
   try {
     // Memory cache check first (fastest)
     const memoryKey = `${query}|${location}`.toLowerCase();
@@ -72,14 +72,14 @@ const intelligentCacheLookup = async (query, location, options = {}) => {
 
     // Vector similarity search
     const vectorResult = await findSimilarCachedResults(
-      query, 
-      location, 
+      query,
+      location,
       options.similarityThreshold || VECTOR_CONFIG.similarityThreshold
     );
-    
+
     if (vectorResult) {
       cacheMetrics.vectorHits++;
-      
+
       // Store in memory cache for future fast access
       const memoryEntry = {
         data: vectorResult,
@@ -88,7 +88,7 @@ const intelligentCacheLookup = async (query, location, options = {}) => {
         lastAccessed: Date.now()
       };
       memoryCache.set(memoryKey, memoryEntry);
-      
+
       logPerformance('vector_hit', Date.now() - startTime);
       return {
         cached: true,
@@ -125,10 +125,10 @@ const smartCacheStore = async (query, location, results, _options = {}) => {
   try {
     // Determine TTL based on query popularity and characteristics
     const ttlMinutes = await calculateAdaptiveTtl(query, location);
-    
+
     // Store in persistent cache
     const stored = await setSemanticCachedResults(query, location, results, ttlMinutes);
-    
+
     if (stored) {
       // Also store in memory cache for immediate access
       const memoryKey = `${query}|${location}`.toLowerCase();
@@ -139,11 +139,11 @@ const smartCacheStore = async (query, location, results, _options = {}) => {
         lastAccessed: Date.now()
       };
       memoryCache.set(memoryKey, memoryEntry);
-      
+
       // Trigger background cache warming for related queries
       triggerCacheWarming(query, location);
     }
-    
+
     return stored;
   } catch (error) {
     console.error('Smart cache store error:', error);
@@ -233,16 +233,16 @@ const warmRelatedQueries = async (originalQuery, _originalLocation) => {
     for (const queryData of similarQueries) {
       // Check if already cached
       const existing = await intelligentCacheLookup(
-        queryData.original_query, 
+        queryData.original_query,
         queryData.location
       );
-      
+
       if (!existing.cached) {
         // This would trigger actual API calls in a real scenario
         // For now, we just log the warming opportunity
         console.log(`Cache warming opportunity: "${queryData.original_query}" in ${queryData.location}`);
       }
-      
+
       // Small delay between operations
       await new Promise(resolve => setTimeout(resolve, 100));
     }
@@ -261,13 +261,13 @@ const intelligentCacheCleanup = async () => {
 
   try {
     console.log('Starting intelligent cache cleanup...');
-    
+
     // Clean expired entries first
     const { data: cleanupResult } = await supabaseAdmin.rpc('clean_expired_cache');
-    
+
     // Check cache size and perform eviction if needed
     const { data: cacheStats } = await supabaseAdmin.rpc('get_cache_statistics');
-    const totalCacheSize = (cacheStats?.semantic_cache_count || 0) + 
+    const totalCacheSize = (cacheStats?.semantic_cache_count || 0) +
                           (cacheStats?.search_results_count || 0);
 
     if (totalCacheSize > CACHE_CONFIG.maxCacheSize) {
@@ -278,8 +278,8 @@ const intelligentCacheCleanup = async () => {
     cleanMemoryCache();
 
     console.log('Cache cleanup completed:', cleanupResult);
-    return { 
-      success: true, 
+    return {
+      success: true,
       cleaned: cleanupResult,
       totalSize: totalCacheSize
     };
@@ -318,14 +318,14 @@ const performIntelligentEviction = async () => {
 const cleanMemoryCache = () => {
   const now = Date.now();
   let cleanedCount = 0;
-  
+
   for (const [key, entry] of memoryCache.entries()) {
     if (entry.expires < now) {
       memoryCache.delete(key);
       cleanedCount++;
     }
   }
-  
+
   if (cleanedCount > 0) {
     console.log(`Cleaned ${cleanedCount} expired entries from memory cache`);
   }
@@ -336,14 +336,14 @@ const cleanMemoryCache = () => {
  */
 const getCacheAnalytics = async () => {
   try {
-    const dbStats = supabaseAdmin ? 
-      await supabaseAdmin.rpc('get_cache_statistics') : 
+    const dbStats = supabaseAdmin ?
+      await supabaseAdmin.rpc('get_cache_statistics') :
       { data: null };
 
-    const hitRate = cacheMetrics.totalQueries > 0 ? 
+    const hitRate = cacheMetrics.totalQueries > 0 ?
       (cacheMetrics.hits / cacheMetrics.totalQueries * 100).toFixed(2) : 0;
-    
-    const vectorHitRate = (cacheMetrics.vectorHits + cacheMetrics.vectorMisses) > 0 ? 
+
+    const vectorHitRate = (cacheMetrics.vectorHits + cacheMetrics.vectorMisses) > 0 ?
       (cacheMetrics.vectorHits / (cacheMetrics.vectorHits + cacheMetrics.vectorMisses) * 100).toFixed(2) : 0;
 
     return {
@@ -375,7 +375,7 @@ const resetCacheMetrics = () => {
   cacheMetrics.totalQueries = 0;
   cacheMetrics.avgResponseTime = 0;
   cacheMetrics.lastReset = Date.now();
-  
+
   console.log('Cache metrics reset');
 };
 
@@ -385,10 +385,10 @@ const resetCacheMetrics = () => {
 const logPerformance = (operation, duration) => {
   if (CACHE_CONFIG.performanceLogEnabled) {
     // Update running average
-    cacheMetrics.avgResponseTime = 
-      (cacheMetrics.avgResponseTime * (cacheMetrics.totalQueries - 1) + duration) / 
+    cacheMetrics.avgResponseTime =
+      (cacheMetrics.avgResponseTime * (cacheMetrics.totalQueries - 1) + duration) /
       cacheMetrics.totalQueries;
-    
+
     if (duration > 1000) { // Log slow operations
       console.log(`Slow cache operation: ${operation} took ${duration}ms`);
     }
@@ -400,17 +400,17 @@ const logPerformance = (operation, duration) => {
  */
 const initializeCacheManager = () => {
   console.log('Initializing intelligent cache management system...');
-  
+
   // Set up periodic cleanup
   setInterval(async () => {
     await intelligentCacheCleanup();
   }, CACHE_CONFIG.cleanupIntervalHours * 60 * 60 * 1000);
-  
+
   // Set up periodic memory cache cleanup
   setInterval(() => {
     cleanMemoryCache();
   }, 5 * 60 * 1000); // Every 5 minutes
-  
+
   console.log('Cache management system initialized');
 };
 
