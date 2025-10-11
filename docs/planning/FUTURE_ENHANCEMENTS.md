@@ -1,4 +1,3 @@
-
 # Future Enhancements
 
 This is a list of all design decisions I made throughout the process with a focus on time-savings or cost savings over the long term. For long-term stability and growth potential, these should probably be addressed first.

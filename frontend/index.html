@@ -13,10 +13,10 @@
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script>
-      (function() {
+      (function () {
         const key = '%VITE_GOOGLE_MAPS_API_KEY%';
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry&loading=async`;
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);

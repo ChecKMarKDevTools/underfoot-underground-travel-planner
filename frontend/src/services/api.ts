@@ -54,7 +54,7 @@ export async function sendChatMessage(message: string, force = false): Promise<S
  */
 export async function checkHealth(): Promise<HealthResponse> {
   const response = await fetch(`${API_BASE}/health`);
-  
+
   if (!response.ok) {
     throw new Error('Health check failed');
   }
@@ -68,10 +68,10 @@ export async function checkHealth(): Promise<HealthResponse> {
 export function connectSSE(
   message: string,
   onMessage: (data: any) => void,
-  onError?: (error: Error) => void
+  onError?: (error: Error) => void,
 ): () => void {
   const eventSource = new EventSource(
-    `${API_BASE}/underfoot/stream?message=${encodeURIComponent(message)}`
+    `${API_BASE}/underfoot/stream?message=${encodeURIComponent(message)}`,
   );
 
   eventSource.onmessage = (event) => {

@@ -66,6 +66,79 @@ cp .env.example .env
 vim .env
 ```
 
+"""Underfoot Python Backend
+
+This README documents how to run and test the backend service.
+"""
+
+# Underfoot Python Backend
+
+<p align="center">
+  <img src="../frontend/public/favicon.png" alt="Underfoot logo" width="100" height="100" />
+</p>
+
+> 🐍 Python backend for Underfoot Underground Travel Planner, built for Cloudflare Workers with FastAPI
+
+Blazingly fast, secure, and observable Python backend featuring structured logging, dual-layer caching, and AI-powered search orchestration.
+
+## ✨ Features
+
+- 🚀 **Edge Performance**: Deployed on Cloudflare Workers for <100ms cold starts
+- 🔒 **Security First**: Input validation, rate limiting, XSS protection, secret management
+- 📊 **Observability**: Structured JSON logging, request tracing, metrics collection
+- 💾 **Dual-Layer Caching**: KV (edge, <1ms) + Supabase (persistent, queryable)
+- 🤖 **AI Orchestration**: OpenAI for parsing and response generation
+- 🌐 **Multi-Source Search**: SERP API, Reddit, Eventbrite integration
+- ⚡ **Async Everything**: HTTPX for non-blocking I/O
+- 🎯 **Type Safety**: Pydantic v2 for validation (5-50x faster)
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│         Cloudflare Workers (Python)          │
+├─────────────────────────────────────────────┤
+│ Framework:      FastAPI (ASGI)              │
+│ HTTP Client:    httpx (async)               │
+│ OpenAI:         openai-python (official)    │
+│ Cache:          KV + Supabase               │
+│ Logging:        structlog (structured)      │
+│ Security:       Pydantic validation         │
+│ Testing:        pytest + pytest-asyncio     │
+└─────────────────────────────────────────────┘
+```
+
+## 📋 Prerequisites
+
+- Python 3.11+
+- Poetry (dependency management)
+- Cloudflare account (for deployment)
+- API keys (OpenAI, SERP, Reddit, Eventbrite, Geoapify)
+- Supabase project (for caching)
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+# Install Poetry (if not installed)
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install project dependencies
+cd backend
+poetry install
+```
+
+### 2. Configure Environment
+
+```bash
+# Copy example environment file
+cp .env.example .env
+
+# Edit .env with your API keys
+vim .env
+```
+
 ### 3. Run Locally
 
 ```bash
@@ -91,14 +164,71 @@ poetry run pytest tests/unit/test_services/test_openai_service.py
 # Run with verbose output
 poetry run pytest -v
 
-# Generate coverage report
+# Generate coverage report (HTML)
 poetry run pytest --cov=src --cov-report=html
 ```
+
+## Run dev servers & tests (per-service)
+
+Copy the appropriate `.env` files first (see `.env.example` in each service).
+
+Front-end — dev server
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Front-end — tests
+
+```bash
+cd frontend
+npm install
+npm test
+# coverage report (frontend)
+npm run test:coverage
+```
+
+Back-end — dev server
+
+```bash
+# Use the backend folder
+cd backend
+poetry install
+poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+```
+
+Back-end — tests
+
+```bash
+cd backend
+poetry install
+poetry run pytest
+# run with coverage
+poetry run pytest --cov=src --cov-report=term-missing
+```
+
+Run both locally (from repo root)
+
+```bash
+# Option A: root script (if defined)
+### Structured Logging
+
+# Option B: manually open two terminals
+cd frontend && npm run dev
+cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+```
+
+Notes
+
+- Ensure `frontend/.env` and `backend/.env` are populated from their example files before starting.
+- If VS Code can't resolve imports for the backend, select the Poetry interpreter in the Command Palette.
 
 ## 📦 Project Structure
 
 ```
-backend-python/
+backend/
 ├── src/
 │   ├── workers/
 │   │   └── chat_worker.py           # Main FastAPI application
@@ -219,19 +349,6 @@ wrangler deploy
 # Deploy to specific environment
 wrangler deploy --env production
 ```
-
-### CI/CD with GitHub Actions
-
-The project includes GitHub Actions workflow (see `.github/workflows/python-backend.yml`):
-
-- ✅ Run tests with coverage
-- ✅ Security scanning (safety, bandit)
-- ✅ Code quality checks (ruff, mypy)
-- ✅ Automatic deployment on merge to main
-
-## 📊 Monitoring & Observability
-
-### Structured Logging
 
 All logs are JSON-formatted for easy parsing:
 

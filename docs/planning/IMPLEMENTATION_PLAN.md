@@ -1,4 +1,3 @@
-
 # Underfoot Underground Travel Planner — High-Level Implementation Plan
 
 > 🦄 Source of truth for the v1 build plan. Chatbot-only UX, Node **24**, flat monorepo (`/frontend`, `/backend`, `/n8n`, `/docs`).

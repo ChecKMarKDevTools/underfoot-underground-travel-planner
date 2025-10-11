@@ -1,6 +1,5 @@
 # Architecture Overview: Backend vs Cloudflare Worker
 
-
 ```mermaid
 graph TB
     subgraph "Current Setup"

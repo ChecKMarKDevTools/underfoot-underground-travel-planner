@@ -3,6 +3,7 @@
 ## Structure
 
 ### 📐 Architecture (`/architecture`)
+
 Design decisions, architectural patterns, and system diagrams.
 
 - [Architecture Decisions](architecture/ARCHITECTURE_DECISION.md) - Core architectural choices
@@ -11,6 +12,7 @@ Design decisions, architectural patterns, and system diagrams.
 - [System Diagrams](architecture/MERMAID_DIAGRAMS.md) - Visual system architecture
 
 ### 🛠️ Technical Guides (`/tech_guides`)
+
 Setup instructions, deployment guides, and technical reference.
 
 - [Integration Plan](tech_guides/INTEGRATION_PLAN.md) - Backend-Supabase-Frontend integration
@@ -21,12 +23,14 @@ Setup instructions, deployment guides, and technical reference.
 - [Supabase Cleanup](tech_guides/SUPABASE_CLEANUP_STRATEGY.md) - Database maintenance
 
 ### 👥 User Guides (`/user_guides`)
+
 End-user documentation and testing procedures.
 
 - [Chat UI Guide](user_guides/CHAT_UI_README.md) - Using the chat interface
 - [Manual Testing](user_guides/MANUAL_SANITY_TEST.md) - Testing checklist
 
 ### 📋 Planning (`/planning`)
+
 Project planning, roadmaps, and historical context.
 
 - [Development Plan](planning/DEVELOPMENT_PLAN.md) - Overall development roadmap
@@ -45,12 +49,14 @@ Project planning, roadmaps, and historical context.
 - [TTD Immediate](planning/TTD_IMMEDIATE.md) - Immediate tasks
 
 ### 🎨 Assets (`/assets`)
+
 Images, logos, and other media files.
 
 - [Logo](assets/underfoot-logo.png)
 - [Banner](assets/underfoot-banner.png)
 
 ### 📊 Data
+
 Example data and configurations.
 
 - [Color Palette](color_palette.json) - Design system colors
@@ -74,7 +80,7 @@ Example data and configurations.
 ## Environment Files
 
 - **Frontend**: `/frontend/.env.example` - Browser app configuration
-- **Backend**: `/backend/.env.example` - Server configuration  
+- **Backend**: `/backend/.env.example` - Server configuration
 - **Supabase**: `/supabase/.env.example` - Database configuration
 
 No root `.env` file is used - each service has its own environment configuration.

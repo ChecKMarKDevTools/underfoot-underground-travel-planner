@@ -9,7 +9,7 @@ export default defineConfig({
       transformIndexHtml(html) {
         return html.replace(
           /%VITE_GOOGLE_MAPS_API_KEY%/g,
-          process.env.VITE_GOOGLE_MAPS_API_KEY || ''
+          process.env.VITE_GOOGLE_MAPS_API_KEY || '',
         );
       },
     },

@@ -40,8 +40,23 @@ Central reference for all environment variables used across Underfoot. Avoid exp
 
 ## Security Notes
 
-- Never expose `STONEWALKER_WEBHOOK` or API keys via `VITE_` variables.
+- Never expose `STONEWALKER_WEBHOOK` or backend API keys via `VITE_` variables.
 - All secrets should remain in backend `.env` only.
+
+### Google Maps API Key Security
+
+The `VITE_GOOGLE_MAPS_API_KEY` must be exposed client-side - this is the correct and expected implementation for Google Maps JavaScript API. Google designed this API for browser use with proper security measures:
+
+1. **HTTP Referrer Restrictions**: In Google Cloud Console, restrict the API key to your specific domains (e.g., `yourdomain.com/*`, `localhost:3000/*`)
+2. **API Restrictions**: Limit the key to only the APIs you need (Maps JavaScript API, Places API)
+3. **Usage Quotas**: Set daily quota limits to prevent abuse
+4. **Monitoring**: Enable billing alerts and monitor usage in Cloud Console
+
+**Why client-side exposure is acceptable:**
+- The Maps JavaScript API requires the key in the browser to authenticate requests
+- Domain restrictions prevent unauthorized sites from using your key
+- Google's billing model expects and accounts for this exposure pattern
+- Backend proxying would add latency and complexity without security benefit
 
 ## Example Backend `.env` (Development)
 

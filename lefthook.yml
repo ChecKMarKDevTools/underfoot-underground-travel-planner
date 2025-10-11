@@ -13,9 +13,20 @@ pre-commit:
       run: |
         STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' || true)
         if [ -n "$STAGED_PY" ] && command -v poetry &> /dev/null; then
-          cd backend && poetry run ruff check --fix $STAGED_PY 2>/dev/null || true
-          cd backend && poetry run black $STAGED_PY 2>/dev/null || true
-          echo "$STAGED_PY" | xargs -r git add
+          if [ -d "backend" ]; then
+            # When running inside backend/, strip the leading 'backend/' prefix
+            # so paths are correct relative to that directory and we don't
+            # end up with backend/backend/.. paths.
+            REL_PY=$(echo "$STAGED_PY" | sed -E 's#^backend/##' | tr '\n' ' ')
+            (cd backend && poetry run black $REL_PY 2>/dev/null) || true
+            (cd backend && poetry run ruff check --fix $REL_PY 2>/dev/null) || true
+            echo "$STAGED_PY" | xargs -r git add
+          else
+            # Fallback: run black/ruff from repo root on the staged paths
+            poetry run black $STAGED_PY 2>/dev/null || true
+            poetry run ruff check --fix $STAGED_PY 2>/dev/null || true
+            echo "$STAGED_PY" | xargs -r git add
+          fi
         fi
     spellcheck:
       run: |

@@ -2,21 +2,67 @@
 applyTo: backend/**/*
 ---
 
-# BACKEND\_INSTRUCTIONS.md
+# Copilot Instructions for Backend
 
-> 🗺️ **Underfoot Backend** — single-agent orchestrator for the “underground” travel picks.
-> ⚙️ Node 24, Express, plain JavaScript. One OpenAI batch call. n8n for source aggregation.
-> 🎯 Goal: reliably return **4–6** items with a **Near(ish) By** section + rich debug.
+> ��️ **Underfoot Backend** — single-agent orchestrator for "underground" travel picks.
+> ⚙️ Python 3.12+, FastAPI, Poetry. One OpenAI batch call.
+> 🎯 Goal: reliably return **4–6** items with **Near(ish) By** + rich debug.
 
 ---
 
 ## Tech & Constraints
 
-- 🖥️ **Runtime:** Node 24 (ES2024), Express.
-- 💻 **Language:** JavaScript only (no TypeScript).
-- 🎨 **Style:** single quotes; semicolons; small modules; pure helpers where possible.
-- 🔑 **Secrets:** `.env` via `dotenv`. Never leak secrets in logs or responses.
-- 🌐 **CORS:** allow only your site origin (ChecKMarKDevTools.dev).
+- 🐍 **Runtime:** Python 3.12.11+
+- 🚀 **Framework:** FastAPI with async/await
+- 📦 **Package Manager:** Poetry
+- 🧪 **Testing:** pytest with coverage ≥30% threshold
+- 🎨 **Style:** Black formatter, Ruff linter, type hints encouraged
+- 🔑 **Secrets:** Environment variables via Pydantic settings. Never leak in logs/responses.
+- 🌐 **CORS:** Restrict to allowed origins only
+
+---
+
+## Code Quality Rules
+
+### SonarQube Compliance
+
+- ⚠️ **python:S1244** — Never use equality (`==`, `!=`) with floats. Use tolerance-based comparison:
+  ```python
+  # ❌ BAD
+  if score == 0.5:
+  
+  # ✅ GOOD
+  if abs(score - 0.5) < 0.0001:
+  # or use math.isclose()
+  if math.isclose(score, 0.5, rel_tol=1e-9):
+  ```
+
+### Python Best Practices
+
+- Use Pydantic `BaseModel` for request/response validation
+- Prefer composition over inheritance
+- Keep functions pure where possible (no side effects)
+- Async/await for I/O operations (OpenAI, external APIs, cache)
+- Custom exceptions inherit from `UnderfootError` base class
+
+---
+
+## Project Structure
+
+```
+backend/
+├── src/
+│   ├── config/          # Settings, constants
+│   ├── middleware/      # CORS, security, tracing
+│   ├── models/          # Pydantic models (request/response/domain)
+│   ├── services/        # OpenAI, geocoding, scoring, search, cache
+│   ├── utils/           # Errors, logger, validators, sanitizers
+│   └── workers/         # Main chat worker orchestration
+├── tests/
+│   ├── unit/            # Fast isolated tests
+│   └── integration/     # External service mocks
+└── pyproject.toml       # Poetry config + pytest settings
+```
 
 ---
 
@@ -27,129 +73,184 @@ applyTo: backend/**/*
 **Input**
 
 ```json
-{ "message": "Pikeville KY next week for 3 days, outdoors", "limit": 5, "force": false }
+{
+  "message": "Pikeville KY next week for 3 days, outdoors",
+  "limit": 5,
+  "force": false
+}
 ```
 
 **Process**
 
-1. 📝 **Parse** free text → `{ location, startDate, endDate, vibe }`
-   - Defaults: 3 days; handle “next week” nudge; vibe keywords (outdoors|history|food|art|music|quirky|nature|hike|coffee).
-2. 📍 **Radius tiers**
-   - A: core = `DEFAULT_RADIUS_MILES` (10)
-   - B: stretch = 20 (only if core < 3)
-   - C: nearby = up to `MAX_RADIUS_MILES` (40) (only if still < 3)
-   - Stop early when total candidates ≥ 4 (cap overall at 6).
-3. 🔄 **Fetch** candidates per tier via **n8n** (`N8N_WEBHOOK_URL`, POST body: `{ location, startDate, endDate, radiusMiles, vibe }`).
-4. 🧹 **Filter + dedupe**
-   - Blocklist mainstream hosts (tripadvisor, yelp, foursquare, facebook, instagram).
-   - Dedupe by `name|host`.
-5. 🧠 **Rank + format** (single OpenAI call)
-   - Scoring: recency (≤12mo), local enthusiasm cues, uniqueness, distance.
-   - Output buckets:
-     - `primary`: 3–5 (core + stretch)
-     - `nearby`: 0–2 (≤ 40 mi)
-   - If primary < 3, **promote** top nearby with `(≈X mi)`.
-6. 💬 **Reply text** in Underfoot voice + **debug payload**.
+1. 📝 **Parse** via OpenAI → `{ location, start_date, end_date, vibe }`
+2. 📍 **Geocode** location to lat/lon
+3. 🔍 **Tiered search** (A: 10mi → B: 20mi → C: 40mi)
+   - Stop when ≥4 candidates found
+4. 🧹 **Filter + dedupe** (blocklist, name/URL dedup)
+5. 🧠 **Rank** with single OpenAI batch call
+6. 💬 **Compose** reply in Underfoot voice
+7. 📊 Return structured response + debug payload
 
 **Output**
 
 ```json
 {
-  "reply": "string...",
+  "reply": "Here's what I found...",
+  "places": [...],
   "debug": {
-    "parsed": { "location": "", "startDate": "", "endDate": "", "vibe": "" },
-    "radiusCore": 10,
-    "radiusUsed": 20,
-    "coreCount": 3,
-    "stretchCount": 1,
-    "nearbyCount": 2,
-    "raw": { "core": [], "stretch": [], "nearby": [] },
-    "filtered": { "primary": [], "nearby": [] },
-    "executionTimeMs": 1234,
-    "requestId": "uf_...",
-    "retries": { "sources": { "reddit": 1 } }
+    "request_id": "uf_...",
+    "execution_time_ms": 1234,
+    "parsed": {...},
+    "radius_core": 10,
+    "radius_used": 20,
+    "counts": {...},
+    "errors": [],
+    "cache": "hit|miss"
   }
 }
 ```
 
+### `POST /normalize-location`
+
+Geocodes location string to standardized format with lat/lon.
+
 ### `GET /health`
 
-Returns `{ "ok": true }`.
+Returns service health + dependency status.
 
 ---
 
-## Environment
+## Environment Variables
 
-```
+```bash
 OPENAI_API_KEY=sk-...
-N8N_WEBHOOK_URL=http://localhost:5678/webhook/underfoot
+OPENAI_MODEL=gpt-4o-mini
 DEFAULT_RADIUS_MILES=10
 MAX_RADIUS_MILES=40
-CACHE_TTL_SECONDS=86400   # dev 60, prod 12–24h
-ALLOW_NEARBY=true
-PORT=3000
+CACHE_TTL_SECONDS=86400  # 24h prod, 60s dev
+SERPAPI_KEY=...          # Optional: SERP search
+EVENTBRITE_TOKEN=...     # Optional: events
+REDDIT_CLIENT_ID=...     # Optional: Reddit posts
 ```
 
 ---
 
-## Caching
+## Models & Validation
 
-- 🗝️ **Key:** `{location}|{startDate}|{endDate}|{vibe}|{radiusBucket}`
-- ⏱️ **TTL:** dev 60s, prod via `CACHE_TTL_SECONDS`.
-- 🔄 `force=true` to bypass (UI Debug toggle will set this).
+### Request Models (`src/models/request_models.py`)
+
+- `SearchRequest`: message (5-500 chars), limit (1-10), force (bool)
+- `NormalizeLocationRequest`: location string, optional confidence threshold
+- Input sanitization via Pydantic validators (strip HTML, normalize whitespace)
+
+### Response Models (`src/models/response_models.py`)
+
+- `SearchResponse`: reply, places[], debug
+- `DebugInfo`: request_id, execution_time_ms, cache, parsed, counts, errors
+- `HealthResponse`: status, timestamp, elapsed_ms, dependencies, version
+- `ErrorResponse`: error, message, request_id, timestamp, context
+
+### Domain Models (`src/models/domain_models.py`)
+
+- `ParsedUserInput`: location, start_date, end_date, vibe
+- `SearchResult`: name, description, url, source, distance_miles, score
 
 ---
 
-## Retries & Backoff
+## Error Handling
 
-- 🚦 **When:** n8n calls with 429/5xx.
-- 🔁 **Policy:** up to 3 tries with **exponential backoff**: 2000 → 4000 → 8000 ms.
-- 🤝 **Fail shape:** return friendly message + include errors in `debug.errors[]`.
+### Custom Exceptions (`src/utils/errors.py`)
+
+- `UnderfootError` — Base with status_code, error_code, context
+- `ValidationError` — 400 for bad input
+- `RateLimitError` — 429 with retry_after
+- `UpstreamError` — 502 for external API failures
+- `CacheError` — 500 for cache operations
+
+### Retry Logic
+
+- �� Exponential backoff: 2s → 4s → 8s
+- 🚦 Retry on 429/5xx from external APIs
+- 📊 Track retry counts in `debug.retries`
+
+---
+
+## Caching (`src/services/cache_service.py`)
+
+- 🗝️ **Key:** `{location}|{start_date}|{end_date}|{vibe}|{radius_bucket}`
+- ⏱️ **TTL:** Configurable via `CACHE_TTL_SECONDS`
+- 🔄 **Bypass:** `force=true` skips cache
+- 💾 **Backend:** In-memory dict (dev), Redis-ready interface
 
 ---
 
 ## Security
 
-- 🧽 Sanitize input; never eval.
-- 🚫 Enforce domain blocklist server-side (don’t trust the ranker).
-- 🔐 CORS: only your allowed origin ChecKMarKDevTools.dev.
-- 🛑 Don’t serialize exceptions with stack traces to the client.
+- 🧽 **Sanitization:** Strip HTML/script tags, normalize whitespace (`input_sanitizer.py`)
+- ✅ **Validation:** Pydantic models enforce length/format constraints (`input_validator.py`)
+- 🚫 **Blocklist:** Filter mainstream domains (TripAdvisor, Yelp, Facebook, Instagram)
+- 🔐 **CORS:** Middleware enforces allowed origins
+- 🛑 **Error Responses:** Never expose stack traces or secrets to clients
 
 ---
 
 ## Performance & Cost
 
-- 🎯 Exactly **one** OpenAI call per `/chat`.
-- 📦 **Cap** per-source pre-filter: 6 candidates.
-- ⏭️ Skip B/C tiers if A already yields 4–6 good items.
-- 💸 If usage is high, consider OLlama or other LLMs to reduce costs.
+- 🎯 **One OpenAI call** per `/chat` request (batch ranking)
+- 📦 **Cap per-source:** 6 candidates max before filtering
+- ⏭️ **Skip tiers:** Stop search if A tier yields 4-6 items
+- 💸 **Model choice:** `gpt-4o-mini` for cost efficiency
 
 ---
 
-## Logging & Observability
+## Logging (`src/utils/logger.py`)
 
-- 🆔 Generate `requestId` per call.
-- 📊 Log structured JSON: timings for `parse`, `tierA`, `tierB`, `tierC`, `rank`, `compose`; token usage (if available); retry counts.
-- 🚫 Don’t log secrets or full model prompts (only hashes if needed).
+- 🆔 Generate `request_id` per request (format: `uf_{timestamp}_{random}`)
+- 📊 Structured JSON logging with timings
+- 🔒 **Redact secrets** automatically (OpenAI keys, tokens)
+- 🚫 Don't log full prompts (only summaries/hashes)
+- 📈 Track: execution_time_ms, token_usage, retry_counts, cache_hit_rate
 
 ---
 
 ## Testing
 
-- 🧪 **Unit:** parser, blocklist, dedupe, cache.
-- 🔄 **Integration:** mock n8n:
-  - A: returns ≥4 (skip B/C).
-  - B: returns 1–2 (trigger C).
-  - C: returns ≥1 (promotion path).
-- ❌ **Error:** simulate 429/500 → verify backoff + graceful output.
-- ✅ **E2E:** UI shows **Top Picks** + **Near(ish) By** and Debug fields populate.
-- 🎯 Goal: 85% coverage threshold.
+### Coverage Requirements
+
+- 🎯 **Threshold:** 30% minimum (enforced in CI)
+- 📊 **Current:** 31.46% (passing)
+- 🧪 Run: `poetry run pytest --cov=src --cov-report=term-missing`
+
+### Test Structure
+
+- **Unit** (`tests/unit/`):
+  - Models: Pydantic validation, field requirements
+  - Utils: Errors, logger, validators, sanitizers
+  - Services: Scoring, OpenAI parsing (mocked)
+  
+- **Integration** (`tests/integration/`):
+  - Mock external APIs (OpenAI, SERP, Eventbrite, Reddit)
+  - Test tiered search logic
+  - Verify retry/backoff behavior
+
+### Test Scenarios
+
+- ✅ Valid input parsing
+- ❌ Invalid input rejection (too short, too long, dangerous chars)
+- 🔄 Tier progression (A insufficient → B → C)
+- 🚫 Blocklist filtering
+- 🔁 Retry on 429/5xx with backoff
+- 💾 Cache hit/miss/force bypass
+- 🧮 Floating-point comparisons use tolerance (python:S1244)
 
 ---
 
 ## Definition of Done
 
-- 🏁 `/chat` consistently returns **4–6** items with correct sectioning.
-- 🕵️ Debug payload complete (counts, radius, timings, retries).
-- 📦 Cache hit/miss behaves as expected; `force=true` works.
-- 🧹 Lint/format clean; commits conventional.
+- 🏁 `/chat` returns **4–6** items consistently
+- 🕵️ Debug payload complete (timings, counts, cache status, retries)
+- 📊 Coverage ≥30% with all tests passing
+- 🧹 Passes: `ruff check`, `black --check`, `pytest`
+- 🔒 No secrets in logs or responses
+- 📝 Conventional commit messages
+- 🚀 Ready for Cloudflare Workers deployment

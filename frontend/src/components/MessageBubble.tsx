@@ -26,12 +26,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       transition={{ delay, duration: 0.3 }}
       className={cn('flex w-full', isUser ? 'justify-end' : 'justify-start')}
     >
-      <div
-        className={cn(
-          'w-[80%]',
-          'space-y-2',
-        )}
-      >
+      <div className={cn('w-[80%]', 'space-y-2')}>
         <div
           className={cn(
             'message-bubble w-full', // Add w-full to ensure it takes full available width

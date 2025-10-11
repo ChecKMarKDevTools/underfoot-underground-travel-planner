@@ -1,4 +1,3 @@
-
 # Mermaid Diagrams: Underfoot System Documentation
 
 ## 1. System Architecture Overview

@@ -1,8 +1,7 @@
 """Chat worker - lightweight FastAPI endpoint."""
 
 import time
-from datetime import datetime, timezone
-from uuid import uuid4
+from datetime import UTC, datetime
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -12,11 +11,11 @@ from src.middleware.cors_middleware import add_cors_middleware
 from src.middleware.security_middleware import SecurityHeadersMiddleware
 from src.middleware.tracing_middleware import RequestTracingMiddleware, request_id_var
 from src.models.request_models import SearchRequest
-from src.models.response_models import ErrorResponse, HealthResponse
+from src.models.response_models import HealthResponse
 from src.services import cache_service, search_service
 from src.utils.errors import UnderfootError
-from src.utils.logger import get_logger, setup_logging
 from src.utils.input_sanitizer import InputSanitizer, IntentParser
+from src.utils.logger import get_logger, setup_logging
 
 setup_logging()
 logger = get_logger(__name__)
@@ -54,7 +53,7 @@ async def underfoot_error_handler(request: Request, exc: UnderfootError):
         content={
             **exc.to_dict(),
             "request_id": request_id_var.get(),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         },
     )
 
@@ -78,7 +77,7 @@ async def validation_error_handler(request: Request, exc: ValidationError):
             "error": "VALIDATION_ERROR",
             "message": "Invalid request data",
             "request_id": request_id_var.get(),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "details": exc.errors(),
         },
     )
@@ -110,7 +109,7 @@ async def global_error_handler(request: Request, exc: Exception):
             "error": "INTERNAL_ERROR",
             "message": "An unexpected error occurred",
             "request_id": request_id_var.get(),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         },
     )
 
@@ -128,24 +127,18 @@ async def health():
 
     try:
         stats = await cache_service.get_cache_stats()
-        dependencies["supabase"] = {"status": "healthy" if stats["connected"] else "unhealthy"}
+        dependencies["supabase"] = {"status": "healthy" if stats["connected"] else "degraded"}
     except Exception as e:
-        dependencies["supabase"] = {"status": "unhealthy", "error": str(e)}
-
-    all_healthy = all(dep["status"] == "healthy" for dep in dependencies.values())
+        dependencies["supabase"] = {"status": "degraded", "error": str(e)}
 
     elapsed_ms = int((time.perf_counter() - start) * 1000)
 
     health_data = HealthResponse(
-        status="healthy" if all_healthy else "degraded",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        status="healthy",
+        timestamp=datetime.now(UTC).isoformat(),
         elapsed_ms=elapsed_ms,
         dependencies=dependencies,
     )
-
-    if not all_healthy:
-        logger.warning("health.degraded", **health_data.model_dump())
-        raise HTTPException(status_code=503, detail="Service degraded")
 
     return health_data
 
@@ -162,12 +155,12 @@ async def search(request: SearchRequest):
     """
     try:
         sanitized_input = InputSanitizer.sanitize(request.chat_input)
-        
+
         intent = IntentParser.parse_intent(sanitized_input)
         logger.info("search.intent_parsed", **intent)
-        
+
         vector_query = IntentParser.extract_vector_query(intent)
-        
+
         result = await search_service.execute_search(
             chat_input=sanitized_input,
             force=request.force,

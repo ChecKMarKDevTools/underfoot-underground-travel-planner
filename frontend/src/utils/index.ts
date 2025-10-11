@@ -15,3 +15,7 @@ export const formatTimestamp = (date: Date): string => {
 export const generateId = (): string => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 };
+
+export const pluralize = (count: number, singular: string, plural?: string): string => {
+  return count === 1 ? singular : plural || `${singular}s`;
+};

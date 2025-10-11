@@ -1,4 +1,3 @@
-
 # Native Chat Long-Term Vision
 
 Status: Draft (living document)

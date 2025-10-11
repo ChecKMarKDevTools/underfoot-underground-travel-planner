@@ -8,7 +8,7 @@ import { DebugPanel } from './components/DebugPanel';
 import { useTheme } from './hooks/useTheme';
 import { Message, Place, DebugData } from './types';
 import { sendChatMessage, SearchResponse } from './services/api';
-import { generateId } from './utils';
+import { generateId, pluralize } from './utils';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
@@ -28,55 +28,85 @@ function App() {
     return acc;
   }, []);
 
+  const createUserMessage = (content: string): Message => ({
+    id: generateId(),
+    content,
+    role: 'user',
+    timestamp: new Date(),
+  });
+
+  const processApiResponse = (
+    response: SearchResponse,
+    content: string,
+  ): { places: Place[]; debugData: DebugData; assistantMessage: Message } => {
+    const places: Place[] = (response.places || []).map((result: any) => ({
+      id: result.place_id || generateId(),
+      name: result.name || 'Unknown Location',
+      description: result.description || result.editorial_summary?.overview || '',
+      latitude: result.geometry?.location?.lat || result.lat || 0,
+      longitude: result.geometry?.location?.lng || result.lng || 0,
+      category: result.category || 'mystical',
+      confidence: result.confidence || result.rating || 0.5,
+      historicalPeriod: result.historical_period,
+      artifacts: result.artifacts,
+      imageUrl: result.image_url,
+      address: result.formatted_address || result.vicinity || result.address,
+    }));
+
+    const debugData: DebugData = response.debug || {
+      searchQuery: content,
+      processingTime: 0,
+      confidence: 0.8,
+      keywords: [],
+      geospatialData: {},
+      llmReasoning: 'Search completed',
+      dataSource: ['Backend API'],
+    };
+
+    const assistantMessage: Message = {
+      id: generateId(),
+      content:
+        places.length > 0
+          ? `Found ${places.length} ${pluralize(places.length, 'location')}. ${places[0]?.name} shows strongest resonance.`
+          : 'No locations found matching your query.',
+      role: 'assistant',
+      timestamp: new Date(),
+      places,
+      debugData,
+    };
+
+    return { places, debugData, assistantMessage };
+  };
+
+  const createErrorMessage = (error: unknown, content: string): Message => ({
+    id: generateId(),
+    content:
+      error instanceof Error
+        ? `Error: ${error.message}`
+        : 'Failed to process search. Check backend connection.',
+    role: 'assistant',
+    timestamp: new Date(),
+    places: [],
+    debugData: {
+      searchQuery: content,
+      processingTime: 0,
+      confidence: 0,
+      keywords: [],
+      geospatialData: {},
+      llmReasoning: 'Error occurred during search',
+      dataSource: ['Error Handler'],
+    },
+  });
+
   const handleSendMessage = useCallback(
     async (content: string) => {
-      const userMessage: Message = {
-        id: generateId(),
-        content,
-        role: 'user',
-        timestamp: new Date(),
-      };
-
+      const userMessage = createUserMessage(content);
       setMessages((prev) => [...prev, userMessage]);
       setIsLoading(true);
 
       try {
         const response: SearchResponse = await sendChatMessage(content, false);
-
-        const places: Place[] = (response.places || []).map((result: any) => ({
-          id: result.place_id || generateId(),
-          name: result.name || 'Unknown Location',
-          description: result.description || result.editorial_summary?.overview || '',
-          latitude: result.geometry?.location?.lat || result.lat || 0,
-          longitude: result.geometry?.location?.lng || result.lng || 0,
-          category: result.category || 'mystical',
-          confidence: result.confidence || result.rating || 0.5,
-          historicalPeriod: result.historical_period,
-          artifacts: result.artifacts,
-          imageUrl: result.image_url,
-          address: result.formatted_address || result.vicinity || result.address,
-        }));
-
-        const debugData: DebugData = response.debug || {
-          searchQuery: content,
-          processingTime: 0,
-          confidence: 0.8,
-          keywords: [],
-          geospatialData: {},
-          llmReasoning: 'Search completed',
-          dataSource: ['Backend API'],
-        };
-
-        const assistantMessage: Message = {
-          id: generateId(),
-          content: response.results.length > 0
-            ? `Found ${response.results.length} location${response.results.length !== 1 ? 's' : ''}. ${places[0]?.name} shows strongest resonance.`
-            : 'No locations found matching your query.',
-          role: 'assistant',
-          timestamp: new Date(),
-          places,
-          debugData,
-        };
+        const { places, debugData, assistantMessage } = processApiResponse(response, content);
 
         setMessages((prev) => [...prev, assistantMessage]);
         setCurrentDebugData(debugData);
@@ -86,26 +116,7 @@ function App() {
         }
       } catch (error) {
         console.error('Error processing message:', error);
-
-        const errorMessage: Message = {
-          id: generateId(),
-          content: error instanceof Error
-            ? `Error: ${error.message}`
-            : 'Failed to process search. Check backend connection.',
-          role: 'assistant',
-          timestamp: new Date(),
-          places: [],
-          debugData: {
-            searchQuery: content,
-            processingTime: 0,
-            confidence: 0,
-            keywords: [],
-            geospatialData: {},
-            llmReasoning: 'Error occurred during search',
-            dataSource: ['Error Handler'],
-          },
-        };
-
+        const errorMessage = createErrorMessage(error, content);
         setMessages((prev) => [...prev, errorMessage]);
       } finally {
         setIsLoading(false);

@@ -21,6 +21,10 @@ async def search_local_events(location: str, keywords: list[str]) -> list[Search
     Returns:
         List of event results
     """
+    if not settings.eventbrite_token:
+        logger.warning("eventbrite.token_missing", msg="EVENTBRITE_TOKEN not configured, skipping")
+        return []
+
     try:
         query = " ".join(keywords)
         url = "https://www.eventbriteapi.com/v3/events/search/"
@@ -62,6 +66,16 @@ async def search_local_events(location: str, keywords: list[str]) -> list[Search
 
         return results
 
+    except httpx.HTTPStatusError as e:
+        logger.error(
+            "eventbrite.http_error",
+            status_code=e.response.status_code,
+            error=str(e),
+            location=location,
+            keywords=keywords,
+            msg=f"Eventbrite API returned {e.response.status_code}. Check token validity and API endpoint.",
+        )
+        return []
     except Exception as e:
         logger.error(
             "eventbrite.search_failed",

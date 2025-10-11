@@ -24,9 +24,9 @@ test.describe('Underfoot Chat Application', () => {
 
     await expect(page.getByText('underground halloween events near grundy va')).toBeVisible();
 
-    await expect(
-      page.locator('text=/location|seek|whispers|shadows|grundy/i'),
-    ).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('text=/location|seek|whispers|shadows|grundy/i')).toBeVisible({
+      timeout: 15000,
+    });
   });
 
   test('should toggle theme', async ({ page }) => {

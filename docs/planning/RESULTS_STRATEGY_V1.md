@@ -1,4 +1,3 @@
-
 # Results Strategy — “More Than Three, Not a Buffet”
 
 Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish) By** fallback that feels intentional (not a pity list).

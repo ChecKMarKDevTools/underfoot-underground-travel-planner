@@ -5,5 +5,19 @@
     }
   ],
   "codeql-scanner.github.owner": "CheckMarKDevTools",
-  "codeql-scanner.github.repo": "underfoot-underground-travel-planner"
+  "codeql-scanner.github.repo": "underfoot-underground-travel-planner",
+  "python.defaultInterpreterPath": "/Users/anchildress1/Library/Caches/pypoetry/virtualenvs/underfoot-backend-python-O7_ZvclF-py3.12/bin/python",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend/src"],
+  "python.analysis.autoSearchPaths": true,
+  "python.envFile": "${workspaceFolder}/backend/.env",
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests", "--cov=src", "--cov-report=term-missing"],
+  "python.testing.cwd": "${workspaceFolder}/backend"
 }

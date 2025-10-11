@@ -4,7 +4,7 @@ import type { Place } from '../types';
 // Create marker SVG with dynamic colors - simple pin shape
 const createMarkerSVG = (color: string, isSelected: boolean) => {
   const size = isSelected ? 32 : 24;
-  
+
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="12" cy="12" r="10" fill="${color}" stroke="#ffffff" stroke-width="2"/>
   <circle cx="12" cy="12" r="4" fill="#ffffff"/>
@@ -74,95 +74,111 @@ export function GoogleMapView({
 
   const initMap = useCallback(() => {
     if (!mapRef.current || !isLoaded || isInitialized) return;
+    if (!window.google?.maps?.Map) {
+      console.warn('Google Maps not fully loaded yet');
+      return;
+    }
 
-    const mapOptions: google.maps.MapOptions = {
-      center: { lat: center[0], lng: center[1] },
-      zoom: zoom,
-      styles: [
-        {
-          featureType: 'poi',
-          elementType: 'labels',
-          stylers: [{ visibility: 'off' }]
-        },
-        {
-          featureType: 'transit',
-          elementType: 'labels',
-          stylers: [{ visibility: 'off' }]
-        }
-      ],
-      zoomControl: true,
-      mapTypeControl: false,
-      scaleControl: true,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: true,
-      gestureHandling: 'cooperative',
-      clickableIcons: false,
-      tilt: 0,
-      keyboardShortcuts: false,
-    };
+    try {
+      const mapOptions: google.maps.MapOptions = {
+        center: { lat: center[0], lng: center[1] },
+        zoom: zoom,
+        styles: [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }],
+          },
+          {
+            featureType: 'transit',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }],
+          },
+        ],
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: true,
+        gestureHandling: 'cooperative',
+        clickableIcons: false,
+        tilt: 0,
+        keyboardShortcuts: false,
+      };
 
-    googleMapRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
-    setIsInitialized(true);
+      googleMapRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
+      setIsInitialized(true);
+    } catch (error) {
+      console.error('Failed to initialize Google Map:', error);
+    }
   }, [center, zoom, isLoaded, isInitialized]);
 
   const clearMarkers = useCallback(() => {
-    markersRef.current.forEach(marker => marker.setMap(null));
+    markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
   }, []);
 
   const addMarkers = useCallback(() => {
-    if (!googleMapRef.current || !isLoaded) return;
-    
+    if (!googleMapRef.current || !isLoaded || !window.google?.maps?.Marker) return;
+
     clearMarkers();
 
     places.forEach((place) => {
-      const isSelected = selectedPlaceId === place.id;
-      const size = isSelected ? 36 : 24;
-      const pinHeight = isSelected ? 54 : 36;
-      
-      const marker = new window.google.maps.Marker({
-        position: { lat: place.latitude, lng: place.longitude },
-        map: googleMapRef.current,
-        title: place.name,
-        icon: {
-          url: createMarkerIcon(place, isSelected),
-          scaledSize: new window.google.maps.Size(size, pinHeight),
-          anchor: new window.google.maps.Point(size / 2, pinHeight),
-        },
-        animation: window.google.maps.Animation.DROP,
-        zIndex: isSelected ? 1000 : undefined,
-      });
+      try {
+        const isSelected = selectedPlaceId === place.id;
+        const size = isSelected ? 36 : 24;
+        const pinHeight = isSelected ? 54 : 36;
 
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: `
-          <div class="p-2">
-            <h3 class="font-semibold text-void-900 mb-1">${place.name}</h3>
-            <p class="text-sm text-void-700 mb-2">${place.address || place.description}</p>
-            <div class="flex items-center justify-between text-xs">
-              <span class="bg-cyber-100 text-cyber-800 px-2 py-1 rounded">
-                ${place.category}
-              </span>
-              ${place.confidence ? `
-                <div class="flex items-center gap-1">
-                  <span>⚡</span>
-                  <span>${Math.round(place.confidence * 100)}%</span>
-                </div>
-              ` : ''}
+        const marker = new window.google.maps.Marker({
+          position: { lat: place.latitude, lng: place.longitude },
+          map: googleMapRef.current,
+          title: place.name,
+          icon: {
+            url: createMarkerIcon(place, isSelected),
+            scaledSize: new window.google.maps.Size(size, pinHeight),
+            anchor: new window.google.maps.Point(size / 2, pinHeight),
+          },
+          animation: window.google.maps.Animation.DROP,
+          zIndex: isSelected ? 1000 : undefined,
+        });
+
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `
+            <div class="p-2">
+              <h3 class="font-semibold text-void-900 mb-1">${place.name}</h3>
+              <p class="text-sm text-void-700 mb-2">${place.address || place.description}</p>
+              <div class="flex items-center justify-between text-xs">
+                <span class="bg-cyber-100 text-cyber-800 px-2 py-1 rounded">
+                  ${place.category}
+                </span>
+                ${
+                  place.confidence
+                    ? `
+                  <div class="flex items-center gap-1">
+                    <span>⚡</span>
+                    <span>${Math.round(place.confidence * 100)}%</span>
+                  </div>
+                `
+                    : ''
+                }
+              </div>
             </div>
-          </div>
-        `,
-        maxWidth: 300,
-      });
+          `,
+          maxWidth: 300,
+        });
 
-      marker.addListener('click', () => {
-        infoWindow.open(googleMapRef.current, marker);
-        if (onPlaceSelect) {
-          onPlaceSelect(place);
-        }
-      });
+        marker.addListener('click', () => {
+          infoWindow.open(googleMapRef.current, marker);
+          if (onPlaceSelect) {
+            onPlaceSelect(place);
+          }
+        });
 
-      markersRef.current.push(marker);
+        markersRef.current.push(marker);
+      } catch (error) {
+        console.error('Failed to create marker for place:', place.name, error);
+      }
     });
   }, [places, isLoaded, onPlaceSelect, clearMarkers, selectedPlaceId]);
 
@@ -196,8 +212,8 @@ export function GoogleMapView({
   }
 
   return (
-    <div 
-      ref={mapRef} 
+    <div
+      ref={mapRef}
       className="h-full w-full rounded-lg overflow-hidden border border-cyber-200 dark:border-cyber-700"
     />
   );
