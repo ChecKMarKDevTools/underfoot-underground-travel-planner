@@ -1,0 +1,11 @@
+# Standard ignores
+node_modules
+.git/
+coverage/
+dist/
+build/
+
+# Ignore Vite/Playwright/test artifacts
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/

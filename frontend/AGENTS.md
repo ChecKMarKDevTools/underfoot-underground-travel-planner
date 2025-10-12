@@ -100,7 +100,7 @@ Lazy load, debounce, cache, batch. Memo only when profiled.
 - Must be reviewed in playwright before commit
 - Ensure unit tests exist with adequate coverage that makes sense
 - Avoid coding tests just to add numbers
-- Document a ../docs/user_guide with screenshots using the playwright MCP
+- Document a `../docs/user_guide` with screenshots using the playwright MCP
 - Review these screenshots to make sure they are accurate and clear
 - If anything looks off, then you should fix it first and then update
 - It is not enough to simply lazy load the default home page. You need to send messages, click map controls, look at debug info, switch the view, and verify all interactive elements function correctly.

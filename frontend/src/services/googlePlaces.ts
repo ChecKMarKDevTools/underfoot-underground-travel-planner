@@ -126,9 +126,15 @@ export class GooglePlacesService {
       const mysticalTypes = ['place_of_worship', 'hindu_temple', 'synagogue', 'mosque'];
       const undergroundTypes = ['subway_station', 'train_station', 'parking'];
 
-      if (types.some((type) => ancientTypes.includes(type))) return 'ancient';
-      if (types.some((type) => mysticalTypes.includes(type))) return 'mystical';
-      if (types.some((type) => undergroundTypes.includes(type))) return 'underground';
+      if (types.some((type) => ancientTypes.includes(type))) {
+        return 'ancient';
+      }
+      if (types.some((type) => mysticalTypes.includes(type))) {
+        return 'mystical';
+      }
+      if (types.some((type) => undergroundTypes.includes(type))) {
+        return 'underground';
+      }
       return 'forgotten';
     };
 

@@ -1,1 +1,8 @@
 package*.json
+**/*.md
+node_modules
+frontend/node_modules
+backend/src/services/cacheManagerService.js
+backend/src/services/supabaseService.js
+frontend/src/components/MessageBubble.tsx
+scripts/fix-github-admonitions.js

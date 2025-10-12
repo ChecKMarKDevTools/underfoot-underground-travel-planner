@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Results Strategy — “More Than Three, Not a Buffet”
 
@@ -28,7 +28,7 @@ Goal: reliably return **4–6 items** without spiraling cost, with a **Near(ish)
 
 ## 🧰 Source & cap strategy (so we don’t under/over-fetch)
 
-- **Per source cap**: **up to 6 candidates per source** _before_ filtering (small, cheap).
+- **Per source cap**: **up to 6 candidates per source** *before* filtering (small, cheap).
 - **Source mix** (parallelized by type, not by variants):
   - 1× local social/forum (e.g., subreddit)
   - 1× venue/community calendar (arts center/arena/campus)
@@ -122,4 +122,4 @@ We’ll reliably land **4–6** without chasing infinity:
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

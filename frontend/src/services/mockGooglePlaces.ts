@@ -137,9 +137,15 @@ export class MockGooglePlacesService extends GooglePlacesService {
       const mysticalTypes = ['place_of_worship', 'hindu_temple', 'synagogue', 'mosque'];
       const undergroundTypes = ['subway_station', 'train_station', 'parking'];
 
-      if (types.some((type) => ancientTypes.includes(type))) return 'ancient';
-      if (types.some((type) => mysticalTypes.includes(type))) return 'mystical';
-      if (types.some((type) => undergroundTypes.includes(type))) return 'underground';
+      if (types.some((type) => ancientTypes.includes(type))) {
+        return 'ancient';
+      }
+      if (types.some((type) => mysticalTypes.includes(type))) {
+        return 'mystical';
+      }
+      if (types.some((type) => undergroundTypes.includes(type))) {
+        return 'underground';
+      }
       return 'forgotten';
     };
 
@@ -162,13 +168,18 @@ export class MockGooglePlacesService extends GooglePlacesService {
     const generateArtifacts = (types: string[]): string[] => {
       const artifacts = ['Digital Echoes', 'Temporal Fragments'];
 
-      if (types.includes('museum')) artifacts.push("Curator's Stone", 'Preserved Memories');
-      if (types.includes('church'))
+      if (types.includes('museum')) {
+        artifacts.push("Curator's Stone", 'Preserved Memories');
+      }
+      if (types.includes('church')) {
         artifacts.push('Sacred Resonance Crystal', 'Prayer Echo Stones');
-      if (types.includes('cemetery'))
+      }
+      if (types.includes('cemetery')) {
         artifacts.push('Soul Anchor Points', 'Ethereal Boundary Markers');
-      if (types.includes('subway_station'))
+      }
+      if (types.includes('subway_station')) {
         artifacts.push('Transit Flow Conduits', 'Underground Energy Nodes');
+      }
 
       return artifacts.slice(0, 3);
     };

@@ -3,11 +3,21 @@ pre-commit:
   commands:
     format-and-lint:
       run: |
-        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+        # Only run prettier/eslint on code files
+        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx|json)$' || true)
+        # Only run remark on markdown files (pass filenames explicitly)
+        MD_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.md$' || true)
+
         if [ -n "$STAGED_FILES" ]; then
-          echo "$STAGED_FILES" | xargs -r npm run format
-          echo "$STAGED_FILES" | xargs -r npm run lint
+          # Use npm script to format code and run lint (centralizes config)
+          echo "$STAGED_FILES" | xargs -r npx --no-install npm run -s format:code --silent
           echo "$STAGED_FILES" | xargs -r git add
+        fi
+
+        if [ -n "$MD_FILES" ]; then
+          # Use npm script to format docs (remark) for explicitness
+          echo "$MD_FILES" | xargs -r npx --no-install npm run -s format:docs --silent
+          echo "$MD_FILES" | xargs -r git add
         fi
     spellcheck:
       run: |

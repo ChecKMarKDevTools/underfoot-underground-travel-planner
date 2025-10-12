@@ -1,6 +1,6 @@
 # UNDERFOOT: BASELINE DOCUMENTATION UPDATE
 
-_Baseline Established: September 27, 2025_
+*Baseline Established: September 27, 2025*
 
 ## 📋 **PROJECT STATUS: v0.1.0+2**
 
@@ -242,4 +242,4 @@ graph TB
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

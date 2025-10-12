@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Data Retrieval ADR
 
@@ -52,7 +52,7 @@ We will implement a **multi-tier workflow in n8n** that uses Bright Data as the 
 
 - All sources mapped to a unified schema `{ source, title, url, snippet, domain, image, publishedAt, tags, cache }`.
 - `cache` column denotes whether a record came from Bright Data or cache.
-- Scoring favors underground signals (keywords like _hidden gem_, _locals only_, _offbeat_), indie domains, and recency.
+- Scoring favors underground signals (keywords like *hidden gem*, *locals only*, *offbeat*), indie domains, and recency.
 - Penalizes corporate/travel aggregator domains.
 - Returns two lists: **Primary Results** (top scored, within limit) and **Near(ish) By** (secondary recommendations).
 
@@ -154,7 +154,7 @@ Canonical Result (draft):
 ### Scoring Responsibility Clarification
 
 To avoid divergent or opaque ranking heuristics, **individual adapters/workflows DO NOT assign
-final user‑visible scores**. Instead they emit _feature signals_ (e.g., domain age, indie flag,
+final user‑visible scores**. Instead they emit *feature signals* (e.g., domain age, indie flag,
 keyword density, recency delta, social share count) inside an adapter metadata block. The **central
 scoring module** (within the Data Aggregation Agent) consumes these normalized feature vectors and
 applies a single weighted model / formula (or future ML model) to produce the `score` and
@@ -245,4 +245,4 @@ provided `score` field (if present it is ignored / stripped).
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Underfoot Underground Travel Planner — High-Level Implementation Plan
 
@@ -130,7 +130,7 @@ _Document created: September 27, 2025_
 
 **Workflows (JSON exported to `/n8n`)**
 
-1. **`underfoot_orchestrator`** _(called via backend; or keep backend calling source flows directly)_
+1. **`underfoot_orchestrator`** *(called via backend; or keep backend calling source flows directly)*
    - Validates inputs; delegates to `fetch_sources_*`; merges results; returns raw candidates
 2. **`fetch_sources_local`**
    - **Parallel by type** (cap 6 per source):
@@ -257,4 +257,4 @@ PORT=3000
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

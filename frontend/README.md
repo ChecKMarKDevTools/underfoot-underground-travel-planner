@@ -80,4 +80,4 @@ The debug panel reveals:
 
 ---
 
-_Built for the future, inspired by the past_ ⚙️
+*Built for the future, inspired by the past* ⚙️

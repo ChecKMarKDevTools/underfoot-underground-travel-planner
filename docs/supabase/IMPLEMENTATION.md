@@ -7,6 +7,7 @@ Intent-based semantic caching using OpenAI embeddings and PostgreSQL pgvector. F
 ## How It Works
 
 ### 1. Parse Intent from User Input
+
 ```python
 user_input = "cool underground bars in portland"
 parsed = await parse_user_input(user_input)
@@ -14,6 +15,7 @@ parsed = await parse_user_input(user_input)
 ```
 
 ### 2. Geocode Location
+
 ```python
 geo = await geocode_location("Portland")
 # → {
@@ -21,19 +23,21 @@ geo = await geocode_location("Portland")
 #     "city": "Portland",
 #     "county": "Multnomah County",
 #     "region": "Oregon",
-#     "country": "United States", 
+#     "country": "United States",
 #     "latitude": 45.5152,
 #     "longitude": -122.6784
 # }
 ```
 
 ### 3. Generate Intent Embedding
+
 ```python
 embedding = await generate_intent_embedding("underground bars")
 # → [0.234, -0.891, 0.445, ... 1536 numbers]
 ```
 
 ### 4. Search for Similar Intents Nearby
+
 ```sql
 SELECT * FROM find_similar_intents_nearby(
   input_intent_embedding := embedding,
@@ -46,11 +50,13 @@ SELECT * FROM find_similar_intents_nearby(
 ```
 
 **Filters:**
+
 - Intent must be 77%+ similar
 - Location must be within 80 miles (hard cutoff)
 - Cache must not be expired
 
 **Scoring:**
+
 - 70% intent similarity
 - 30% proximity (with exponential decay)
 
@@ -58,23 +64,23 @@ SELECT * FROM find_similar_intents_nearby(
 
 ### 5. Return Cached Results or Search Fresh
 
-**Cache Hit:** Return `result_ids` array, fetch full data from `api_results_cache`  
+**Cache Hit:** Return `result_ids` array, fetch full data from `api_results_cache`\
 **Cache Miss:** Call APIs, generate results, store in `api_results_cache`, link via `result_ids`
 
 ## Database Schema
 
-### semantic_cache
+### semantic\_cache
 
 Stores vector embeddings and references to cached results.
 
 ```sql
 CREATE TABLE semantic_cache (
   id uuid PRIMARY KEY,
-  
+
   -- Intent (vectorized)
   intent text NOT NULL,
   intent_embedding vector(1536) NOT NULL,
-  
+
   -- Location (NOT vectorized - uses earthdistance)
   location text NOT NULL,
   city text,
@@ -84,14 +90,14 @@ CREATE TABLE semantic_cache (
   postal_code text,
   latitude decimal(10, 8),
   longitude decimal(11, 8),
-  
+
   -- References to cached data (NOT duplicating JSONB)
   result_ids uuid[] DEFAULT '{}',
-  
+
   -- Access tracking
   access_count integer DEFAULT 1,
   last_accessed timestamptz DEFAULT now(),
-  
+
   -- Metadata
   created_at timestamptz DEFAULT now(),
   expires_at timestamptz NOT NULL
@@ -100,7 +106,7 @@ CREATE TABLE semantic_cache (
 
 **Key difference from typical caching:** The `semantic_cache` table stores **references** (`result_ids`) to actual cached data in `api_results_cache`, not the full JSONB payload. This avoids duplication.
 
-### api_results_cache
+### api\_results\_cache
 
 Stores actual API response data with event-based expiration.
 
@@ -119,7 +125,7 @@ CREATE TABLE api_results_cache (
 
 **Expiration:** Event-based, not TTL. Results expire when `event_date < now()`. Default is 4 weeks for always-open venues.
 
-### location_cache
+### location\_cache
 
 Geocoding cache to avoid repeated API calls to Google Maps.
 
@@ -139,7 +145,7 @@ CREATE TABLE location_cache (
 ## Configuration
 
 | Setting | Value | Why |
-|---------|-------|-----|
+| - | - | - |
 | Similarity Threshold | 0.77 | Better cache hit rate, catches more variations |
 | Distance Cutoff | 80 miles | Hard limit, beyond = excluded |
 | Intent Weight | 70% | Primary factor for relevance |
@@ -164,6 +170,7 @@ This SUBTRACTS points as distance increases:
 ```
 
 **The negation happens via `1 - (d/80)²`:**
+
 - At 0 miles: 1 - 0 = 1.0 (no negation)
 - At 40 miles: 1 - 0.25 = 0.75 (25% negated)
 - At 60 miles: 1 - 0.56 = 0.44 (56% negated)
@@ -176,6 +183,7 @@ relevance = (intent_similarity × 0.7) + (proximity_score × 0.3)
 ```
 
 **Example:**
+
 - Intent 85% similar, 20 miles away: (0.85 × 0.7) + (0.94 × 0.3) = 0.877
 - Intent 100% similar, 47 miles away: (1.0 × 0.7) + (0.65 × 0.3) = 0.895
 - Intent 100% similar, 100 miles away: EXCLUDED (beyond 80 miles)

@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Future Enhancements
 
@@ -6,7 +6,7 @@ This is a list of all design decisions I made throughout the process with a focu
 
 ## Project/Code
 
-- [ ] Python is really a better long-term choice for the backend, but JS is what I know _now_.
+- [ ] Python is really a better long-term choice for the backend, but JS is what I know *now*.
 - [ ] Use a modular architecture to allow for easier updates and maintenance. I chose to keep it all in one place for easier development and deployment.
 - [ ] Now that I have everything actually put together in this one monorepo, I'm not completely hating it. Now, if it becomes more than just me it could get complicated quickly, but for now It's working.
 - [ ] As I pointed out in the blog submission for this hackathon, this really needs to be a mobile app to be effective in any way. Besides, I've been wanting to branch out into mobile for a while.
@@ -31,7 +31,7 @@ This is a list of all design decisions I made throughout the process with a focu
 
 - [ ] Limited to a single intent output for simplicity, but data agent can handle multiple intents.
 - [ ] Ideally is capable of expanding search results automatically to include a wider radius. If the initial search does not return adequate data. This is worked into the initial design, but ultimately, I decided it was too complex considering everything else on the list... 😱
-- [ ] n8n was great — it made development easy and it was easy to test. **The whole thing was easy** but it's not realistic for a long-term solution — not for _this_ use case. So I'm going to look into custom agent options.
+- [ ] n8n was great — it made development easy and it was easy to test. **The whole thing was easy** but it's not realistic for a long-term solution — not for *this* use case. So I'm going to look into custom agent options.
 - [ ] Explore memory and ongoing conversations to see if it can really work as good as Copilot's docs says
 
 ### Google SERP flow
@@ -53,4 +53,4 @@ This is a list of all design decisions I made throughout the process with a focu
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

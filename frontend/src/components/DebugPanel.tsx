@@ -11,7 +11,9 @@ interface DebugPanelProps {
 }
 
 export const DebugPanel: React.FC<DebugPanelProps> = ({ debugData, isVisible, onClose }) => {
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <AnimatePresence>

@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Mermaid Diagrams: Underfoot System Documentation
 
@@ -355,4 +355,4 @@ graph TB
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

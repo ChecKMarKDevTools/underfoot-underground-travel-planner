@@ -39,12 +39,12 @@ flowchart TB
 
 ## Tables
 
-### api_results_cache
+### api\_results\_cache
 
 **Purpose**: Raw API data with event-based expiration
 
 | Column | Type | Description |
-|--------|------|-------------|
+| - | - | - |
 | `id` | uuid | Primary key |
 | `source` | text | API source: `reddit`, `facebook`, `eventbrite`, `serp` |
 | `result_data` | jsonb | Full API response |
@@ -57,12 +57,12 @@ flowchart TB
 
 ---
 
-### location_cache
+### location\_cache
 
 **Purpose**: Geocoding cache (saves Google Maps API costs)
 
 | Column | Type | Description |
-|--------|------|-------------|
+| - | - | - |
 | `id` | uuid | Primary key |
 | `raw_input` | text | User's location input (unique) |
 | `normalized_location` | text | Standardized location name |
@@ -74,24 +74,25 @@ flowchart TB
 
 ---
 
-### semantic_cache
+### semantic\_cache
 
 **Purpose**: Vector search index for query similarity
 
 | Column | Type | Description |
-|--------|------|-------------|
+| - | - | - |
 | `id` | uuid | Primary key |
 | `intent` | text | User's search query |
 | `intent_embedding` | vector(1536) | OpenAI embedding |
 | `location` | text | Location string |
 | `city`/`region`/`country` | text | Geocoded details |
 | `latitude`/`longitude` | decimal | Coordinates |
-| `result_ids` | uuid[] | References to `api_results_cache` |
+| `result_ids` | uuid\[] | References to `api_results_cache` |
 | `access_count` | int | Cache hit counter |
 | `last_accessed` | timestamptz | Last hit timestamp |
 | `expires_at` | timestamptz | Cache expiration |
 
 **Search Algorithm**:
+
 - **Similarity threshold**: 77%
 - **Max distance**: 80 miles
 - **Scoring**: 70% intent similarity + 30% proximity (exponential decay)
@@ -105,6 +106,7 @@ flowchart TB
 Vector similarity search with geographic filtering.
 
 **Parameters**:
+
 - `input_intent_embedding`: vector(1536) - Query embedding
 - `user_lat`/`user_lng`: decimal - User coordinates
 - `max_distance_miles`: int (default: 80)
@@ -114,6 +116,7 @@ Vector similarity search with geographic filtering.
 **Returns**: Up to 6 results with similarity + distance scores.
 
 **Example**:
+
 ```sql
 SELECT * FROM find_similar_intents_nearby(
   embedding,
@@ -132,6 +135,7 @@ SELECT * FROM find_similar_intents_nearby(
 Removes expired cache entries from all tables.
 
 **Returns**: JSON with deletion counts
+
 ```json
 {
   "location_cache_deleted": 5,
@@ -148,6 +152,7 @@ Removes expired cache entries from all tables.
 Returns comprehensive cache stats.
 
 **Example Output**:
+
 ```json
 {
   "api_results": {

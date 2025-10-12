@@ -1,5 +1,5 @@
-_Document created: September 27, 2025_
-_Last updated: October 9, 2025_
+*Document created: September 27, 2025*
+*Last updated: October 9, 2025*
 
 # Environment Variables
 
@@ -36,7 +36,7 @@ Central reference for all environment variables used across Underfoot. Avoid exp
    - Copy:
      - **Project URL** → `SUPABASE_URL`
      - **anon public** key → `SUPABASE_ANON_KEY`
-     - **service_role** key → `SUPABASE_SERVICE_ROLE_KEY` ⚠️ **SECRET**
+     - **service\_role** key → `SUPABASE_SERVICE_ROLE_KEY` ⚠️ **SECRET**
 
 2. **Database Password:**
    - **Settings** → **Database** → **Connection string**
@@ -56,6 +56,7 @@ Supabase provides **event-based caching with semantic vector search** for underg
 - **`location_cache`** - Geocoding cache to avoid repeated Google Maps API calls
 
 **Key Features:**
+
 - 77% similarity threshold for intent matching
 - 80-mile geographic radius with exponential distance decay
 - Event-based expiration: results expire when `event_date < now()` (default: 4 weeks)
@@ -134,4 +135,4 @@ VITE_LIMIT=5
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

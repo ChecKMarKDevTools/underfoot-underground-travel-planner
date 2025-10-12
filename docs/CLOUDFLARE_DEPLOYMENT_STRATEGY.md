@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # CLOUDFLARE DEPLOYMENT STRATEGY: Express.js → Pages Functions
 
@@ -235,35 +235,35 @@ import { sanitizeInput } from '../_middleware.js';
 
 export async function onRequest${method}(context) {
   const { request, env, waitUntil } = context;
-  
+
   try {
     // Apply middleware
     const rateLimitResult = await rateLimit(context);
     if (rateLimitResult) return rateLimitResult;
-    
+
     const sanitizeResult = await sanitizeInput(context);
     if (sanitizeResult) return sanitizeResult;
-    
+
     // Extract request data
     const body = request.method === 'POST' ? await request.json() : {};
     const query = new URL(request.url).searchParams;
-    
+
     // Convert Express req/res to Pages Functions context
     const req = { body, query: Object.fromEntries(query) };
     let responseData = {};
     let responseStatus = 200;
-    
+
     const res = {
       json: (data) => { responseData = data; },
       status: (code) => { responseStatus = code; return res; }
     };
-    
+
     // === CONVERTED EXPRESS LOGIC ===
     ${logic.replace(/req\./g, 'req.').replace(/res\./g, 'res.')}
     // === END CONVERTED LOGIC ===
-    
+
     return Response.json(responseData, { status: responseStatus });
-    
+
   } catch (error) {
     console.error('Function error:', error);
     return Response.json(
@@ -289,7 +289,7 @@ export async function rateLimit(context) {
   // Rate limiting logic (using KV store instead of Map)
   const { request, env } = context;
   const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
-  
+
   // TODO: Implement with Cloudflare KV
   return null; // No rate limit hit
 }
@@ -302,12 +302,12 @@ export async function sanitizeInput(context) {
 export async function onRequest(context) {
   // Global middleware - runs on all requests
   const response = await context.next();
-  
+
   // Add security headers
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
-  
+
   return response;
 }
 `;
@@ -483,4 +483,4 @@ nodemon scripts/convert-to-functions.js
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

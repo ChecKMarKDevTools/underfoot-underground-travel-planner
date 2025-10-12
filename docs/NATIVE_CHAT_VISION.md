@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Native Chat Long-Term Vision
 
@@ -16,7 +16,7 @@ We currently embed an n8n-provided chat (iframe or dynamic widget) as a **zero-b
 - Personalization and future premium gating (should costs later force throttling / downtime)
 - Extensibility (adding itinerary planning, multi-step tool chains, multi-modal messages)
 
-The native chat stack restores full control while keeping the ethos: _quirky, transparent, pragmatic travel-planning help underground._
+The native chat stack restores full control while keeping the ethos: *quirky, transparent, pragmatic travel-planning help underground.*
 
 ## 2. Non-Goals / Intentional Omissions
 
@@ -237,4 +237,4 @@ This vision avoids end-user feature flags: either the native system is online or
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

@@ -27,19 +27,22 @@ When someone searches "underground bars in Portland", the AI turns that intent (
 ## Real Example
 
 **User 1 searches:** "cool underground spots in Portland"
+
 - Intent extracted: "underground spots"
-- Embedding: [0.234, -0.891, 0.445, ... 1536 numbers ...]
+- Embedding: \[0.234, -0.891, 0.445, ... 1536 numbers ...]
 - Calls APIs, gets results, caches with intent embedding
 
-**User 2 searches:** "hidden dive bars in Portland"  
+**User 2 searches:** "hidden dive bars in Portland"
+
 - Intent extracted: "dive bars"
-- Embedding: [0.198, -0.856, 0.501, ... 1536 numbers ...]
+- Embedding: \[0.198, -0.856, 0.501, ... 1536 numbers ...]
 - Similarity check: **0.87** (87% similar) ✅
 - Returns User 1's cached results (no API calls needed!)
 
 **User 3 searches:** "family restaurants in Portland"
-- Intent extracted: "family restaurants"  
-- Embedding: [-0.445, 0.234, -0.112, ... 1536 numbers ...]
+
+- Intent extracted: "family restaurants"
+- Embedding: \[-0.445, 0.234, -0.112, ... 1536 numbers ...]
 - Similarity check: **0.43** (43% similar) ❌
 - Makes fresh API calls (totally different intent)
 
@@ -73,6 +76,7 @@ Distance penalty is NOT linear. It's exponential, so far places get hammered:
 Intent is most important, but distance matters A LOT. An exact intent match 79 miles away should beat a slightly worse match locally.
 
 **Example:**
+
 ```
 User searches: "dive bars" in Portland, OR (45.5152, -122.6784)
 
@@ -102,17 +106,19 @@ Cache Option D: "speakeasy" in Portland, OR (0 miles)
 ## Configuration
 
 **Distance Radius:** 80 miles HARD CUTOFF
+
 - Beyond 80 miles = excluded entirely
 - Within 80 miles = exponential decay (close >> far)
 - Adjustable based on urban (smaller) vs rural (larger) areas
 
 **Similarity Threshold:** 0.77 (77%)
+
 - Catches more semantic variations than 0.85
 - Better cache hit rate
 - Still filters out irrelevant intents
 
 ## TL;DR
 
-We turn search intents into number fingerprints. If two fingerprints are 77%+ similar AND within 80 miles of each other, we reuse the cached results instead of calling APIs again. 
+We turn search intents into number fingerprints. If two fingerprints are 77%+ similar AND within 80 miles of each other, we reuse the cached results instead of calling APIs again.
 
 Intent similarity is 70% of the score, proximity is 30%, but distance uses exponential decay so far places get heavily penalized. Beyond 80 miles? Excluded completely, doesn't matter how good the intent match is.

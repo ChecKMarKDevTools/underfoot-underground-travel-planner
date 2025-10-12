@@ -62,8 +62,8 @@ Located in `backend/src/services/vectorService.py`:
 
 - `find_similar_intent_nearby()` - Calls Supabase function
 - `store_semantic_cache()` - Inserts semantic cache entry
-- `store_api_results()` - Inserts into api_results_cache
-- `fetch_results_by_ids()` - Retrieves full JSONB from result_ids
+- `store_api_results()` - Inserts into api\_results\_cache
+- `fetch_results_by_ids()` - Retrieves full JSONB from result\_ids
 
 ## Migration Files
 
@@ -96,6 +96,6 @@ Located in `supabase/migrations/`:
 - [README.md](./README.md) - Overview, tables, functions
 - [IMPLEMENTATION.md](./IMPLEMENTATION.md) - Code examples, scoring algorithm
 - [ELI5.md](./ELI5.md) - Similarity threshold explanation
-- [docs/ENVIRONMENT_VARIABLES.md](../ENVIRONMENT_VARIABLES.md) - Supabase env vars
+- [docs/ENVIRONMENT\_VARIABLES.md](../ENVIRONMENT_VARIABLES.md) - Supabase env vars
 
 <!-- Generated with GitHub Copilot as directed by Ashley Childress -->

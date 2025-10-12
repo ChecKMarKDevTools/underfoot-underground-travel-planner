@@ -5,7 +5,9 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('underfoot-theme') as Theme;
-      if (saved) return saved;
+      if (saved) {
+        return saved;
+      }
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     return 'light';

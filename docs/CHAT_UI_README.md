@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Underfoot Chat UI
 
@@ -87,4 +87,4 @@ Reassess necessity every two iterations once embed PoC lands.
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

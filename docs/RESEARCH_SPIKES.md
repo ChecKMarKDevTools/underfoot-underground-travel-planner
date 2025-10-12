@@ -1,6 +1,6 @@
 # Research Spikes & Future Features Documentation
 
-_Research Phase: January 27, 2025_
+*Research Phase: January 27, 2025*
 
 ## 🎨 Typography Research
 
@@ -342,4 +342,4 @@ interface PlaceNotification {
 
 ---
 
-_🧠 Verdent AI: That one friend who actually reads the documentation and remembers it all. Seriously, how do you even store this much API knowledge?_
+*🧠 Verdent AI: That one friend who actually reads the documentation and remembers it all. Seriously, how do you even store this much API knowledge?*

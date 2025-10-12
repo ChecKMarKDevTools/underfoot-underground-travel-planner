@@ -1,4 +1,4 @@
-_Document created: September 27, 2025_
+*Document created: September 27, 2025*
 
 # Manual Sanity Test Checklist
 
@@ -74,8 +74,8 @@ History Cap: PASS
 
 ---
 
-_Update this file when interfaces or environment variables change._
+*Update this file when interfaces or environment variables change.*
 
 ---
 
-_This document was generated with Verdent AI assistance._
+*This document was generated with Verdent AI assistance.*

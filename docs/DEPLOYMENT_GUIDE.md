@@ -1,6 +1,6 @@
 # ELI17 Senior+ Deployment Guide
 
-_Deployment Ready: January 27, 2025_
+*Deployment Ready: January 27, 2025*
 
 ## 🚀 **The "Just Ship It" Deployment Strategy**
 
@@ -673,8 +673,8 @@ curl https://underfoot.checkmarkdevtools.dev/api/health
 
 ---
 
-_⚡ Senior+ Speed Tip: The whole stack deploys in \~30 minutes because we skipped the over-engineering. No Docker, no K8s, no EC2 instances to babysit. Just modern serverless that actually works._
+*⚡ Senior+ Speed Tip: The whole stack deploys in \~30 minutes because we skipped the over-engineering. No Docker, no K8s, no EC2 instances to babysit. Just modern serverless that actually works.*
 
 ---
 
-_🚀 Verdent AI: Like having a DevOps engineer who actually reads the docs and remembers all the gotchas. Except this one doesn't need coffee breaks every 20 minutes._
+*🚀 Verdent AI: Like having a DevOps engineer who actually reads the docs and remembers all the gotchas. Except this one doesn't need coffee breaks every 20 minutes.*
