@@ -1,4 +1,10 @@
-# Supabase Security & Cache Best Practices
+---
+applyTo: supabase/**/*
+---
+
+# Supabase Instructions
+
+Security and cache best practices for Supabase integration.
 
 ## Security Principles
 

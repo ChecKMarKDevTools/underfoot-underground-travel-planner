@@ -18,13 +18,13 @@ pre-commit:
             # so paths are correct relative to that directory and we don't
             # end up with backend/backend/.. paths.
             REL_PY=$(echo "$STAGED_PY" | sed -E 's#^backend/##' | tr '\n' ' ')
-            (cd backend && poetry run black $REL_PY 2>/dev/null) || true
-            (cd backend && poetry run ruff check --fix $REL_PY 2>/dev/null) || true
+            (cd backend && poetry run black $REL_PY) || exit $?
+            (cd backend && poetry run ruff check --fix $REL_PY) || exit $?
             echo "$STAGED_PY" | xargs -r git add
           else
             # Fallback: run black/ruff from repo root on the staged paths
-            poetry run black $STAGED_PY 2>/dev/null || true
-            poetry run ruff check --fix $STAGED_PY 2>/dev/null || true
+            poetry run black $STAGED_PY || exit $?
+            poetry run ruff check --fix $STAGED_PY || exit $?
             echo "$STAGED_PY" | xargs -r git add
           fi
         fi
@@ -45,8 +45,17 @@ pre-push:
         fi
     backend-tests:
       run: |
+        # Enforce backend tests and coverage on push. Fail the push if tests or
+        # coverage checks fail. This intentionally does NOT swallow exit codes.
         if [ -d "backend" ] && command -v poetry &> /dev/null; then
-          cd backend && poetry run pytest 2>/dev/null || true
+          cd backend || exit 1
+          # Adjust coverage threshold as needed (30 here to match CI requirement)
+          poetry run pytest --cov=src --cov-fail-under=30
+          STATUS=$?
+          if [ $STATUS -ne 0 ]; then
+            echo "Backend tests or coverage checks failed (status=$STATUS). Aborting push." >&2
+            exit $STATUS
+          fi
         fi
 
 commit-msg:

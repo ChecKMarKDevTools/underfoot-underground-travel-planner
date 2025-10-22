@@ -53,7 +53,7 @@
     "spellcheck": "npx cspell . --show-suggestions --gitignore",
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd backend && poetry run pytest",
-    "test:frontend": "npm run -w frontend test"
+    "test:frontend": "npm --prefix frontend test"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
