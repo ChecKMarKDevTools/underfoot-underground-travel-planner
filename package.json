@@ -82,6 +82,6 @@
     "wrangler": "^4.34.0"
   },
   "dependencies": {
-    "vite": "7.1.5"
+    "vite": "7.1.11"
   }
 }
