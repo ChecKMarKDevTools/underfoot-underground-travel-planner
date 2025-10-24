@@ -12,9 +12,8 @@ Code style and tooling are important. You should write and refactor code in a wa
      - Ignore GPG signature failures (signing happens post-hook)
      - Never add a `Signed-off-by:` trailer to generated commit messages. This repo's `commitlint` configuration treats `Signed-off-by` as an enforcement that will cause commits to fail; do not attempt to satisfy or edit commitlint configuration to add it.
      - Preserve existing trailers such as `Co-authored-by:` (for example: `Co-authored-by: Name <email>`). Do not remove or replace `Co-authored-by` footers when present.
-  2. **CSpell** — No spelling errors in code or markdown
-  3. **Prettier** — Enforce formatting rules for JS/TS/MD/etc.
-  4. **ESLint** — Lint code according to project config
+  2. **Prettier** — Enforce formatting rules for JS/TS/MD/etc.
+  3. **ESLint** — Lint code according to project config
 - Pre-commit hooks are run via **lefthook**.
 - Any generated code must be compatible with **Node 22 LTS** (or later LTS).
 
@@ -23,7 +22,6 @@ Code style and tooling are important. You should write and refactor code in a wa
 You should use the MCP server #context7 whenever it is available to reference the latest versions of all documentation.
 
 - **Commitlint** for message validation
-- **CSpell** for spelling checks
 - **Prettier** for consistent formatting
 - **ESLint** for code quality
 - **lefthook** to run checks pre-commit
@@ -58,7 +56,7 @@ When generating commit messages, do NOT append any `Signed-off-by:` lines or att
 
 ## Linting, Formatting, Spelling
 
-- ESLint, Prettier, CSpell enforced via lefthook pre-commit hooks.
+- ESLint and Prettier enforced via lefthook pre-commit hooks.
 - All code/markdown must pass before commit.
 
 ## Unit Testing

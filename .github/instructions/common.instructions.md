@@ -9,7 +9,7 @@ Use this file for cross-cutting constraints shared by frontend and backend. Keep
 Essential rules:
 
 - Commit messages: Conventional Commits enforced by `commitlint` (do not add `Signed-off-by:` trailers).
-- Pre-commit hooks: `lefthook` runs `eslint`, `prettier`, `cspell`, and other checks. All checks must pass before committing.
+-- Pre-commit hooks: `lefthook` runs `eslint` and `prettier` (spellcheck removed). All checks must pass before committing.
 - Node: prefer Node 24+ for frontend; Node 22+ supported in CI. Use the repo `package.json` scripts.
 - Python: runtime 3.12+ for backend; use `poetry` to manage dependencies and run tests.
 - Tests & Coverage: frontend coverage targets are stricter (see `frontend/AGENTS.md`); backend target ≥30% (see `backend/AGENTS.md`).
@@ -18,3 +18,7 @@ Essential rules:
 - AI calls: prefer a single batch call where architected (backend `/chat`) to reduce cost.
 
 If a rule conflicts with an `AGENTS.md` file, treat `AGENTS.md` as authoritative for that area and update this file accordingly.
+
+## CRITICAL CONSTRAINTS
+
+- **No Committing**: Never commit any code without explicit direct approval by the user.

@@ -65,9 +65,9 @@ export function Component({ prop1, prop2 }) {
 - Utils/Services: camelCase
 - Constants: `UPPER_SNAKE_CASE`
 
-## Linting, Formatting, Spelling
+### Linting & Formatting
 
-- ESLint, Prettier, CSpell enforced via lefthook pre-commit hooks.
+- ESLint and Prettier enforced via lefthook pre-commit hooks.
 - All code/markdown must pass before commit.
 
 ## Testing

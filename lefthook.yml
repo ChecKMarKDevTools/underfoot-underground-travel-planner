@@ -28,12 +28,6 @@ pre-commit:
             echo "$STAGED_PY" | xargs -r git add
           fi
         fi
-    spellcheck:
-      run: |
-        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
-        if [ -n "$STAGED_FILES" ] && command -v npx &> /dev/null; then
-          npx cspell --show-suggestions $STAGED_FILES 2>/dev/null || true
-        fi
 
 pre-push:
   parallel: true

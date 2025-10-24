@@ -50,7 +50,6 @@
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
     "lint": "npm run -w frontend lint",
     "lint:python": "cd backend && poetry run ruff check .",
-    "spellcheck": "npx cspell . --show-suggestions --gitignore",
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd backend && poetry run pytest",
     "test:frontend": "npm --prefix frontend test"
@@ -58,13 +57,8 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@cspell/dict-en_us": "^4.4.17",
-    "@cspell/dict-git": "^3.0.7",
-    "@cspell/dict-software-terms": "^5.1.6",
-    "@cspell/eslint-plugin": "^9.2.0",
     "@eslint/js": "^9.33.0",
     "concurrently": "^9.2.1",
-    "cspell": "^9.2.0",
     "esbuild": "^0.25.9",
     "eslint": "^9.33.0",
     "eslint-plugin-naming": "^0.1.10",
@@ -82,6 +76,6 @@
     "wrangler": "^4.34.0"
   },
   "dependencies": {
-    "vite": "7.1.5"
+    "vite": "^7.1.12"
   }
 }
